@@ -1,0 +1,17 @@
+export const endpoints = {
+    user: {
+        login: '/auth/local',
+        forgotPassword: '/auth/forgot-password',
+        resetPassword: '/auth/reset-password',
+        allSelectUser: '/users',
+        getUserByeRole: '/users?populate=role&filters[role][type][$eq]=:rolType&filters[name][$contains]=:params',
+        allSearchchUser: '/users?filters[$or][0][name][$contains]=:searchParams&filters[$or][1][lastName][$contains]=:searchParams&filters[$or][2][documentIdentification][$contains]=:searchParams&populate=*',
+        getUserById: '/users/:idUser?populate=role',
+        getUserId: '/users/:id?populate=*',
+        addUser: '/users',
+        updateUser: '/users/:id',
+        deleteUser: '/users/:id',
+        getUserRol: '/users-permissions/roles'
+    },
+   
+}
