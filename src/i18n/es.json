@@ -1,0 +1,12 @@
+{
+  "welcome": "Bienvenido a React y react-intl",
+	"validation": {
+		"required": "Este campo es obligatorio",
+		"email": "El email no es válido",
+		"minLength": "El campo debe tener al menos {minLength} caracteres",
+		"maxLength": "El campo debe tener como máximo {maxLength} caracteres",
+		"min": "El valor debe ser mayor o igual a {min}",
+		"max": "El valor debe ser menor o igual a {max}",
+		"pattern": "El valor no es válido"
+	}
+}

@@ -5,18 +5,14 @@ import reducer from './slices/index'
 
 const sagaMiddleware = createSagaMiddleware()
 const store = configureStore({
-    reducer,
-    middleware: getDefaultMiddleware => [
-        ...getDefaultMiddleware({
-            serializableCheck: false,
-        }),
-        sagaMiddleware,
-        apiSliceMiddleware,
-    ],
+	reducer,
+	middleware: getDefaultMiddleware =>
+		getDefaultMiddleware({ serializableCheck: false }).concat(
+			sagaMiddleware,
+			apiSliceMiddleware
+		)
 })
-
 // Middleware: Redux Saga
 
-
 // Exports
-export default store;
+export default store
