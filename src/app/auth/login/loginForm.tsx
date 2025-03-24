@@ -10,7 +10,8 @@ import toast from 'react-hot-toast'
 import { z } from 'zod'
 import GoogleIcon from './googleIcon'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { FaEye, FaEyeSlash } from 'react-icons/fa6'
 
 const createLoginFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
 	email: z.string().nonempty({ message: t('validation.required') }),
@@ -18,6 +19,7 @@ const createLoginFormSchema = (t: ReturnType<typeof useTranslations>) => z.objec
 })
 
 const LoginForm = () => {
+	const [showPassword, setShowPassword] = useState(false)
 	const searchParams = useSearchParams()
 	const router = useRouter()
 
@@ -53,14 +55,42 @@ const LoginForm = () => {
 	return (
 		<Form {...form}>
 			<form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
+				<div className="flex items-center justify-center mb-2">
+					{/* circle bg-blue-500 */}
+					<div className="size-20 rounded-full flex items-center justify-center border border-indigo-900 bg-indigo-500 text-white">
+						Logo
+					</div>
+				</div>
+				<div className="space-y-1 text-center">
+					<h1 className="text-3xl font-bold">Bienvenido</h1>
+					<p className="text-muted-foreground">
+						Inicia sesión para continuar
+					</p>
+				</div>
+				<FormItem>
+					<Button type="button" variant='outline' onClick={() => signIn('google')}>
+						<GoogleIcon className='w-6 h-6' />
+						Continuar con Google
+					</Button>
+				</FormItem>
+				<div className="relative">
+					<div className="absolute inset-0 flex items-center">
+						<span className="w-full border-t" />
+					</div>
+					<div className="relative flex justify-center text-xs uppercase">
+						<span className="bg-background px-2 text-muted-foreground">
+							O continúa con
+						</span>
+					</div>
+				</div>
 				<FormField
 					control={form.control}
 					name="email"
 					render={({ field }) => (
 						<FormItem>
-							<FormLabel>Usuario</FormLabel>
+							<FormLabel>Correo electrónico</FormLabel>
 							<FormControl>
-								<Input placeholder="Usuario" autoComplete='email' {...field} />
+								<Input placeholder="ejemplo@gmail.com" autoComplete='email' {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -73,7 +103,12 @@ const LoginForm = () => {
 						<FormItem>
 							<FormLabel>Contraseña</FormLabel>
 							<FormControl>
-								<Input type="password" placeholder="Contraseña" autoComplete='current-password' {...field} />
+								<div className="relative">
+									<Input type={showPassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete='current-password' className='pr-8' {...field} />
+									<button type="button" className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+										{showPassword ? <FaEyeSlash /> : <FaEye />}
+									</button>
+								</div>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -81,14 +116,6 @@ const LoginForm = () => {
 				/>
 				<FormItem>
 					<Button type="submit">Iniciar sesión</Button>
-				</FormItem>
-				{/* --- o --- */}
-				{/* iniciar sesion con google */}
-				<FormItem>
-					<Button type="button" variant='outline' onClick={() => signIn('google')}>
-						<GoogleIcon className='w-6 h-6' />
-						Iniciar sesión con Google
-					</Button>
 				</FormItem>
 			</form>
 		</Form>
