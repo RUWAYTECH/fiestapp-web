@@ -13,7 +13,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
 const createLoginFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
-	username: z.string().nonempty({ message: t('validation.required') }),
+	email: z.string().nonempty({ message: t('validation.required') }),
 	password: z.string().nonempty({ message: t('validation.required') }).min(3, { message: t('validation.minLength', { minLength: 6 }) }),
 })
 
@@ -26,13 +26,13 @@ const LoginForm = () => {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			username: '',
+			email: '',
 			password: '',
 		}
 	})
 
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
-		signIn('credentials', { username: values.username, password: values.password, redirect: false }).then((res) => {
+		signIn('credentials', { email: values.email, password: values.password, redirect: false }).then((res) => {
 			if (res && res.ok) {
 				router.push('/')
 				return
@@ -55,12 +55,12 @@ const LoginForm = () => {
 			<form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
 				<FormField
 					control={form.control}
-					name="username"
+					name="email"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Usuario</FormLabel>
 							<FormControl>
-								<Input placeholder="Usuario" autoComplete='username' {...field} />
+								<Input placeholder="Usuario" autoComplete='email' {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>

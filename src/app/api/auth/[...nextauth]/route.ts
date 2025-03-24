@@ -21,13 +21,13 @@ const handler = NextAuth({
 		CredentialsProvider({
 			name: 'Credentials',
 			credentials: {
-				username: { label: 'Usuario', type: 'text' },
+				email: { label: 'Correo electrónico', type: 'email' },
 				password: { label: 'Contraseña', type: 'password' },
 			},
 			async authorize(credentials) {
 				const res = await fetch(`${config.apiUrl}/auth/login`, {
 					method: 'POST',
-					body: JSON.stringify({ userName: credentials?.username, password: credentials?.password }),
+					body: JSON.stringify({ email: credentials?.email, password: credentials?.password }),
 					headers: { 'Content-Type': 'application/json' }
 				})
 

@@ -1,6 +1,14 @@
+import { severityStatusEnum } from '@constants/severity-status.enum'
+
+export interface ApiResponseMessage {
+	key: string
+	value: string
+}
+
 export interface ApiResponseDto <T> {
-	type: string
-	messages: string[]
+	isValid: boolean
+	severityCode: severityStatusEnum
+	messages: ApiResponseMessage[]
 	data: T
 }
 
