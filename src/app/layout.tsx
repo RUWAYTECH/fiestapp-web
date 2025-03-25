@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale } from 'next-intl/server'
-import { Toaster } from 'react-hot-toast'
+import { Toaster } from '@/components/ui/sonner'
 import { geistMono, geistSans } from './fonts'
 import './globals.css'
 import Providers from './providers'
@@ -22,7 +22,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 						{children}
 					</NextIntlClientProvider>
 				</Providers>
-				<Toaster position='top-right' />
+				<Toaster position='top-right' expand closeButton duration={100000} />
 			</body>
 		</html>
 	)

@@ -6,16 +6,17 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { signIn } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
 import { useForm } from 'react-hook-form'
-import toast from 'react-hot-toast'
 import { z } from 'zod'
 import GoogleIcon from './googleIcon'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6'
+import Image from 'next/image'
+import { toast } from 'sonner'
 
 const createLoginFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
-	email: z.string().nonempty({ message: t('validation.required') }),
-	password: z.string().nonempty({ message: t('validation.required') }).min(3, { message: t('validation.minLength', { minLength: 6 }) }),
+	email: z.string().nonempty({ message: t('validation.required') }).email({ message: t('validation.email') }),
+	password: z.string().nonempty({ message: t('validation.required') }).min(6, { message: t('validation.minLength', { minLength: 6 }) }),
 })
 
 const LoginForm = () => {
@@ -56,9 +57,8 @@ const LoginForm = () => {
 		<Form {...form}>
 			<form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
 				<div className="flex items-center justify-center mb-2">
-					{/* circle bg-blue-500 */}
-					<div className="size-20 rounded-full flex items-center justify-center border border-indigo-900 bg-indigo-500 text-white">
-						Logo
+					<div className="flex items-center justify-center size-[129px] rounded-full bg-white overflow-hidden">
+						<Image src="/logo.png" alt="Logo" className='object-cover object-center' width={60} height={96.56} priority />
 					</div>
 				</div>
 				<div className="space-y-1 text-center">
@@ -102,14 +102,14 @@ const LoginForm = () => {
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>Contraseña</FormLabel>
-							<FormControl>
-								<div className="relative">
+							<div className="relative">
+								<FormControl>
 									<Input type={showPassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete='current-password' className='pr-8' {...field} />
-									<button type="button" className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
-										{showPassword ? <FaEyeSlash /> : <FaEye />}
-									</button>
-								</div>
-							</FormControl>
+								</FormControl>
+								<button type="button" className="absolute right-2 top-2.5 h-4 w-4 text-muted-foreground cursor-pointer" onClick={() => setShowPassword(!showPassword)}>
+									{showPassword ? <FaEyeSlash /> : <FaEye />}
+								</button>
+							</div>
 							<FormMessage />
 						</FormItem>
 					)}
