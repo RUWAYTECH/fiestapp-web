@@ -1,19 +1,20 @@
 'use client'
+
+import { toastService } from '@/core/services/toast'
 import { Button } from '@components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
 import { Input } from '@components/ui/input'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signIn } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import GoogleIcon from './googleIcon'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6'
-import Image from 'next/image'
-import { toast } from 'sonner'
-import Link from 'next/link'
+import { z } from 'zod'
+import GoogleIcon from './googleIcon'
 
 const createLoginFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
 	email: z.string().nonempty({ message: t('validation.required') }).email({ message: t('validation.email') }),
@@ -42,15 +43,15 @@ const LoginForm = () => {
 				return
 			}
 
-			toast.error('No se pudo iniciar sesión, intente de nuevo')
+			toastService.error('No se pudo iniciar sesión, intente de nuevo')
 		}).catch(() => {
-			toast.error('No se pudo iniciar sesión, intente de nuevo')
+			toastService.error('No se pudo iniciar sesión, intente de nuevo')
 		})
 	}
 
 	useEffect(() => {
 		if (searchParams.has('error')) {
-			toast.error('No se pudo iniciar sesión')
+			toastService.error('No se pudo iniciar sesión')
 		}
 	}, [searchParams])
 

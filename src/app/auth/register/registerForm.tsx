@@ -1,5 +1,6 @@
 'use client'
 
+import { toastService } from '@/core/services/toast'
 import { ApiResponseError } from '@/types'
 import { Button } from '@components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
@@ -11,7 +12,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 
 const createLoginFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
@@ -42,17 +42,17 @@ const RegisterForm = () => {
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		register(values).unwrap().then((res) => {
 			if (res.isValid) {
-				toast.success('Registro exitoso')
+				toastService.success('Registro exitoso')
 				router.push('/auth/login')
 
 				return
 			}
 
 			for(const error of res.messages) {
-				toast.error(error.value)
+				toastService.error(error.value)
 			}
 		}).catch((err: ApiResponseError) => {
-			toast.error(err.data?.message || 'No se pudo registrar, intente de nuevo')
+			toastService.error(err.data?.message || 'No se pudo registrar, intente de nuevo')
 		})
 	}
 

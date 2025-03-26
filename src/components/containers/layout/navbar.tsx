@@ -1,18 +1,10 @@
 'use client'
-import { useAuthStore } from '@stores/auth'
+
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 
 const Navbar = () => {
-	const isAuthenticated = useAuthStore(state => state.isAuthenticated)
-	const user = useAuthStore(state => state.user)
-	const [isClient, setIsClient] = useState(false)
 	const { data: auth } = useSession()
-
-	useEffect(() => {
-		setIsClient(true)
-	}, [])
 
 	return (
 		<>
@@ -27,28 +19,15 @@ const Navbar = () => {
 						</nav>
 					</div>
 					<div className="hidden sm:flex items-center space-x-4">
-						<div className="hidden">
-							{isAuthenticated() && isClient ? (
-								<>
-									<Link href="/profile">{user?.name}</Link>
-									<button className="cursor-pointer ">Cerrar sesión</button>
-								</>
-							) : (
-								<>
-									<button className="cursor-pointer">Iniciar sesión</button>
-									<Link href="/register">Registrarse</Link>
-								</>
-							)}
-						</div>
 						{auth ? (
 							<>
-								<Link href="/profile">{auth.user?.name}</Link>
+								<Link href="#">{auth.user?.name}</Link>
 								<button className="cursor-pointer " onClick={() => signOut()}>Cerrar sesión</button>
 							</>
 						) : (
 							<>
 								<Link href='/auth/login' className="cursor-pointer">Iniciar sesión</Link>
-								<Link href="/register">Registrarse</Link>
+								<Link href="/auth/register">Registrarse</Link>
 							</>
 						)}
 					</div>
