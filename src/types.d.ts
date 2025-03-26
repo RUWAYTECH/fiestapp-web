@@ -12,6 +12,15 @@ export interface ApiResponseDto <T> {
 	data: T
 }
 
+export interface ApiResponseError {
+	data?: {
+		error?: string
+		message?: string
+		statusCode?: number
+	},
+	status?: number
+}
+
 export interface User {
 	userId: string
 	name: string

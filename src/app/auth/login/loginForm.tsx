@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react'
 import { FaEye, FaEyeSlash } from 'react-icons/fa6'
 import Image from 'next/image'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 const createLoginFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
 	email: z.string().nonempty({ message: t('validation.required') }).email({ message: t('validation.email') }),
@@ -90,7 +91,7 @@ const LoginForm = () => {
 						<FormItem>
 							<FormLabel>Correo electrónico</FormLabel>
 							<FormControl>
-								<Input placeholder="ejemplo@gmail.com" autoComplete='email' {...field} />
+								<Input type='email' placeholder="ejemplo@gmail.com" autoComplete='email' {...field} />
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -117,6 +118,9 @@ const LoginForm = () => {
 				<FormItem>
 					<Button type="submit">Iniciar sesión</Button>
 				</FormItem>
+				<p className="text-center text-muted-foreground">
+					¿No tienes cuenta? <Link href="/auth/register" className="font-semibold text-indigo-600 hover:text-indigo-500">Regístrate</Link>
+				</p>
 			</form>
 		</Form>
 	)

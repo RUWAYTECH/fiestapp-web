@@ -12,7 +12,7 @@ const rtkAxiosBaseQuery = (configs = { baseUrl: '' }) => async ({ url = '', meth
 		return { data: dataResult }
 	} catch (axiosError) {
 		const err = axiosError as AxiosError
-		console.log('axiosError', err)
+
 		return {
 			error: {
 				status: err?.response?.status,

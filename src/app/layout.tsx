@@ -22,7 +22,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 						{children}
 					</NextIntlClientProvider>
 				</Providers>
-				<Toaster position='top-right' expand closeButton duration={100000} />
+				<Toaster position='top-right' expand closeButton />
 			</body>
 		</html>
 	)
