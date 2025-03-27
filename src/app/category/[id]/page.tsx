@@ -5,17 +5,20 @@ const RutaPage = async () => {
 
 	return (
 		<AppLayout>
-			<div className='max-w-full mx-auto p-4' >
+			<div className='container mx-auto p-4'>
 				<ShowByServiceId service={{
-					id: 1,
-					title: 'Salón de Fiestas',
-					description: 'Espacios para eventos.',
-					image: 'https://cdn0.matrimonio.com.pe/vendor/8263/3_2/640/jpg/4_11_108263-157332288041700.jpeg',
-					rating: 3,
-					priceMin: 500,
-					priceMax: 1500,
-					address: 'Av. Central 123, Ciudad'
-				}}/>
+					title: 'Smartphone XYZ Pro',
+					description: 'Un smartphone de última generación con una pantalla increíble y una batería de larga duración.',
+					rating: 4,
+					priceMin: 2999,
+					priceMax: 3599,
+					address: 'Av. Tecnológica 123, Ciudad Tech',
+					images: [
+						'https://cdn0.matrimonio.com.pe/vendor/8263/3_2/640/jpg/4_11_108263-157332288041700.jpeg',
+						'https://cdn0.matrimonio.com.pe/vendor/8263/3_2/640/jpg/espaciosalon_11_108263.jpeg',
+						'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRM5Ugu6vTKJmrR6iL7HFRkNb6_-M2Ym-qLTQ&s'
+					]
+				}} />
 			</div>
 		</AppLayout>
 	)

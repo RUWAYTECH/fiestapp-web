@@ -49,7 +49,7 @@ const CategorySearch = () => {
 						</Button>
 						<div
 							className={cn(
-								'absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-3',
+								'absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
 								activeDropdown === 'filters' ? 'block' : 'hidden'
 							)}
 						>
@@ -75,7 +75,7 @@ const CategorySearch = () => {
 
 						<div
 							className={cn(
-								'absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-3',
+								'absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
 								activeDropdown === 'sort' ? 'block' : 'hidden'
 							)}
 						>
