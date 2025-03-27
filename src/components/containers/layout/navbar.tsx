@@ -2,10 +2,11 @@
 
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const Navbar = () => {
 	const { data: auth } = useSession()
-
+	const pathname = usePathname()
 	return (
 		<>
 			<header className="bg-background text-foreground border-b sticky top-0 z-50 shadow-sm h-10">
@@ -13,8 +14,8 @@ const Navbar = () => {
 					<div className="flex items-center space-x-4 text-sm text-accent-foreground">
 						<span>FiestApp</span>
 						<nav className="flex items-center">
-							<Link href="/" className='px-2 '>Inicio</Link>
-							<Link href="/categories" className='px-2'>Categorías</Link>
+							<Link href="/" className={`px-2 ${pathname === '/' ? 'text-red-500 font-bold' : ''}`}>Inicio</Link>
+							<Link href="/category" className={`px-2 ${pathname === '/category' ? 'text-red-500 font-bold' : ''}`}>Categorías</Link>
 							<Link href="/contact" className='px-2'>Contacto</Link>
 						</nav>
 					</div>
