@@ -7,7 +7,7 @@ interface CategoryListProps {
 	categories: { id: number; title: string; description: string; image: string; count: number; rating: number; priceMin: number; priceMax: number; address: string }[];
 }
 
-const CategoryServiceList: React.FC<CategoryListProps> = ({ categories }) => {
+const CategoryCard: React.FC<CategoryListProps> = ({ categories }) => {
 
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
@@ -56,4 +56,4 @@ const CategoryServiceList: React.FC<CategoryListProps> = ({ categories }) => {
 	)
 }
 
-export default CategoryServiceList
+export default CategoryCard

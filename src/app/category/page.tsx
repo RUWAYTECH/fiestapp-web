@@ -1,6 +1,6 @@
 import CategorySearch from './components/category-search'
 import AppLayout from '@components/containers/layout/layout'
-import CategoryServiceList from './components/category-service-list'
+import CategoryCard from './components/category-card'
 
 
 const CategoryPage = async () => {
@@ -29,9 +29,9 @@ const CategoryPage = async () => {
 
 	return (
 		<AppLayout>
-			<div className='max-w-full mx-auto p-4' >
+			<div className='container mx-auto p-4'>
 				<CategorySearch />
-				<CategoryServiceList categories={categories}/>
+				<CategoryCard categories={categories} />
 			</div>
 		</AppLayout>
 	)
