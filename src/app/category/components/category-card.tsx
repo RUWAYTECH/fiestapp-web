@@ -7,12 +7,12 @@ interface CategoryListProps {
 	categories: { id: number; title: string; description: string; image: string; count: number; rating: number; priceMin: number; priceMax: number; address: string }[];
 }
 
-const CategoryServiceList: React.FC<CategoryListProps> = ({ categories }) => {
+const CategoryCard: React.FC<CategoryListProps> = ({ categories }) => {
 
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
 			{categories.map(category => (
-				<Link key={category.id} href={`/category/${category.id}`} passHref>
+				<Link key={category.id} href={`/category/${category.id}`}>
 					<Card className="h-full flex flex-col hover:shadow-lg transition">
 						<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
 							<Image
@@ -56,4 +56,4 @@ const CategoryServiceList: React.FC<CategoryListProps> = ({ categories }) => {
 	)
 }
 
-export default CategoryServiceList
+export default CategoryCard
