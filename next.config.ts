@@ -7,7 +7,8 @@ const nextConfig: NextConfig = {
 		domains: [
 			'cdn0.matrimonio.com.pe',
 			'encrypted-tbn0.gstatic.com',
-			'encrypted-tbn0.gstatic.com'
+			'encrypted-tbn0.gstatic.com',
+			'localhost',
 		],
 		remotePatterns: [
 			{

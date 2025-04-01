@@ -1,14 +1,16 @@
+import { FileImageResponseDto } from "./fileImage"
+
 export interface CreateCategoryRequestDto {
-	categoryId: string,
+	id: string,
 	serviceId: string,
 	imageId: string,
 	name: string,
 	description: string
 }
 export interface CategoryResponseDto {
-	categoryId: string,
+	id: string,
 	serviceId: string,
-	imageId: string,
 	name: string,
 	description: string
+	categoryImage: FileImageResponseDto[]
 }

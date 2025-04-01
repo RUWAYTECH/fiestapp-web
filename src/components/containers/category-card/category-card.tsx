@@ -1,13 +1,16 @@
-import { Card, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Star } from 'lucide-react'
+'use client'
+import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { CategoryResponseDto } from '@stateManagement/models/category/create';
 import Image from 'next/image'
 import Link from 'next/link'
+import { config } from '@config/config'
 
 interface CategoryListProps {
-	categories: { id: number; title: string; description: string; image: string; count: number; rating: number; priceMin: number; priceMax: number; address: string }[];
+	categories: CategoryResponseDto[];
 }
 
 const CategoryCard: React.FC<CategoryListProps> = ({ categories }) => {
+	const urlImage = config.imagePublicApiUrl
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
 			{categories.map(category => (
@@ -15,8 +18,8 @@ const CategoryCard: React.FC<CategoryListProps> = ({ categories }) => {
 					<Card className="h-full flex flex-col hover:shadow-lg transition p-4">
 						<div className="relative w-48 h-48 mx-auto overflow-hidden rounded-full">
 							<Image
-								src={category.image}
-								alt={category.title}
+								src={urlImage + `${category.categoryImage[0].url}`  || ''}
+								alt={category.categoryImage[0].name || ''}
 								width={200}
 								height={200}
 								className="w-full h-full object-cover"

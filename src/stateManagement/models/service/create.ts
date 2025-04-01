@@ -1,5 +1,5 @@
 export interface CreateServiceRequestDto {
-	serviceId: string,
+	id: string,
 	providerId: string,
 	categoryId: string,
 	name: string,
@@ -11,7 +11,7 @@ export interface CreateServiceRequestDto {
 
 }
 export interface ServiceResponseDto {
-	serviceId: string,
+	id: string,
 	providerId: string,
 	categoryId: string,
 	name: string,

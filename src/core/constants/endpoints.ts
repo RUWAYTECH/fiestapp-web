@@ -4,17 +4,17 @@ export const endpoints = {
 		register: '/auth/register'
 	},
 	category:{
-		getAllCategory: '/category/all',
-		createCategory: '/category/create',
-		updateCategory: '/category/update',
-		deleteCategory: '/category/delete',
-		getCategoryById: '/category/id'
+		getAllCategory: '/categories?populate=*',
+		createCategory: '/categories/create',
+		updateCategory: '/categories/update',
+		deleteCategory: '/categories/delete',
+		getCategoryById: '/categories/id'
 	},
 	service:{
-		getAllService: '/service/all',
-		createService: '/service/create',
-		updateService: '/service/update',
-		deleteService: '/service/delete',
-		getServiceById: '/service/id'
+		getAllService: '/services?populate=*',
+		createService: '/services/create',
+		updateService: '/services/update',
+		deleteService: '/services/delete',
+		getServiceById: '/services/id'
 	}
 }
