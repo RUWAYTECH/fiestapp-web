@@ -4,9 +4,9 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 interface BreadCrumbProps {
 	inicio: string
 	secondLink: string
-	tertiaryLink: string
+	currentPage: string
 }
-export default function BreadcrumbNavigation({ inicio, secondLink, tertiaryLink }: BreadCrumbProps) {
+export default function BreadcrumbNavigation({ inicio, secondLink, currentPage }: BreadCrumbProps) {
 
 	return (
 		<>
@@ -18,11 +18,11 @@ export default function BreadcrumbNavigation({ inicio, secondLink, tertiaryLink 
 						</BreadcrumbItem>
 						<BreadcrumbSeparator />
 						<BreadcrumbItem>
-							<BreadcrumbLink href='/category'>{secondLink}</BreadcrumbLink>
+							<BreadcrumbLink href='/service'>{secondLink}</BreadcrumbLink>
 						</BreadcrumbItem>
 						<BreadcrumbSeparator />
 						<BreadcrumbItem>
-							<BreadcrumbPage>{tertiaryLink}</BreadcrumbPage>
+							<BreadcrumbPage>{currentPage}</BreadcrumbPage>
 						</BreadcrumbItem>
 					</BreadcrumbList>
 				</Breadcrumb>
