@@ -12,6 +12,17 @@ export const getAllServices = {
 	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
 }
 
+//realizaremos una consulta por serviceId
+export const getServiceById = {
+	query: (id: string) => {
+		return {
+			url: endpoints.service.getServiceById.replace(':id', id),
+			method: 'GET',
+		}
+	},
+	transformResponse: (response: ApiResponseDto<ServiceResponseDto>) => response
+}
+
 export const createServices = {
 	query: (data: CreateServiceRequestDto) => {
 		return {

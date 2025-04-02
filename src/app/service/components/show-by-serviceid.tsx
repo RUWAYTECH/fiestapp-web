@@ -4,36 +4,36 @@ import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Heart, Star } from 'lucide-react'
 import { Card } from '@components/ui/card'
 import BreadcrumbNavigation from '@components/containers/bread-crumb/bread-crumb'
+import { ServiceResponseDto } from '@stateManagement/models/service/create'
+import { config } from '@config/config'
 
 interface ServiceDetailProps {
-	service: {
-		title: string;
-		description: string;
-		rating: number;
-		priceMin: number;
-		priceMax: number;
-		address: string;
-		images: string[];
-	}
+	service: ServiceResponseDto;
 }
 export default function ShowByServiceId({ service }: ServiceDetailProps) {
+	const urlImage = config.imagePublicApiUrl
+	const images = service?.fileImage?.map(img => img?.formats?.thumbnail?.url || '') || []
+	const [selectedImage, setSelectedImage] = useState(images[0] || '')
 
-	const [selectedImage, setSelectedImage] = useState(service.images?.[0])
 	const [isFavorite, setIsFavorite] = useState(false)
 
 	const [scale, setScale] = useState(1)
 	const [offset, setOffset] = useState({ x: 0, y: 0 })
 
 	const handleNextImage = () => {
-		const currentIndex = service.images.indexOf(selectedImage)
-		const nextIndex = (currentIndex + 1) % service.images.length
-		setSelectedImage(service.images[nextIndex])
+		if (!images.length) return // Evita errores si no hay imágenes
+
+		const currentIndex = images.indexOf(selectedImage)
+		const nextIndex = (currentIndex + 1) % images.length
+		setSelectedImage(images[nextIndex])
 	}
 
 	const handlePrevImage = () => {
-		const currentIndex = service.images.indexOf(selectedImage)
-		const prevIndex = (currentIndex - 1 + service.images.length) % service.images.length
-		setSelectedImage(service.images[prevIndex])
+		if (!images.length) return
+
+		const currentIndex = images.indexOf(selectedImage)
+		const prevIndex = (currentIndex - 1 + images.length) % images.length
+		setSelectedImage(images[prevIndex])
 	}
 
 	const handleMouseMove = (e: React.MouseEvent) => {
@@ -84,8 +84,8 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 									}}
 								>
 									<Image
-										src={selectedImage}
-										alt={service.title}
+										src={urlImage+`${selectedImage}`}
+										alt={service?.name || ''}
 										width={700}
 										height={700}
 										objectFit="cover"
@@ -101,15 +101,15 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 							</button>
 						</div>
 						<div className="flex gap-2 mt-4">
-							{service.images.map((img, index) => (
+							{service.fileImage && service.fileImage.map((img, index) => (
 								<Image
 									key={index}
-									src={img}
-									alt={service.title}
+									src={urlImage + (img.formats?.thumbnail?.url || '')}
+									alt={img.formats?.thumbnail?.name || ''}
 									width={80}
 									height={80}
-									className={`cursor-pointer rounded-lg border-2 transition ${selectedImage === img ? 'border-red-500' : 'border-gray-300'}`}
-									onClick={() => setSelectedImage(img)}
+									className={`cursor-pointer rounded-lg border-2 transition ${selectedImage === img.formats?.thumbnail?.url || ''? 'border-red-500' : 'border-gray-300'}`}
+									onClick={() => setSelectedImage(img.formats?.thumbnail?.url || '')}
 								/>
 							))}
 						</div>
@@ -117,7 +117,7 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 
 					<div className='w-full md:w-1/2 pl-6'>
 						<div className="flex justify-between items-center w-full">
-							<h1 className="text-3xl font-bold mb-2">{service.title}</h1>
+							<h1 className="text-3xl font-bold mb-2">{service.name}</h1>
 							<button
 								className="ml-auto p-2 rounded-full transition"
 								onClick={() => setIsFavorite(!isFavorite)}
@@ -135,7 +135,7 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 									key={index}
 									size={20}
 									className={
-										index < service.rating ? 'text-yellow-500' : 'text-gray-300'
+										index < service?.score ? 'text-yellow-500' : 'text-gray-300'
 									}
 								/>
 							))}

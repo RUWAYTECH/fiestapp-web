@@ -13,12 +13,25 @@ export interface CreateServiceRequestDto {
 export interface ServiceResponseDto {
 	id: string,
 	providerId: string,
+	documentId: string,
 	categoryId: string,
 	name: string,
 	description: string,
+	address?: string,
 	priceMax: number,
 	priceMin: number,
 	score: number,
-	tag: number
+	tag: number,
+	fileImage?: [{
+		id?:number,
+		name?:string,
+		documentId?:string,
+		formats?:{
+			thumbnail?:{
+				name?:string,
+				url?:string,
+			}
+		}
+	}],
 
 }

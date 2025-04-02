@@ -1,6 +1,6 @@
 'use client'
 import { Card, CardHeader, CardTitle } from '@/components/ui/card'
-import { CategoryResponseDto } from '@stateManagement/models/category/create';
+import { CategoryResponseDto } from '@stateManagement/models/category/create'
 import Image from 'next/image'
 import Link from 'next/link'
 import { config } from '@config/config'
