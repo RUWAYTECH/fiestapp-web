@@ -26,12 +26,7 @@ export interface ServiceResponseDto {
 		id?:number,
 		name?:string,
 		documentId?:string,
-		formats?:{
-			thumbnail?:{
-				name?:string,
-				url?:string,
-			}
-		}
+		url?: string,
 	}],
 
 }

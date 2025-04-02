@@ -14,7 +14,7 @@ const RutaPage: React.FC = () => {
 		<AppLayout>
 			<div className='container mx-auto p-4'>
 				{servicesByIdData &&
-					<ShowByServiceId service={servicesByIdData} />}
+					<ShowByServiceId service={servicesByIdData.data} />}
 			</div>
 		</AppLayout>
 	)

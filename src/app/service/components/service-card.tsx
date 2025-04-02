@@ -34,7 +34,7 @@ const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false }) =>
 						<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">
 							<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
 								<Image
-									src={urlImage + (item?.fileImage?.[0]?.formats?.thumbnail?.url || '')}
+									src={urlImage + (item?.fileImage?.[0]?.url || '')}
 									alt={item?.fileImage?.[0]?.name || 'Imagen sin nombre'}
 									width={400}
 									height={250}

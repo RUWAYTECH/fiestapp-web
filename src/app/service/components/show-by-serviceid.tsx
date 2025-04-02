@@ -12,16 +12,17 @@ interface ServiceDetailProps {
 }
 export default function ShowByServiceId({ service }: ServiceDetailProps) {
 	const urlImage = config.imagePublicApiUrl
-	const images = service?.fileImage?.map(img => img?.formats?.thumbnail?.url || '') || []
-	const [selectedImage, setSelectedImage] = useState(images[0] || '')
 
+	const images = service?.fileImage?.map(img => img?.url || '') || []
+
+	const [selectedImage, setSelectedImage] = useState(images[0] || '')
 	const [isFavorite, setIsFavorite] = useState(false)
 
 	const [scale, setScale] = useState(1)
 	const [offset, setOffset] = useState({ x: 0, y: 0 })
 
 	const handleNextImage = () => {
-		if (!images.length) return // Evita errores si no hay imágenes
+		if (!images.length) return
 
 		const currentIndex = images.indexOf(selectedImage)
 		const nextIndex = (currentIndex + 1) % images.length
@@ -84,7 +85,7 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 									}}
 								>
 									<Image
-										src={urlImage+`${selectedImage}`}
+										src={urlImage + `${selectedImage}`}
 										alt={service?.name || ''}
 										width={700}
 										height={700}
@@ -104,12 +105,12 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 							{service.fileImage && service.fileImage.map((img, index) => (
 								<Image
 									key={index}
-									src={urlImage + (img.formats?.thumbnail?.url || '')}
-									alt={img.formats?.thumbnail?.name || ''}
+									src={urlImage +`${img.url}` || ''}
+									alt={img.name || ''}
 									width={80}
 									height={80}
-									className={`cursor-pointer rounded-lg border-2 transition ${selectedImage === img.formats?.thumbnail?.url || ''? 'border-red-500' : 'border-gray-300'}`}
-									onClick={() => setSelectedImage(img.formats?.thumbnail?.url || '')}
+									className={`cursor-pointer rounded-lg border-2 transition ${selectedImage === img.url || ''? 'border-red-500' : 'border-gray-300'}`}
+									onClick={() => setSelectedImage(img.url || '')}
 								/>
 							))}
 						</div>
