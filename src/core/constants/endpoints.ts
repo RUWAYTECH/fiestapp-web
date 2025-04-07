@@ -16,6 +16,7 @@ export const endpoints = {
 		updateService: '/services/update',
 		deleteService: '/services/delete',
 		getServiceById: '/services/:id?populate=*',
+		getServiceByUserId: '/services?filters[documentId][$ne]=:serviceDocumentId&filters[provider][documentId][$eq]=:documentId&populate=*',
 		getServiceCategoryById: '/services?filters[category][id][$eq]=:id&populate=*'
 	},
 	ubigeo:{

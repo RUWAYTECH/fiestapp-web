@@ -1,27 +1,21 @@
-export interface CreateServiceRequestDto {
+export interface CartItemRequestDto {
 	id: string,
 	providerId: string,
 	categoryId: string,
 	name: string,
 	description: string,
-	priceMax: number,
-	priceMin: number,
-	score: number,
-	tag: number
-
-}
-export interface ServiceResponseDto {
-	id: string,
-	providerId: string,
-	documentId: string,
-	categoryId: string,
-	name: string,
-	description: string,
-	address?: string,
 	priceMax: number,
 	priceMin: number,
 	score: number,
 	tag: number,
+    quantity: number,
+
+}
+export interface CartRequestDto {
+	id: string,
+	message: string,
+	total_price: number,
+	service: CartItemRequestDto,
 	provider?: {
 		id: string,
 		name: string,
