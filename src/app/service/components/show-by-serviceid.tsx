@@ -65,7 +65,7 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 		<>
 			<Card className="p-6 mb-8 bg-gray-100">
 				<div className="flex flex-wrap items-center">
-					<BreadcrumbNavigation inicio="Inicio" secondLink="Servicios" tertiaryLink="Current Page" />
+					<BreadcrumbNavigation inicio="Inicio" secondLink="Servicios" currentPage="Current Page" />
 				</div>
 				<div className="flex flex-col md:flex-row gap-6">
 					<div className="w-full md:w-1/2 flex flex-col items-center relative">

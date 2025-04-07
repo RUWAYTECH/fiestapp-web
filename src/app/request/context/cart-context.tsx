@@ -22,10 +22,8 @@ export const CartProvider = ({ children }: CartProviderProps) => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [nextRoute, setNextRoute] = useState<string | null>(null);
 
-  // Usamos usePathname para obtener la ruta actual
   const pathname = usePathname();
 
-  // Guardar carrito en sessionStorage cuando cambie
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
   }, [cart]);
@@ -35,10 +33,6 @@ export const CartProvider = ({ children }: CartProviderProps) => {
     const match = pathname.match(/^\/service\/([^\/]+)$/);
     const currentServiceId = match ? match[1] : null;
 
-    // Si se salió de un servicio (es decir, no hay ID de servicio en la URL), limpiar el carrito
-    // if (!currentServiceId && cart.length > 0) {
-    //   clearCart();
-    // }
   }, [pathname, cart]);
 
   const addToCart = (service: ServiceResponseDto) => {
