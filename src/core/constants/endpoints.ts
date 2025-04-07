@@ -1,7 +1,7 @@
 export const endpoints = {
 	auth: {
 		login: '/auth/login',
-		register: '/auth/register'
+		register: '/auth/local/register'
 	},
 	category:{
 		getAllCategory: '/categories?populate=*',

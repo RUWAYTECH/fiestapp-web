@@ -3,7 +3,8 @@ import NextAuth from 'next-auth'
 
 import GoogleProvider from 'next-auth/providers/google'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { ApiResponseDto, User } from '@/types'
+import { ApiResponseDto } from '@/types'
+import { LoginResponseDto } from '@stateManagement/models/auth/login'
 
 const handler = NextAuth({
 	providers: [
@@ -16,7 +17,7 @@ const handler = NextAuth({
 					access_type: 'offline',
 					response_type: 'code',
 				}
-			}
+			},
 		}),
 		CredentialsProvider({
 			name: 'Credentials',
@@ -25,21 +26,21 @@ const handler = NextAuth({
 				password: { label: 'Contraseña', type: 'password' },
 			},
 			async authorize(credentials) {
-				const res = await fetch(`${config.apiUrl}/auth/login`, {
+				const res = await fetch(`${config.apiUrl}/auth/local`, {
 					method: 'POST',
-					body: JSON.stringify({ email: credentials?.email, password: credentials?.password }),
+					body: JSON.stringify({ identifier: credentials?.email, password: credentials?.password }),
 					headers: { 'Content-Type': 'application/json' }
 				})
 
-				const { data } = await res.json() as ApiResponseDto<{ accessToken: string, user: User }>
+				const data = await res.json() as ApiResponseDto<LoginResponseDto>
 
 				if (res.ok && data) {
 					return {
-						id: data.user.userId,
-						name: data.user.name,
+						id: data.user.id.toString(),
+						name: data.user.username,
 						email: data.user.email,
-						image: data.user.picture,
-						accessToken: data.accessToken
+						image: '',
+						accessToken: data.jwt
 					}
 				} else {
 					return null
@@ -56,20 +57,19 @@ const handler = NextAuth({
 			if (account?.provider === 'google') {
 				if (!account.id_token) return false
 
-				const res = await fetch(`${config.apiUrl}/auth/login/google`, {
-					method: 'POST',
-					body: JSON.stringify({ token: account.id_token }),
+				const res = await fetch(`${config.apiUrl}/auth/${account.provider}/callback?access_token=${account.access_token}`, {
+					method: 'GET',
 					headers: { 'Content-Type': 'application/json' }
 				})
 
-				const json = await res.json() as ApiResponseDto<{ accessToken: string, user: User }>
-
-				if (res.ok && json?.data) {
-					account.accessToken = json.data.accessToken
-					user.id = json.data.user.userId
-					user.name = json.data.user.name
-					user.email = json.data.user.email
-					user.image = json.data.user.picture
+				const data = await res.json() as ApiResponseDto<LoginResponseDto>
+				console.log('data', data)
+				if (res.ok && data?.user) {
+					account.accessToken = data.jwt
+					user.id = data.user.id.toString()
+					user.name = data.user.username
+					user.email = data.user.email
+					user.image = ''
 
 					return true
 				}
