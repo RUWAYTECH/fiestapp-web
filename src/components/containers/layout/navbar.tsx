@@ -5,11 +5,20 @@ import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
+import { useCart } from '@app/request/context/cart-context'
+import CartModal from '@app/request/components/modal-car'
+import { ShoppingCart } from "lucide-react";
 
 const Navbar = () => {
 	const { data: auth } = useSession()
 	const pathname = usePathname()
 	const [isOpen, setIsOpen] = useState(false)
+
+	const { cart } = useCart();
+	const [isModalOpen, setIsModalOpen] = useState(false);
+
+	const openCartModal = () => setIsModalOpen(true);
+	const closeCartModal = () => setIsModalOpen(false);
 
 	const isActive = (path: string) => {
 		// Verifica si la ruta incluye "service" o "category" y si es la correcta
@@ -50,6 +59,19 @@ const Navbar = () => {
 							<Link href="/auth/register">Registrarse</Link>
 						</>
 					)}
+				</div>
+
+				<div>
+					<button onClick={openCartModal} className="relative">
+					<ShoppingCart />
+					
+					{cart.length > 0 && (
+						<span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
+						{cart.length}
+						</span>
+					)}
+					</button>
+					<CartModal isOpen={isModalOpen} onClose={closeCartModal} />
 				</div>
 
 				{/* Botón de menú hamburguesa para móviles */}

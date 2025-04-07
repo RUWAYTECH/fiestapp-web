@@ -15,6 +15,7 @@ export const endpoints = {
 		createService: '/services/create',
 		updateService: '/services/update',
 		deleteService: '/services/delete',
-		getServiceById: '/services/:id?populate=*'
+		getServiceById: '/services/:id?populate=*',
+		getServiceByUserId: '/services?filters[documentId][$ne]=:serviceDocumentId&filters[provider][documentId][$eq]=:documentId&populate=*'
 	}
 }

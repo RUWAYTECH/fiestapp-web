@@ -2,10 +2,14 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Heart, Star } from 'lucide-react'
-import { Card } from '@components/ui/card'
+import { Card, CardDescription, CardHeader, CardTitle } from '@components/ui/card'
 import BreadcrumbNavigation from '@components/containers/bread-crumb/bread-crumb'
 import { ServiceResponseDto } from '@stateManagement/models/service/create'
 import { config } from '@config/config'
+import { useGetAllServicesQuery, useGetServiceByProviderDocumentIdQuery } from '@stateManagement/apiSlices/serviceApi'
+import Skeleton from '@components/ui/skeleton'
+import Link from 'next/link'
+import { useCart } from '@app/request/context/cart-context'
 
 interface ServiceDetailProps {
 	service: ServiceResponseDto;
@@ -53,11 +57,15 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 		setScale(1)
 	}
 
+	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId})
+
+	const { addToCart } = useCart()
+
 	return (
 		<>
 			<Card className="p-6 mb-8 bg-gray-100">
 				<div className="flex flex-wrap items-center">
-					<BreadcrumbNavigation inicio="Inicio" secondLink="Service" currentPage="Current Page" />
+					<BreadcrumbNavigation inicio="Inicio" secondLink="Servicios" tertiaryLink="Current Page" />
 				</div>
 				<div className="flex flex-col md:flex-row gap-6">
 					<div className="w-full md:w-1/2 flex flex-col items-center relative">
@@ -160,48 +168,72 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 						</div>
 
 						<div className='flex gap-4'>
-							<button className='bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition'>
-								Solicitar cotización
-							</button>
+						<button
+							className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition"
+							onClick={() => addToCart(service)}
+      					>
+							Añadir a la solicitud
+						</button>
 						</div>
 					</div>
 				</div>
 			</Card>
 			<Card className="p-6 bg-gray-100 rounded-lg shadow-lg">
-				<div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-					<div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center p-4 bg-white rounded-lg shadow-md">
-						<span className="text-xl font-semibold text-gray-700 border-b-2 border-gray-700 pb-1">Especificaciones</span>
-						<table className="mt-6 w-full text-left text-sm text-gray-600">
-							<tbody>
-								<tr className="border-b bg-gray-100">
-									<td className="font-semibold pr-4 py-2 w-1/4">Material:</td>
-									<td>Acero inoxidable</td>
-								</tr>
-								<tr className="border-b">
-									<td className="font-semibold pr-4 py-2 w-1/4">Peso:</td>
-									<td>500g</td>
-								</tr>
-								<tr className="border-b bg-gray-100">
-									<td className="font-semibold pr-4 py-2 w-1/4">Dimensiones:</td>
-									<td>30x20x10 cm</td>
-								</tr>
-								<tr>
-									<td className="font-semibold pr-4 py-2 w-1/4">Color:</td>
-									<td>Negro</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div className="col-span-1 md:col-span-3 flex flex-col justify-between p-4 bg-white rounded-lg shadow-md">
-						<div className="col-span-1 md:col-span-2 flex flex-col items-center justify-center p-4">
-							<span className="text-xl font-semibold text-gray-700 border-b-2 border-gray-700 pb-1">Descripción</span>
-							<p className=" text-gray-600 mt-6">
-								Este producto es ideal para quienes buscan una solución duradera
-								y de alta calidad. Su diseño elegante y funcional lo hace perfecto
-								para cualquier entorno. Hecho con materiales de alta resistencia, ofrece un rendimiento excepcional.
-							</p>
+				<h1 className="text-2xl font-bold mb-2">Servicios</h1>
+				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+				{isLoading &&
+					Array(8).fill(null).map((_, index) => (
+						<div key={index} className="flex flex-col h-full hover:shadow-lg transition">
+							<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
+								<Skeleton className="h-full w-full rounded-t-lg" />
+							</div>
+							<div className="flex-grow flex flex-col justify-between p-3">
+								<Skeleton className="h-4 w-[90%]" />
+								<Skeleton className="h-4 w-[80%]" />
+							</div>
 						</div>
-					</div>
+					))
+				}
+				{!isLoading &&
+					servicesData?.data?.map((item) => (
+						<Link key={item?.documentId} href={`/service/${item?.documentId}`} className="h-full">
+							<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">
+								<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
+									<Image
+										src={urlImage + (item?.fileImage?.[0]?.url || '')}
+										alt={item?.fileImage?.[0]?.name || 'Imagen sin nombre'}
+										width={400}
+										height={250}
+										className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110"
+									/>
+								</div>
+								<CardHeader className="flex flex-col justify-between flex-1 pr-3 pl-3">
+									<div className="flex justify-between items-center w-full gap-2">
+										<CardTitle className="truncate text-base">{item.name}</CardTitle>
+										<div className="flex items-center">
+											{[...Array(5)].map((_, index) => (
+												<Star
+													key={`${item.documentId}-star-${index}`}
+													size={16}
+													className={index < item.score ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}
+												/>
+											))}
+										</div>
+									</div>
+									<CardDescription className="truncate text-sm">{item.address}</CardDescription>
+									<CardDescription className="line-clamp-2 text-xs">{item.description}</CardDescription>
+									<div className="flex justify-between items-center w-full mb-4 text-sm">
+										<CardDescription className="font-bold">
+											Desde: <span className="text-red-500 ml-1">S/{item.priceMin}</span>
+										</CardDescription>
+										<CardDescription className="font-bold">
+											Hasta: <span className="text-red-500 ml-1">S/{item.priceMax}</span>
+										</CardDescription>
+									</div>
+								</CardHeader>
+							</Card>
+						</Link>
+					))}
 				</div>
 			</Card>
 		</>

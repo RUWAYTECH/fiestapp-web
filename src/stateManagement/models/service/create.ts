@@ -22,6 +22,16 @@ export interface ServiceResponseDto {
 	priceMin: number,
 	score: number,
 	tag: number,
+	provider?: {
+		id: string,
+		name: string,
+		documentId: string,
+		description: string,
+		address: string,
+		email: string,
+		createdAt: string,
+		updatedAt: string,
+	},
 	fileImage?: [{
 		id?:number,
 		name?:string,
