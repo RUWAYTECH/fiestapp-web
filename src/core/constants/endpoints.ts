@@ -15,6 +15,10 @@ export const endpoints = {
 		createService: '/services/create',
 		updateService: '/services/update',
 		deleteService: '/services/delete',
-		getServiceById: '/services/:id?populate=*'
+		getServiceById: '/services/:id?populate=*',
+		getServiceCategoryById: '/services?filters[category][id][$eq]=:id&populate=*'
+	},
+	ubigeo:{
+		getAllUbigeo: '/ubigeos?populate=*&pagination[page]=1&pagination[pageSize]=1000',
 	}
 }
