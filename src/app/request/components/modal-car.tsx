@@ -1,8 +1,9 @@
 'use client';
 
-import { useCart } from '@/app/request/context/cart-context';
+import { deleteFromCart, getCart } from '@/lib/cart-util';
+import { CartRequestDto } from '@stateManagement/models/cart/cart-request.dto';
 import { X } from 'lucide-react';
-import { MouseEvent } from 'react';
+import { MouseEvent, useEffect, useState } from 'react';
 
 interface CartModalProps {
   isOpen: boolean;
@@ -10,11 +11,13 @@ interface CartModalProps {
 }
 
 const CartModal = ({ isOpen, onClose }: CartModalProps) => {
-  const { cart } = useCart();
+  const [cart, setCart] = useState<CartRequestDto[]>([]);
+  useEffect(() => {
+    setCart(getCart());
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // Cierra si el usuario hace clic directamente en el fondo
   const handleBackgroundClick = (e: MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -46,10 +49,19 @@ const CartModal = ({ isOpen, onClose }: CartModalProps) => {
                 key={index}
                 className="border-b pb-2 flex justify-between items-center text-sm"
               >
-                <span>{item.name}</span>
+                <span>{item.service.name}</span>
                 <span className="text-gray-600">
-                  S/ {item.priceMin} - S/ {item.priceMax}
+                  S/ {item.total_price}
                 </span>
+                <button
+                  onClick={() => {
+                    deleteFromCart(item.id);
+                    setCart(getCart()); // actualiza el estado luego de eliminar
+                  }}
+                  className="text-red-500 text-sm hover:underline"
+                >
+                  Eliminar
+                </button>
               </li>
             ))}
           </ul>

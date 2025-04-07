@@ -1,22 +1,28 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { useCart } from '@app/request/context/cart-context'
 import CartModal from '@app/request/components/modal-car'
 import { ShoppingCart } from "lucide-react";
+import { getCart } from '@/lib/cart-util'
+import { CartRequestDto } from '@stateManagement/models/cart/cart-request.dto'
 
 const Navbar = () => {
 	const { data: auth } = useSession()
 	const pathname = usePathname()
 	const [isOpen, setIsOpen] = useState(false)
 
-	const { cart } = useCart();
+	const [cart, setCart] = useState<CartRequestDto[]>([]);
 	const [isModalOpen, setIsModalOpen] = useState(false);
-
+  
+	useEffect(() => {
+		setCart(getCart());
+	}, []);
+  
+	// Función para abrir el modal del carrito
 	const openCartModal = () => setIsModalOpen(true);
 	const closeCartModal = () => setIsModalOpen(false);
 
@@ -67,7 +73,7 @@ const Navbar = () => {
 					
 					{cart.length > 0 && (
 						<span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
-						{cart.length}
+							{cart.length}
 						</span>
 					)}
 					</button>

@@ -6,10 +6,10 @@ import { Card, CardDescription, CardHeader, CardTitle } from '@components/ui/car
 import BreadcrumbNavigation from '@components/containers/bread-crumb/bread-crumb'
 import { ServiceResponseDto } from '@stateManagement/models/service/create'
 import { config } from '@config/config'
-import { useGetAllServicesQuery, useGetServiceByProviderDocumentIdQuery } from '@stateManagement/apiSlices/serviceApi'
+import { useGetServiceByProviderDocumentIdQuery } from '@stateManagement/apiSlices/serviceApi'
 import Skeleton from '@components/ui/skeleton'
 import Link from 'next/link'
-import { useCart } from '@app/request/context/cart-context'
+import { addToCart } from '@/lib/cart-util'
 
 interface ServiceDetailProps {
 	service: ServiceResponseDto;
@@ -58,8 +58,6 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 	}
 
 	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId})
-
-	const { addToCart } = useCart()
 
 	return (
 		<>
@@ -170,7 +168,12 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 						<div className='flex gap-4'>
 						<button
 							className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition"
-							onClick={() => addToCart(service)}
+							onClick={() =>
+								addToCart({
+								  ...service,
+								  quantity: 1,
+								})
+							  }
       					>
 							Añadir a la solicitud
 						</button>
