@@ -1,20 +1,22 @@
 // Utility functions for managing the cart in localStorage
 
+import { CartItemRequestDto, CartRequestDto } from "@stateManagement/models/cart/cart-request.dto"
+
 const CART_KEY = 'cart.fiestapp'
 
 // Get the cart from localStorage
-export function getCart(): any[] {
+export function getCart(): CartRequestDto[] {
 	const cart = localStorage.getItem(CART_KEY)
 	return cart ? JSON.parse(cart) : []
 }
 
 // Save the cart to localStorage
-export function saveCart(cart: any[]): void {
+export function saveCart(cart: CartRequestDto[]): void {
 	localStorage.setItem(CART_KEY, JSON.stringify(cart))
 }
 
 // Add an item to the cart
-export function addToCart(item: any): void {
+export function addToCart(item: CartItemRequestDto): void {
 	const cart = getCart()
 	const existingItemIndex = cart.findIndex(
 		(cartItem) => cartItem.id === item.id
