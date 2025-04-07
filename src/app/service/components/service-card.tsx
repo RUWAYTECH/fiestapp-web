@@ -17,13 +17,13 @@ const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false }) =>
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
 			{isLoading &&
 				Array(8).fill(null).map((_, index) => (
-					<div key={index} className="flex flex-col h-full hover:shadow-lg transition">
+					<div key={index} className="flex flex-col h-full transition">
 						<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
 							<Skeleton className="h-full w-full rounded-t-lg" />
 						</div>
 						<div className="flex-grow flex flex-col justify-between p-3">
 							<Skeleton className="h-4 w-[90%]" />
-							<Skeleton className="h-4 w-[80%]" />
+							<Skeleton className="h-4 w-[80%] mt-2" />
 						</div>
 					</div>
 				))

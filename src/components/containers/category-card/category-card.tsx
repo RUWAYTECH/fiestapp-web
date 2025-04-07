@@ -14,7 +14,7 @@ const CategoryCard: React.FC<CategoryListProps> = ({ categories }) => {
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
 			{categories.map(category => (
-				<Link key={category.id} href={`/category/${category.id}`} passHref>
+				<Link key={category.id} href={`/service/category/${category.id}`}>
 					<Card className="h-full flex flex-col hover:shadow-lg transition p-4">
 						<div className="relative w-48 h-48 mx-auto overflow-hidden rounded-full">
 							<Image

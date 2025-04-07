@@ -43,3 +43,12 @@ export const getServiceByProviderDocumentId = {
 	},
 	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
 }
+export const allServiceCategoryById = {
+	query: (id: string) => {
+		return {
+			url: endpoints.service.getServiceCategoryById.replace(':id', id),
+			method: 'GET',
+		}
+	},
+	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
+}

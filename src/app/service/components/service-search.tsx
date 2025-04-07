@@ -3,27 +3,35 @@ import { cn } from '@/lib/utils'
 import { useState, useEffect, useRef } from 'react'
 import { Filter, MapPin, Search, SortAsc, X } from 'lucide-react'
 import { Input } from '@components/ui/input'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@radix-ui/react-accordion'
+import { UbigeoResponseDto } from '@stateManagement/models/ubigeo/ubigeo'
 
 interface ServiceSearchProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	onSubmited: (data: any) => void;
+	ubigeo: UbigeoResponseDto[];
 }
 
-const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
-	const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
+const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => {
+
+	const [activeDropdownCategory, setActiveDropdownCategory] = useState<string | null>(null)
 	const [activeDropdownSort, setActiveDropdownSort] = useState<string | null>(null)
 	const [activeDropdownAddress, setActiveDropdownAddress] = useState<string | null>(null)
 
-	const [search, setSearch] = useState('')
-	const [open, setOpen] = useState(false)
-	const [selectedFilters, setSelectedFilters] = useState<string[]>([])
-	const dropdownRef = useRef<HTMLDivElement>(null)
+	const [searchInput, setSearchInput] = useState('')
+
+	const [openCategory, setOpenCategory] = useState(false)
+	const [openOrdenar, setOpenOrdenar] = useState(false)
+	const [openAddress, setOpenAddress] = useState(false)
+
+	const dropdownRefCategory = useRef<HTMLDivElement>(null)
 	const dropdownRefSort = useRef<HTMLDivElement>(null)
 	const dropdownRefAddress = useRef<HTMLDivElement>(null)
-	const [selectedSortOptions, setSelectedSortOptions] = useState<string[]>([])
+
+	const [selectedCategory, setSelectedCategory] = useState<string[]>([])
+	const [selectedSortOption, setSelectedSortOption] = useState('')
 	const [selectedAddressOptions, setSelectedAddressOptions] = useState<string[]>([])
-	const [searchTerm, setSearchTerm] = useState('')
+
+	const [searchTermAddress, setSearchTermAddress] = useState('')
 
 	// Manejo de dropdowns
 	const categories = [
@@ -40,6 +48,11 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
 		{ id: 'costumes', label: 'Vestuario y disfraces' },
 		{ id: 'invitations', label: 'Invitaciones y recuerdos' },
 		{ id: 'event_packages', label: 'Planes y paquetes completos' },
+		{ id: 'game', label: 'Juegos y entretenimiento' },
+		{ id: 'kids_show', label: 'Shows infantiles' },
+		{ id: 'costume', label: 'Vestuario y disfraces' },
+		{ id: 'invitation', label: 'Invitaciones y recuerdos' },
+		{ id: 'event_package', label: 'Planes y paquetes completos' },
 	]
 
 	const sortOptions = [
@@ -47,23 +60,11 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
 		{ id: 'bestRating', label: 'Mejor valoración' },
 		{ id: 'mostBooked', label: 'Más reservados' }
 	]
-	const mockData = [
-		{ value: 'NY', label: 'Nueva York' },
-		{ value: 'LA', label: 'Los Ángeles' },
-		{ value: 'CHI', label: 'Chicago' },
-		{ value: 'HOU', label: 'Houston' },
-		{ value: 'PHX', label: 'Phoenix' },
-		{ value: 'PHI', label: 'Filadelfia' },
-		{ value: 'SA', label: 'San Antonio' },
-		{ value: 'SD', label: 'San Diego' },
-		{ value: 'DAL', label: 'Dallas' },
-		{ value: 'SJ', label: 'San José' }
-	]
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
-			if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-				setActiveDropdown(null)
+			if (dropdownRefCategory.current && !dropdownRefCategory.current.contains(event.target as Node)) {
+				setActiveDropdownCategory(null)
 			}
 			if (dropdownRefSort.current && !dropdownRefSort.current.contains(event.target as Node)) {
 				setActiveDropdownSort(null)
@@ -79,33 +80,19 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
 
 
 	const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setSearch(e.target.value)
+		setSearchInput(e.target.value)
 	}
 
 	const handleSubmitSearch = () => {
-		console.log('Busqueda realizada con:', search)
-		onSubmited({ search: search, filter: selectedFilters, sort: selectedSortOptions, location: selectedAddressOptions })
+		onSubmited({ search: searchInput, filter: selectedCategory, sort: selectedSortOption, location: selectedAddressOptions })
 	}
 
-	// Cambiar filtros seleccionados
 	const handleFilterChange = (filterId: string) => {
-		setSelectedFilters(prevSelectedFilters => {
-			if (prevSelectedFilters.includes(filterId)) {
-				return prevSelectedFilters.filter(id => id !== filterId)
+		setSelectedCategory(prevSelectedCategory => {
+			if (prevSelectedCategory.includes(filterId)) {
+				return prevSelectedCategory.filter(id => id !== filterId)
 			} else {
-				return [...prevSelectedFilters, filterId]
-			}
-		})
-		handleSubmitSearch()
-	}
-
-	// Cambiar opciones de orden
-	const handleSortChange = (optionId: string) => {
-		setSelectedSortOptions(prevSelectedOptions => {
-			if (prevSelectedOptions.includes(optionId)) {
-				return prevSelectedOptions.filter(id => id !== optionId)
-			} else {
-				return [...prevSelectedOptions, optionId]
+				return [...prevSelectedCategory, filterId]
 			}
 		})
 		handleSubmitSearch()
@@ -122,40 +109,45 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
 		handleSubmitSearch()
 	}
 
-	// Mostrar en consola los filtros y orden seleccionados
-	useEffect(() => {
-		if (selectedFilters.length > 0) {
-			console.log('Filtros seleccionados:', selectedFilters)
-		}
-	}, [selectedFilters])
-
-	useEffect(() => {
-		if (selectedSortOptions.length > 0) {
-			console.log('Opciones de orden seleccionadas:', selectedSortOptions)
-		}
-	}, [selectedSortOptions])
-
-	useEffect(() => {
-		if (selectedAddressOptions.length > 0) {
-			console.log('Opciones de lugares seleccionadas:', selectedAddressOptions)
-		}
-	}, [selectedAddressOptions])
-
-	const filteredData = mockData.filter((option) =>
-		option.label.toLowerCase().includes(searchTerm.toLowerCase())
+	const filteredData = ubigeo.filter((option) =>
+		option.department.toLowerCase().includes(searchTermAddress.toLowerCase()) ||
+		option.province.toLowerCase().includes(searchTermAddress.toLowerCase()) ||
+		option.district.toLowerCase().includes(searchTermAddress.toLowerCase())
 	)
 
 	useEffect(() => {
-		if (search === '') {
+		if (searchInput === '') {
 			handleSubmitSearch()
 		}
-	}, [search])
+	}, [searchInput])
 
-	const [selectedCategories, setSelectedCategories] = useState([])
-
-	const handleCategoryChange = (id: any) => {
-		//setSelectedCategories((prev) => prev.includes(id) ? prev.filter((cat) => cat !== id) : [...prev, id]	)
+	const handleSelectAllAddress = () => {
+		if (selectedAddressOptions.length === filteredData.length) {
+			setSelectedAddressOptions([])
+		} else {
+			setSelectedAddressOptions(filteredData.map((option) => option.code))
+		}
 	}
+	const handleSelectAllCategory = () => {
+		if (selectedCategory.length === categories.length) {
+			setSelectedCategory([])
+		} else {
+			setSelectedCategory(categories.map((filter) => filter.id))
+		}
+	}
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (dropdownRefSort.current && !dropdownRefSort.current.contains(event.target as Node)) {
+				setActiveDropdownSort(null)
+			}
+		}
+
+		document.addEventListener('mousedown', handleClickOutside)
+		return () => {
+			document.removeEventListener('mousedown', handleClickOutside)
+		}
+	}, [])
 
 	return (
 		<div>
@@ -167,7 +159,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
 							<Input
 								className="w-full pl-10 pr-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
 								type="text"
-								value={search}
+								value={searchInput}
 								onChange={handleSearchChange}
 								placeholder="Buscar servicio..."
 								onKeyPress={(e) => {
@@ -176,44 +168,61 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
 									}
 								}}
 							/>
-							{search && (
+							{searchInput && (
 								<X
 									className="absolute right-3 top-2.5 text-gray-500 cursor-pointer"
 									size={18}
-									onClick={() => setSearch('')}
+									onClick={() => setSearchInput('')}
 								/>
 							)}
 						</div>
 					</div>
 					<div className="hidden md:block">
 						<div className="flex gap-2">
+							{/* Sección categorias */}
 							<div className="relative">
 								<Button
 									className="flex items-center gap-1 px-4 py-2"
 									variant="outline"
 									onClick={() => {
-										setActiveDropdown(activeDropdown === 'filters' ? null : 'filters')
+										setActiveDropdownCategory(activeDropdownCategory === 'categories' ? null : 'categories')
 										setActiveDropdownSort(null)
+										setActiveDropdownAddress(null)
 									}}
 								>
 									<Filter size={16} />
-									<span>Filtrar</span>
+									<span>Categoría</span>
 								</Button>
+
 								<div
-									ref={dropdownRef}
+									ref={dropdownRefCategory}
 									className={cn(
-										'absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
-										activeDropdown === 'filters' ? 'block' : 'hidden'
+										'absolute left-0 mt-1 w-60 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
+										activeDropdownCategory === 'categories' ? 'block' : 'hidden'
 									)}
 								>
 									<div className="max-h-60 overflow-y-auto">
 										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
+											{/* Seleccionar todo en filtros */}
+											<li>
+												<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
+													<input
+														type="checkbox"
+														checked={selectedCategory.length === categories.length}
+														onChange={handleSelectAllCategory}
+														className="mr-2 accent-blue-500"
+													/>
+													<span className="font-bold text-sm">Seleccionar todo</span>
+												</label>
+											</li>
+
+											{/* Lista de filtros */}
 											{categories.map((filter) => (
 												<li key={filter.id}>
-													<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer">
+													<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 														<input
 															type="checkbox"
-															checked={selectedFilters.includes(filter.id)}
+															checked={selectedCategory.includes(filter.id)}
 															onChange={() => handleFilterChange(filter.id)}
 															className="mr-2 accent-blue-500"
 														/>
@@ -225,82 +234,109 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
 									</div>
 								</div>
 							</div>
+
 							<div className="relative">
 								<Button
-									className="flex items-center gap-1 px-4 py-2"
+									className="flex items-center gap-1 px-2 py-2"
 									variant="outline"
 									onClick={() => {
 										setActiveDropdownSort(activeDropdownSort === 'sort' ? null : 'sort')
-										setActiveDropdown(null)
+										setActiveDropdownCategory(null)
+										setActiveDropdownAddress(null)
 									}}
 								>
 									<SortAsc size={16} />
 									<span>Ordenar</span>
 								</Button>
+
 								<div
 									ref={dropdownRefSort}
 									className={cn(
-										'absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
-										activeDropdownSort === 'sort' ? 'block' : 'hidden'
+										'absolute left-0 mt-1 w-50 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
+										 activeDropdownSort === 'sort' ? 'block' : 'hidden'
 									)}
 								>
-									 <div className="max-h-60 overflow-y-auto">
-										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-											{sortOptions.map((option) => (
-												<li key={option.id}>
-													<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer">
-														<input
-															type="checkbox"
-															checked={selectedSortOptions.includes(option.id)}
-															onChange={() => handleSortChange(option.id)}
-															className="mr-2 accent-blue-500"
-														/>
-														{option.label}
-													</label>
-												</li>
-											))}
-										</ul>
-									</div>
+									<ul className="mt-2 space-y-2 divide-y divide-gray-200">
+										{sortOptions.map((option) => (
+											<li key={option.id}>
+												<label
+													className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1"
+													onClick={() => {
+														setSelectedSortOption(option.id)
+													}}
+												>
+													<input
+														type="radio"
+														name="sortOption"
+														checked={selectedSortOption === option.id}
+														onChange={() => {
+															setSelectedSortOption(option.id)
+														}}
+														className="mr-2 accent-blue-500"
+													/>
+													{option.label}
+												</label>
+											</li>
+										))}
+									</ul>
 								</div>
 							</div>
-							<div className="relative">
+
+							<div className="relative group">
 								<Button
-									className="flex items-center gap-1 px-4 py-2"
+									className="flex items-center gap-1 px-4 py-2 border rounded-md"
 									variant="outline"
 									onClick={() => {
-										setActiveDropdownAddress(activeDropdownAddress === 'sort' ? null : 'sort')
-										setActiveDropdown(null)
+										setActiveDropdownAddress(activeDropdownAddress === 'address' ? null : 'address')
+										setActiveDropdownCategory(null)
+										setActiveDropdownSort(null)
 									}}
 								>
 									<MapPin size={16} />
-									<span>Lugares</span>
+									<span>Ubigeo</span>
 								</Button>
+
+								{/* Dropdown con ajuste automático */}
 								<div
 									ref={dropdownRefAddress}
 									className={cn(
-										'absolute left-0 mt-2 w-48 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
-										activeDropdownAddress === 'sort' ? 'block' : 'hidden'
+										'absolute mt-1 w-76 bg-white border border-gray-300 rounded-lg shadow-lg p-2 z-50',
+										'group-[.right]:end-0 group-[.left]:start-0 group-[.center]:left-2/3 -translate-x-2/3',
+										activeDropdownAddress === 'address' ? 'block' : 'hidden'
 									)}
 								>
 									<input
 										type="text"
 										placeholder="Buscar lugares..."
-										value={searchTerm}
-										onChange={(e) => setSearchTerm(e.target.value)}
-										className="mb-2 p-2 w-full border border-gray-300 rounded-md"
+										value={searchTermAddress}
+										onChange={(e) => setSearchTermAddress(e.target.value)}
+										className="text-xs mb-2 p-2 w-full border border-gray-300 rounded-md"
 									/>
 									<div className="max-h-64 overflow-y-auto">
 										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-											{filteredData.slice(0, 10).map((option) => (
-												<li key={option.value}>
-													<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer">
+											<li>
+												<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
+													<input
+														type="checkbox"
+														checked={selectedAddressOptions.length === filteredData.length}
+														onChange={handleSelectAllAddress}
+														className="mr-2 accent-blue-500 w-3 h-3"
+													/>
+													<span className="text-[12px] font-bold">Seleccionar todo</span>
+												</label>
+											</li>
+
+											{/* Lista de opciones */}
+											{filteredData.map((option) => (
+												<li key={option.code}>
+													<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 														<input
 															type="checkbox"
-															checked={selectedAddressOptions.includes(option.value)}
-															onChange={() => handleAddressChange(option.value)}
-															className="mr-2 accent-blue-500"
+															checked={selectedAddressOptions.includes(option.code)}
+															onChange={() => handleAddressChange(option.code)}
+															className="mr-2 accent-blue-500 w-3 h-3"
 														/>
-														{option.label}
+														<span className="text-[10px] font-bold">{`${option.department} - ${option.province} - ${option.district}`}</span>
 													</label>
 												</li>
 											))}
@@ -313,93 +349,193 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited }) => {
 				</div>
 			</div>
 			<div className="md:hidden flex justify-between items-center bg-white shadow-md p-2 rounded-md mb-6">
-				<button className="text-gray-700 font-semibold">Categoría</button>
-				<button className="text-gray-700 font-semibold">Lugar</button>
-				<button className="text-gray-700 font-semibold flex items-center" onClick={() => setOpen(true)}>
-					Filtros <span className="ml-1">▼</span>
+				<button className="text-gray-700 font-semibold" onClick={() => setOpenCategory(true)}>Categoría</button>
+				<button className="text-gray-700 font-semibold" onClick={() => setOpenOrdenar(true)}>Ordenar</button>
+				<button className="text-gray-700 font-semibold flex items-center" onClick={() => setOpenAddress(true)}>
+					Ubigeo
 				</button>
 			</div>
-
 			{
-				open && (
+				openCategory && (
 					<div
 						className="fixed inset-0 bg-black/50 z-40 sm:hidden"
-						onClick={() => setOpen(false)}
+						onClick={() => setOpenCategory(false)}
 					></div>
 				)
 			}
 			<div
-				className={`fixed bottom-0 left-0 w-full bg-white h-[70vh] rounded-t-2xl shadow-lg transform transition-transform ${open ? 'translate-y-0' : 'translate-y-full'
+				className={`fixed bottom-0 left-0 w-full bg-white h-[70vh] rounded-t-2xl shadow-lg transform transition-transform ${openCategory ? 'translate-y-0' : 'translate-y-full'
 				} z-50 p-4 flex flex-col`}
 			>
 				<div className="flex justify-between items-center border-b pb-2">
-					<h2 className="text-lg font-semibold">Filtrar por</h2>
-					<button onClick={() => setOpen(false)} className="text-gray-600">
+					<h2 className="text-lg font-semibold">Categoría</h2>
+					<button onClick={() => setOpenCategory(false)} className="text-gray-600">
 						✖
 					</button>
 				</div>
 
-				<div className="overflow-y-auto flex-grow p-2">
-					<Accordion type="single" collapsible className="w-full border rounded-lg">
-						<AccordionItem value="category-1">
-							<AccordionTrigger className="flex justify-between items-center p-4 text-gray-700 font-semibold bg-gray-100 hover:bg-gray-200 border-b w-full">
-								<span>Categoría</span>
-							</AccordionTrigger>
-							<AccordionContent className="p-4">
-								<ul className="space-y-2">
-									{categories.map((category) => (
-										<li key={category.id} className="flex items-center">
-											<input
-												type="checkbox"
-												id={category.id}
-												onChange={() => handleCategoryChange(category.id)}
-												className="mr-2 accent-blue-500"
-											/>
-											<label
-												htmlFor={category.id}
-												className="text-sm text-gray-600 hover:text-blue-500 cursor-pointer"
-											>
-												{category.label}
-											</label>
-										</li>
-									))}
-								</ul>
-							</AccordionContent>
-						</AccordionItem>
+				<div className="overflow-y-auto flex-grow p-2 bg-white rounded-lg shadow-md">
+					{/* Checkbox "Seleccionar Todo" */}
+					<ul className="mt-2 space-y-2 divide-y divide-gray-200">
+						{/* Seleccionar todo en filtros */}
+						<li>
+							<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
+								<input
+									type="checkbox"
+									checked={selectedCategory.length === categories.length}
+									onChange={handleSelectAllCategory}
+									className="mr-2 accent-blue-500"
+								/>
+								<span className="font-bold text-sm">Seleccionar todo</span>
+							</label>
+						</li>
 
-						<AccordionItem value="category-2">
-							<AccordionTrigger className="flex justify-between items-center p-4 text-gray-700 font-semibold bg-gray-100 hover:bg-gray-200 border-b w-full">
-								<span>Categoría 2</span>
-							</AccordionTrigger>
-							<AccordionContent className="p-4">
-								<ul className="space-y-2">
-									{categories.map((category) => (
-										<li key={category.id} className="flex items-center">
-											<input
-												type="checkbox"
-												id={category.id}
-												onChange={() => handleCategoryChange(category.id)}
-												className="mr-2 accent-blue-500"
-											/>
-											<label
-												htmlFor={category.id}
-												className="text-sm text-gray-600 hover:text-blue-500 cursor-pointer"
-											>
-												{category.label}
-											</label>
-										</li>
-									))}
-								</ul>
-							</AccordionContent>
-						</AccordionItem>
-					</Accordion>
+						{/* Lista de filtros */}
+						{categories.map((filter) => (
+							<li key={filter.id}>
+								<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
+									<input
+										type="checkbox"
+										checked={selectedCategory.includes(filter.id)}
+										onChange={() => handleFilterChange(filter.id)}
+										className="mr-2 accent-blue-500"
+									/>
+									{filter.label}
+								</label>
+							</li>
+						))}
+					</ul>
 				</div>
 
 				{/* Botón de Cerrar Fijo */}
 				<div className="border-t p-4 bg-white">
 					<button
 						className="w-full bg-red-500 text-white py-2 rounded-md"
-						onClick={() => setOpen(false)}
+						onClick={() => setOpenCategory(false)}
+					>
+						Cerrar
+					</button>
+				</div>
+			</div>
+
+			{openOrdenar && (
+				<div
+					className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+					onClick={() => setOpenOrdenar(false)}
+				></div>
+			)}
+
+			<div
+				className={`fixed bottom-0 left-0 w-full bg-white h-[70vh] rounded-t-2xl shadow-lg transform transition-transform ${openOrdenar ? 'translate-y-0' : 'translate-y-full'
+				} z-50 p-4 flex flex-col`}
+			>
+				<div className="flex justify-between items-center border-b pb-2">
+					<h2 className="text-lg font-semibold">Ordenar</h2>
+					<button onClick={() => setOpenOrdenar(false)} className="text-gray-600">
+						✖
+					</button>
+				</div>
+
+				<div className="overflow-y-auto flex-grow p-2 bg-white rounded-lg shadow-md">
+					<ul className="mt-2 space-y-2 divide-y divide-gray-200">
+						{sortOptions.map((option) => (
+							<li key={option.id}>
+								<label
+									className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1"
+									onClick={() => {
+										setSelectedSortOption(option.id)
+									}}
+								>
+									<input
+										type="radio"
+										name="sortOption"
+										checked={selectedSortOption === option.id}
+										onChange={() => {
+											setSelectedSortOption(option.id)
+										}}
+										className="mr-2 accent-blue-500"
+									/>
+									{option.label}
+								</label>
+							</li>
+						))}
+					</ul>
+				</div>
+
+				<div className="border-t p-4 bg-white">
+					<button
+						className="w-full bg-red-500 text-white py-2 rounded-md"
+						onClick={() => setOpenOrdenar(false)}
+					>
+						Cerrar
+					</button>
+				</div>
+			</div>
+
+
+			{
+				openAddress && (
+					<div
+						className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+						onClick={() => setOpenAddress(false)}
+					></div>
+				)
+			}
+			<div
+				className={`fixed bottom-0 left-0 w-full bg-white h-[70vh] rounded-t-2xl shadow-lg transform transition-transform ${openAddress ? 'translate-y-0' : 'translate-y-full'
+				} z-50 p-4 flex flex-col`}
+			>
+				<div className="flex justify-between items-center border-b pb-2">
+					<h2 className="text-lg font-semibold">Direcciones</h2>
+					<button onClick={() => setOpenAddress(false)} className="text-gray-600">
+						✖
+					</button>
+				</div>
+
+				<div className="overflow-y-auto flex-grow p-2 bg-white rounded-lg shadow-md">
+					<input
+						type="text"
+						placeholder="Buscar lugares..."
+						value={searchTermAddress}
+						onChange={(e) => setSearchTermAddress(e.target.value)}
+						className="text-xs mb-2 p-2 w-full border border-gray-300 rounded-md"
+					/>
+					<div className="overflow-y-auto">
+						<ul className="mt-2 space-y-2 divide-y divide-gray-200">
+							<li>
+								<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
+									<input
+										type="checkbox"
+										checked={selectedAddressOptions.length === filteredData.length}
+										onChange={handleSelectAllAddress}
+										className="mr-2 accent-blue-500 w-3 h-3"
+									/>
+									<span className="text-[12px] font-bold">Seleccionar todo</span>
+								</label>
+							</li>
+
+							{/* Lista de opciones */}
+							{filteredData.map((option) => (
+								<li key={option.code}>
+									<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
+										<input
+											type="checkbox"
+											checked={selectedAddressOptions.includes(option.code)}
+											onChange={() => handleAddressChange(option.code)}
+											className="mr-2 accent-blue-500 w-3 h-3"
+										/>
+										<span className="text-[11px] font-bold">{`${option.department} - ${option.province} - ${option.district}`}</span>
+									</label>
+								</li>
+							))}
+						</ul>
+					</div>
+				</div>
+				{/* Botón de Cerrar Fijo */}
+				<div className="border-t p-4 bg-white">
+					<button
+						className="w-full bg-red-500 text-white py-2 rounded-md"
+						onClick={() => setOpenAddress(false)}
 					>
 						Cerrar
 					</button>
