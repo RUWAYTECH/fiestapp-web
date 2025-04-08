@@ -19,5 +19,5 @@ export const searchUbigeo = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<UbigeoResponseDto[]>) => response
+	transformResponse: (response: UbigeoResponseDto[]) => response
 }

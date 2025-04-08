@@ -1,4 +1,4 @@
-import { FileImageResponseDto } from "./fileImage"
+import { FileImageResponseDto } from './fileImage'
 
 export interface CreateCategoryRequestDto {
 	id: string,

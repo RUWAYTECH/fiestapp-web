@@ -6,6 +6,7 @@ import { Input } from '@components/ui/input'
 import { UbigeoResponseDto } from '@stateManagement/models/ubigeo/ubigeo'
 import { useGetAllCategoryQuery } from '@stateManagement/apiSlices/categoryApi'
 import { useLazyGetAllUbigeoServicesByUbigeoQuery } from '@stateManagement/apiSlices/ubigeoServicesApi'
+import { ca } from 'date-fns/locale'
 
 interface ServiceSearchProps {
 	onSubmited: (data: {
@@ -19,9 +20,10 @@ interface ServiceSearchProps {
 
 	ubigeo: UbigeoResponseDto[];
 	searchUbigeo: (search: string) => void;
+	categoryId?: string;
 }
 
-const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searchUbigeo }) => {
+const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searchUbigeo, categoryId }) => {
 	const {data: categoryData} = useGetAllCategoryQuery({})
 	const [getUbigeoServices] = useLazyGetAllUbigeoServicesByUbigeoQuery()
 
@@ -113,7 +115,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	}
 
 	const dataUbigeosId = (data: string[]) => {
-		//data convertir de [1,2,3] a '1,2,3'
 		const dataServicesId = data.join(',')
 		getUbigeoServices({ idUbigeo: dataServicesId })
 			.unwrap()
@@ -123,7 +124,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 					.filter(Boolean) || []
 
 				if (dataServicesId.length > 0) {
-					console.log('dataServicesId', dataServicesId)
 					setIdServices(dataServicesId)
 				}
 				else if (data.length > 0 && dataServicesId.length === 0) {
@@ -148,9 +148,8 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	}, [selectedAddressOptions])
 
 	useEffect(() => {
-		if (searchTermAddress === '' || searchTermAddress !=='') {
-			searchUbigeo(searchTermAddress)
-		}
+		searchUbigeo(searchTermAddress)
+
 	}, [searchTermAddress])
 
 	useEffect(() => {
@@ -199,56 +198,58 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 					{/* modo desktop */}
 					<div className="hidden md:block">
 						<div className="flex gap-2">
-							<div className="relative">
-								<Button
-									className="flex items-center gap-1 px-4 py-2"
-									variant="outline"
-									onClick={() => {
-										setActiveDropdownCategory(activeDropdownCategory === 'categories' ? null : 'categories')
-										setActiveDropdownSort(null)
-										setActiveDropdownAddress(null)
-									}}
-								>
-									<Filter size={16} />
-									<span>Categoría</span>
-								</Button>
-								<div
-									ref={dropdownRefCategory}
-									className={cn(
-										'absolute left-0 mt-1 w-60 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
-										activeDropdownCategory === 'categories' ? 'block' : 'hidden'
-									)}
-								>
-									<div className="max-h-60 overflow-y-auto">
-										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-											<li>
-												<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
-													<input
-														type="checkbox"
-														checked={selectedCategory.length === categoryData?.data?.length}
-														onChange={handleSelectAllCategory}
-														className="mr-2 accent-blue-500"
-													/>
-													<span className="font-bold text-sm">Seleccionar todo</span>
-												</label>
-											</li>
-											{categoryData?.data?.map((filter) => (
-												<li key={filter.id}>
+							{!categoryId && (
+								<div className="relative">
+									<Button
+										className="flex items-center gap-1 px-4 py-2"
+										variant="outline"
+										onClick={() => {
+											setActiveDropdownCategory(activeDropdownCategory === 'categories' ? null : 'categories')
+											setActiveDropdownSort(null)
+											setActiveDropdownAddress(null)
+										}}
+									>
+										<Filter size={16} />
+										<span>Categoría</span>
+									</Button>
+									<div
+										ref={dropdownRefCategory}
+										className={cn(
+											'absolute left-0 mt-1 w-60 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
+											activeDropdownCategory === 'categories' ? 'block' : 'hidden'
+										)}
+									>
+										<div className="max-h-60 overflow-y-auto">
+											<ul className="mt-2 space-y-2 divide-y divide-gray-200">
+												<li>
 													<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 														<input
 															type="checkbox"
-															checked={selectedCategory.includes(filter.id)}
-															onChange={() => handleCategoryChange(filter.id)}
+															checked={selectedCategory.length === categoryData?.data?.length}
+															onChange={handleSelectAllCategory}
 															className="mr-2 accent-blue-500"
 														/>
-														{filter.name}
+														<span className="font-bold text-sm">Seleccionar todo</span>
 													</label>
 												</li>
-											))}
-										</ul>
+												{categoryData?.data?.map((filter) => (
+													<li key={filter.id}>
+														<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
+															<input
+																type="checkbox"
+																checked={selectedCategory.includes(filter.id)}
+																onChange={() => handleCategoryChange(filter.id)}
+																className="mr-2 accent-blue-500"
+															/>
+															{filter.name}
+														</label>
+													</li>
+												))}
+											</ul>
+										</div>
 									</div>
 								</div>
-							</div>
+							)}
 
 							<div className="relative">
 								<Button
@@ -279,7 +280,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 													<input
 														type="checkbox"
 														name="sortOption"
-														checked={selectedSortOption === option.id}
+														checked={selectedSortOption === option.id }
 														onChange={() => {
 															setSelectedSortOption((prev) =>
 																prev === option.id ? '' : option.id

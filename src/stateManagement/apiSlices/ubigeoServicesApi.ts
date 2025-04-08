@@ -9,6 +9,7 @@ export const ubigeoServiceApi = apiSlice.injectEndpoints({
 })
 
 export const {
+	useGetAllUbigeoServicesByUbigeoQuery,
 	useLazyGetAllUbigeoServicesByUbigeoQuery,
 
 } = ubigeoServiceApi

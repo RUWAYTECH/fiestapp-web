@@ -33,7 +33,7 @@ const ServicesPage: React.FC = () => {
 		const idCategory = Array.isArray(data.category) ? data.category.join(',') : data.category
 		const idUbigeo = Array.isArray(data.ubigeo) ? data.ubigeo.join(',') : data.ubigeo
 		const idServices = Array.isArray(data.services) ? data.services.join(',') : data.services
-		console.log('idServices', data.services,idServices)
+
 		dataSearchService({
 			search,
 			idCategory,

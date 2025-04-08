@@ -118,5 +118,5 @@ export const AllSearchServiceCategoryUbigeo = {
 		}
 	},
 
-	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
+	transformResponse: (response: ServiceResponseDto[]) => response
 }
