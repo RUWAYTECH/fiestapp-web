@@ -1,30 +1,31 @@
-import { severityStatusEnum } from '@constants/severity-status.enum'
+//import { severityStatusEnum } from '@constants/severity-status.enum'
 
 export interface ApiResponseMessage {
 	key: string
 	value: string
 }
 
-export interface ApiResponseDto <T> {
+/* export interface ApiResponseDto <T> {
 	isValid: boolean
 	severityCode: severityStatusEnum
 	messages: ApiResponseMessage[]
 	data: T
-}
+} */
+export type ApiResponseDto<T> = T
 
 export interface ApiResponseError {
+	code?: string | number
 	data?: {
 		error?: string
 		message?: string
-		statusCode?: number
+		name?: string
+		status?: number
 	},
 	status?: number
 }
 
 export interface User {
-	userId: string
-	name: string
+	id: number
+	username: string
 	email: string
-	picture: string
-	phone?: string
 }

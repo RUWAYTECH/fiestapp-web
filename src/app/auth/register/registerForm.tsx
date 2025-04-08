@@ -40,17 +40,17 @@ const RegisterForm = () => {
 	})
 
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
-		register(values).unwrap().then((res) => {
-			if (res.isValid) {
+		register({ email: values.email, username: values.name, password: values.password }).unwrap().then((res) => {
+			if (res) {
 				toastService.success('Registro exitoso')
 				router.push('/auth/login')
 
 				return
 			}
 
-			for(const error of res.messages) {
+			/* for(const error of res.messages) {
 				toastService.error(error.value)
-			}
+			} */
 		}).catch((err: ApiResponseError) => {
 			toastService.error(err.data?.message || 'No se pudo registrar, intente de nuevo')
 		})
