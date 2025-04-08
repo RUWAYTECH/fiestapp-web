@@ -1,31 +1,37 @@
 'use client'
-
 import AppLayout from '@components/containers/layout/layout'
-import { useGetAllServicesQuery } from '@stateManagement/apiSlices/serviceApi'
-import ServiceCard from './components/service-card'
-import ServiceSearch from './components/service-search'
-import { useState } from 'react'
+import { usePathname } from 'next/navigation'
+import ServiceSearch from '@app/service/components/service-search'
+import ServiceCard from '@app/service/components/service-card'
 import { useGetAllUbigeoQuery } from '@stateManagement/apiSlices/ubigeoApi'
+import { useAllServiceCategoryByIdQuery } from '@stateManagement/apiSlices/serviceApi'
+import { useState } from 'react'
 
-const ServicesPage: React.FC = () => {
+const RutaPage: React.FC = () => {
+	const pathname = usePathname()
+	const id = pathname.split('/').pop()
 	const [search, setSearch] = useState('')
-	const { data: servicesData, isLoading } = useGetAllServicesQuery({})
+
+	const { data: servicesCategoryByIdData, isLoading } = useAllServiceCategoryByIdQuery(id ?? '', {
+		skip: !id,
+	})
+
 	const {data:ubigeoData} = useGetAllUbigeoQuery({})
 
 	const dataSearch = (data: { search: string, filter: string[], sort: string[], location: string[] }) => {
+		console.log('search', data)
 		if (data.search==='') {
 			setSearch('')
 		}else{
 			setSearch(data.search)
 		}
 	}
-
 	return (
 		<AppLayout>
 			<div className="container mx-auto p-4">
 				<div>
 					<ServiceSearch onSubmited={dataSearch} ubigeo={ubigeoData?.data || []} />
-					{!search && (<ServiceCard data={servicesData?.data || []} isLoading={isLoading} />)}
+					{!search && (<ServiceCard data={servicesCategoryByIdData?.data || []} isLoading={isLoading}/>)}
 				</div>
 				{search && (<>
 					<div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
@@ -75,7 +81,7 @@ const ServicesPage: React.FC = () => {
 							</button>
 						</aside>
 						<main className="flex-1">
-							<ServiceCard data={servicesData?.data || []} isLoading={isLoading} />
+							<ServiceCard data={servicesCategoryByIdData?.data || []} isLoading={isLoading}/>
 						</main>
 					</div>
 				</>)}
@@ -83,5 +89,4 @@ const ServicesPage: React.FC = () => {
 		</AppLayout>
 	)
 }
-
-export default ServicesPage
+export default RutaPage

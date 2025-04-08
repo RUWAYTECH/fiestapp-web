@@ -92,14 +92,15 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 										maxHeight: '100%',
 									}}
 								>
-									<Image
-										src={urlImage + `${selectedImage}`}
-										alt={service?.name || ''}
-										width={700}
-										height={700}
-										objectFit="cover"
-										className="rounded-lg shadow-lg"
-									/>
+									<div className="relative max-w-[700px] max-h-[450px] flex items-center justify-center overflow-hidden">
+										<Image
+											src={urlImage + selectedImage}
+											alt={service?.name || ''}
+											width={600}
+											height={450}
+											className="rounded-lg shadow-lg object-cover w-full h-auto max-w-[600px] max-h-[450px]"
+										/>
+									</div>
 								</div>
 							</div>
 							<button

@@ -7,5 +7,5 @@ export interface LoginRequestDto {
 
 export interface LoginResponseDto {
 	user: User
-	token: string
+	jwt: string
 }

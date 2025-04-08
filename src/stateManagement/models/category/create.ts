@@ -10,6 +10,7 @@ export interface CreateCategoryRequestDto {
 export interface CategoryResponseDto {
 	id: string,
 	serviceId: string,
+	documentId: string,
 	name: string,
 	description: string
 	categoryImage: FileImageResponseDto[]

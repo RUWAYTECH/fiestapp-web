@@ -32,7 +32,7 @@ function BreadcrumbPage({ className, ...props }: React.ComponentProps<'span'>) {
 	)
 }
 
-function BreadcrumbSeparator({ className, icon = <ChevronRight className="w-4 h-4 text-blue-500 mt-1"/>, ...props }: React.ComponentProps<'span'> & { icon?: React.ReactNode }) {
+function BreadcrumbSeparator({ className, icon = <ChevronRight className="w-4 h-4 text-blue-500"/>, ...props }: React.ComponentProps<'span'> & { icon?: React.ReactNode }) {
 	return (
 		<span className={cn('mx-1 text-muted-foreground', className)} {...props}>
 			{icon}
