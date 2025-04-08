@@ -56,7 +56,7 @@ const Navbar = () => {
 				<div className="hidden sm:flex items-center space-x-4">
 					{auth ? (
 						<>
-							<Link href="#" className="font-medium">{auth.user?.name}</Link>
+							<Link href={`/profile`} className="font-medium">{auth.user?.name}</Link>
 							<button className="cursor-pointer text-red-500" onClick={() => signOut()}>Cerrar sesión</button>
 						</>
 					) : (
