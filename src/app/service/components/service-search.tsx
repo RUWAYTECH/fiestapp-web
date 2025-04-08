@@ -4,14 +4,26 @@ import { useState, useEffect, useRef } from 'react'
 import { Filter, MapPin, Search, SortAsc, X } from 'lucide-react'
 import { Input } from '@components/ui/input'
 import { UbigeoResponseDto } from '@stateManagement/models/ubigeo/ubigeo'
+import { useGetAllCategoryQuery } from '@stateManagement/apiSlices/categoryApi'
+import { useLazyGetAllUbigeoServicesByUbigeoQuery } from '@stateManagement/apiSlices/ubigeoServicesApi'
 
 interface ServiceSearchProps {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	onSubmited: (data: any) => void;
+	onSubmited: (data: {
+		search: string,
+		category?: string | string[],
+		ubigeo?: string | string[],
+		services?: string | string[],
+		priceMin?: number,
+		priceMax?: number,
+		sortBy?: string}) => void;
+
 	ubigeo: UbigeoResponseDto[];
+	searchUbigeo: (search: string) => void;
 }
 
-const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => {
+const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searchUbigeo }) => {
+	const {data: categoryData} = useGetAllCategoryQuery({})
+	const [getUbigeoServices] = useLazyGetAllUbigeoServicesByUbigeoQuery()
 
 	const [activeDropdownCategory, setActiveDropdownCategory] = useState<string | null>(null)
 	const [activeDropdownSort, setActiveDropdownSort] = useState<string | null>(null)
@@ -32,33 +44,11 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 	const [selectedAddressOptions, setSelectedAddressOptions] = useState<string[]>([])
 
 	const [searchTermAddress, setSearchTermAddress] = useState('')
-
-	// Manejo de dropdowns
-	const categories = [
-		{ id: 'venues', label: 'Locales para eventos' },
-		{ id: 'clowns', label: 'Payasos' },
-		{ id: 'animators', label: 'Animadores' },
-		{ id: 'magicians', label: 'Magos' },
-		{ id: 'decor', label: 'Decoración y ambientación' },
-		{ id: 'catering', label: 'Catering y comida' },
-		{ id: 'music', label: 'DJ y música en vivo' },
-		{ id: 'photography', label: 'Fotografía y video' },
-		{ id: 'games', label: 'Juegos y entretenimiento' },
-		{ id: 'kids_shows', label: 'Shows infantiles' },
-		{ id: 'costumes', label: 'Vestuario y disfraces' },
-		{ id: 'invitations', label: 'Invitaciones y recuerdos' },
-		{ id: 'event_packages', label: 'Planes y paquetes completos' },
-		{ id: 'game', label: 'Juegos y entretenimiento' },
-		{ id: 'kids_show', label: 'Shows infantiles' },
-		{ id: 'costume', label: 'Vestuario y disfraces' },
-		{ id: 'invitation', label: 'Invitaciones y recuerdos' },
-		{ id: 'event_package', label: 'Planes y paquetes completos' },
-	]
+	const [idServices, setIdServices] = useState<string[]>([])
 
 	const sortOptions = [
 		{ id: 'priceLow', label: 'Precio más bajo' },
 		{ id: 'bestRating', label: 'Mejor valoración' },
-		{ id: 'mostBooked', label: 'Más reservados' }
 	]
 
 	useEffect(() => {
@@ -83,11 +73,27 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 		setSearchInput(e.target.value)
 	}
 
-	const handleSubmitSearch = () => {
-		onSubmited({ search: searchInput, filter: selectedCategory, sort: selectedSortOption, location: selectedAddressOptions })
+	const handleAddressChange = async (optionId: string) => {
+		const updatedOptions = selectedAddressOptions.includes(optionId)
+			? selectedAddressOptions.filter(id => id !== optionId)
+			: [...selectedAddressOptions, optionId]
+
+		setSelectedAddressOptions(updatedOptions)
+		await dataUbigeosId(updatedOptions)
 	}
 
-	const handleFilterChange = (filterId: string) => {
+	const handleSelectAllAddress = async () => {
+		if (selectedAddressOptions.length === ubigeo.length) {
+			setSelectedAddressOptions([])
+			await dataUbigeosId([])
+		} else {
+			setSelectedAddressOptions(ubigeo?.map((filter) => filter.id) || [])
+			await dataUbigeosId(ubigeo?.map((filter) => filter.id) || [])
+		}
+
+	}
+
+	const handleCategoryChange = (filterId: string) => {
 		setSelectedCategory(prevSelectedCategory => {
 			if (prevSelectedCategory.includes(filterId)) {
 				return prevSelectedCategory.filter(id => id !== filterId)
@@ -95,25 +101,39 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 				return [...prevSelectedCategory, filterId]
 			}
 		})
+	}
+
+	const handleSelectAllCategory = () => {
+		if (selectedCategory.length === categoryData?.data?.length) {
+			setSelectedCategory([])
+		} else {
+			setSelectedCategory(categoryData?.data?.map((filter) => filter.id)|| [])
+		}
 		handleSubmitSearch()
 	}
 
-	const handleAddressChange = (optionId: string) => {
-		setSelectedAddressOptions(prevSelectedAddress => {
-			if (prevSelectedAddress.includes(optionId)) {
-				return prevSelectedAddress.filter(id => id !== optionId)
-			} else {
-				return [...prevSelectedAddress, optionId]
-			}
-		})
-		handleSubmitSearch()
-	}
+	const dataUbigeosId = (data: string[]) => {
+		//data convertir de [1,2,3] a '1,2,3'
+		const dataServicesId = data.join(',')
+		getUbigeoServices({ idUbigeo: dataServicesId })
+			.unwrap()
+			.then((response) => {
+				const dataServicesId: string[] = response?.data
+					?.map(item => item?.service?.id?.toString())
+					.filter(Boolean) || []
 
-	const filteredData = ubigeo.filter((option) =>
-		option.department.toLowerCase().includes(searchTermAddress.toLowerCase()) ||
-		option.province.toLowerCase().includes(searchTermAddress.toLowerCase()) ||
-		option.district.toLowerCase().includes(searchTermAddress.toLowerCase())
-	)
+				if (dataServicesId.length > 0) {
+					console.log('dataServicesId', dataServicesId)
+					setIdServices(dataServicesId)
+				}
+				else if (data.length > 0 && dataServicesId.length === 0) {
+					setIdServices(['none'])
+				}
+				else if (data.length === 0) {
+					setIdServices([''])
+				}
+			})
+	}
 
 	useEffect(() => {
 		if (searchInput === '') {
@@ -121,33 +141,31 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 		}
 	}, [searchInput])
 
-	const handleSelectAllAddress = () => {
-		if (selectedAddressOptions.length === filteredData.length) {
-			setSelectedAddressOptions([])
-		} else {
-			setSelectedAddressOptions(filteredData.map((option) => option.code))
+	useEffect(() => {
+		if (selectedAddressOptions.length > 0) {
+			dataUbigeosId(selectedAddressOptions)
 		}
-	}
-	const handleSelectAllCategory = () => {
-		if (selectedCategory.length === categories.length) {
-			setSelectedCategory([])
-		} else {
-			setSelectedCategory(categories.map((filter) => filter.id))
-		}
-	}
+	}, [selectedAddressOptions])
 
 	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (dropdownRefSort.current && !dropdownRefSort.current.contains(event.target as Node)) {
-				setActiveDropdownSort(null)
-			}
+		if (searchTermAddress === '' || searchTermAddress !=='') {
+			searchUbigeo(searchTermAddress)
 		}
+	}, [searchTermAddress])
 
-		document.addEventListener('mousedown', handleClickOutside)
-		return () => {
-			document.removeEventListener('mousedown', handleClickOutside)
-		}
-	}, [])
+	useEffect(() => {
+		handleSubmitSearch()
+	}, [selectedCategory,selectedSortOption,idServices])
+
+	const handleSubmitSearch = () => {
+		onSubmited({
+			search: searchInput,
+			category: selectedCategory,
+			ubigeo: selectedAddressOptions,
+			services: idServices,
+			sortBy: selectedSortOption,
+		})
+	}
 
 	return (
 		<div>
@@ -177,9 +195,10 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 							)}
 						</div>
 					</div>
+
+					{/* modo desktop */}
 					<div className="hidden md:block">
 						<div className="flex gap-2">
-							{/* Sección categorias */}
 							<div className="relative">
 								<Button
 									className="flex items-center gap-1 px-4 py-2"
@@ -193,7 +212,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 									<Filter size={16} />
 									<span>Categoría</span>
 								</Button>
-
 								<div
 									ref={dropdownRefCategory}
 									className={cn(
@@ -203,30 +221,27 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 								>
 									<div className="max-h-60 overflow-y-auto">
 										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-											{/* Seleccionar todo en filtros */}
 											<li>
 												<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 													<input
 														type="checkbox"
-														checked={selectedCategory.length === categories.length}
+														checked={selectedCategory.length === categoryData?.data?.length}
 														onChange={handleSelectAllCategory}
 														className="mr-2 accent-blue-500"
 													/>
 													<span className="font-bold text-sm">Seleccionar todo</span>
 												</label>
 											</li>
-
-											{/* Lista de filtros */}
-											{categories.map((filter) => (
+											{categoryData?.data?.map((filter) => (
 												<li key={filter.id}>
 													<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 														<input
 															type="checkbox"
 															checked={selectedCategory.includes(filter.id)}
-															onChange={() => handleFilterChange(filter.id)}
+															onChange={() => handleCategoryChange(filter.id)}
 															className="mr-2 accent-blue-500"
 														/>
-														{filter.label}
+														{filter.name}
 													</label>
 												</li>
 											))}
@@ -248,33 +263,31 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 									<SortAsc size={16} />
 									<span>Ordenar</span>
 								</Button>
-
 								<div
 									ref={dropdownRefSort}
 									className={cn(
 										'absolute left-0 mt-1 w-50 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
-										 activeDropdownSort === 'sort' ? 'block' : 'hidden'
+										activeDropdownSort === 'sort' ? 'block' : 'hidden'
 									)}
 								>
 									<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-										{sortOptions.map((option) => (
-											<li key={option.id}>
+										{sortOptions?.map((option) => (
+											<li key={option?.id}>
 												<label
 													className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1"
-													onClick={() => {
-														setSelectedSortOption(option.id)
-													}}
 												>
 													<input
-														type="radio"
+														type="checkbox"
 														name="sortOption"
 														checked={selectedSortOption === option.id}
 														onChange={() => {
-															setSelectedSortOption(option.id)
+															setSelectedSortOption((prev) =>
+																prev === option.id ? '' : option.id
+															)
 														}}
 														className="mr-2 accent-blue-500"
 													/>
-													{option.label}
+													{option?.label}
 												</label>
 											</li>
 										))}
@@ -295,8 +308,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 									<MapPin size={16} />
 									<span>Ubigeo</span>
 								</Button>
-
-								{/* Dropdown con ajuste automático */}
 								<div
 									ref={dropdownRefAddress}
 									className={cn(
@@ -318,25 +329,23 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 												<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 													<input
 														type="checkbox"
-														checked={selectedAddressOptions.length === filteredData.length}
+														checked={selectedAddressOptions?.length === ubigeo?.length}
 														onChange={handleSelectAllAddress}
 														className="mr-2 accent-blue-500 w-3 h-3"
 													/>
 													<span className="text-[12px] font-bold">Seleccionar todo</span>
 												</label>
 											</li>
-
-											{/* Lista de opciones */}
-											{filteredData.map((option) => (
-												<li key={option.code}>
+											{ubigeo?.map((option) => (
+												<li key={option.id}>
 													<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 														<input
 															type="checkbox"
-															checked={selectedAddressOptions.includes(option.code)}
-															onChange={() => handleAddressChange(option.code)}
+															checked={selectedAddressOptions.includes(option?.id)}
+															onChange={() => handleAddressChange(option?.id)}
 															className="mr-2 accent-blue-500 w-3 h-3"
 														/>
-														<span className="text-[10px] font-bold">{`${option.department} - ${option.province} - ${option.district}`}</span>
+														<span className="text-[10px] font-bold">{`${option?.department} - ${option?.province} - ${option?.district}`}</span>
 													</label>
 												</li>
 											))}
@@ -348,6 +357,8 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 					</div>
 				</div>
 			</div>
+
+			{/* modo mobile */}
 			<div className="md:hidden flex justify-between items-center bg-white shadow-md p-2 rounded-md mb-6">
 				<button className="text-gray-700 font-semibold" onClick={() => setOpenCategory(true)}>Categoría</button>
 				<button className="text-gray-700 font-semibold" onClick={() => setOpenOrdenar(true)}>Ordenar</button>
@@ -373,41 +384,34 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 						✖
 					</button>
 				</div>
-
 				<div className="overflow-y-auto flex-grow p-2 bg-white rounded-lg shadow-md">
-					{/* Checkbox "Seleccionar Todo" */}
 					<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-						{/* Seleccionar todo en filtros */}
 						<li>
 							<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 								<input
 									type="checkbox"
-									checked={selectedCategory.length === categories.length}
+									checked={selectedCategory.length === categoryData?.data?.length}
 									onChange={handleSelectAllCategory}
 									className="mr-2 accent-blue-500"
 								/>
 								<span className="font-bold text-sm">Seleccionar todo</span>
 							</label>
 						</li>
-
-						{/* Lista de filtros */}
-						{categories.map((filter) => (
+						{categoryData?.data?.map((filter) => (
 							<li key={filter.id}>
 								<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 									<input
 										type="checkbox"
 										checked={selectedCategory.includes(filter.id)}
-										onChange={() => handleFilterChange(filter.id)}
+										onChange={() => handleCategoryChange(filter.id)}
 										className="mr-2 accent-blue-500"
 									/>
-									{filter.label}
+									{filter.name}
 								</label>
 							</li>
 						))}
 					</ul>
 				</div>
-
-				{/* Botón de Cerrar Fijo */}
 				<div className="border-t p-4 bg-white">
 					<button
 						className="w-full bg-red-500 text-white py-2 rounded-md"
@@ -442,16 +446,15 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 							<li key={option.id}>
 								<label
 									className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1"
-									onClick={() => {
-										setSelectedSortOption(option.id)
-									}}
 								>
 									<input
-										type="radio"
+										type="checkbox"
 										name="sortOption"
 										checked={selectedSortOption === option.id}
 										onChange={() => {
-											setSelectedSortOption(option.id)
+											setSelectedSortOption((prev) =>
+												prev === option.id ? '' : option.id
+											)
 										}}
 										className="mr-2 accent-blue-500"
 									/>
@@ -506,7 +509,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 								<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 									<input
 										type="checkbox"
-										checked={selectedAddressOptions.length === filteredData.length}
+										checked={selectedAddressOptions.length === ubigeo.length}
 										onChange={handleSelectAllAddress}
 										className="mr-2 accent-blue-500 w-3 h-3"
 									/>
@@ -515,13 +518,13 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo }) => 
 							</li>
 
 							{/* Lista de opciones */}
-							{filteredData.map((option) => (
-								<li key={option.code}>
+							{ubigeo.map((option) => (
+								<li key={option.id}>
 									<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 										<input
 											type="checkbox"
-											checked={selectedAddressOptions.includes(option.code)}
-											onChange={() => handleAddressChange(option.code)}
+											checked={selectedAddressOptions.includes(option.id)}
+											onChange={() => handleAddressChange(option.id)}
 											className="mr-2 accent-blue-500 w-3 h-3"
 										/>
 										<span className="text-[11px] font-bold">{`${option.department} - ${option.province} - ${option.district}`}</span>

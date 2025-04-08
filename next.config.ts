@@ -4,13 +4,17 @@ import createNextIntlPlugin from 'next-intl/plugin'
 const nextConfig: NextConfig = {
 	devIndicators: false,
 	images: {
-		domains: [
-			'cdn0.matrimonio.com.pe',
-			'encrypted-tbn0.gstatic.com',
-			'encrypted-tbn0.gstatic.com',
-			'localhost',
-		],
 		remotePatterns: [
+			{
+				protocol: 'http',
+				hostname: '3.83.141.94',
+				port: '8082',
+				pathname: '/uploads/**',
+			},
+			{
+				protocol: 'http',
+				hostname: 'localhost',
+			},
 			{
 				protocol: 'http',
 				hostname: 'hatcdn.com',

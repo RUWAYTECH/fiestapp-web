@@ -52,3 +52,71 @@ export const allServiceCategoryById = {
 	},
 	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
 }
+
+
+export const AllSearchServiceCategoryUbigeo = {
+	query: (params: {
+		search?: string;
+		idCategory?: string;
+		idUbigeo?: string;
+		idServices?: string;
+		priceMin?: number;
+		priceMax?: number;
+		sortBy?: string;
+	}) => {
+		const searchParams = new URLSearchParams()
+
+		searchParams.append('pagination[pageSize]', '1000')
+
+		if (params.search?.trim()) {
+			searchParams.append('filters[name][$containsi]', params.search.trim())
+		}
+
+		if (params.idCategory?.trim()) {
+			const ids = params.idCategory
+				.split(',')
+				.map(id => id.trim())
+				.filter(id => id)
+
+			ids.forEach(id => searchParams.append('filters[category][id][$in]', id))
+		}
+
+
+		if (params.idServices?.trim() === 'none') {
+			searchParams.append('filters[id][$in]', '')
+		} else if (params.idServices?.trim()) {
+			const ids = params.idServices
+				.split(',')
+				.map(id => id.trim())
+				.filter(id => id)
+
+			ids.forEach(id => searchParams.append('filters[id][$in]', id))
+
+		}
+
+		if (params.priceMin !== undefined) {
+			searchParams.append('filters[$or][0][priceMin][$gte]', params.priceMin.toString())
+			searchParams.append('filters[$or][1][priceMax][$gte]', params.priceMin.toString())
+		}
+		if (params.priceMax !== undefined) {
+			searchParams.append('filters[$or][2][priceMin][$lte]', params.priceMax.toString())
+			searchParams.append('filters[$or][3][priceMax][$lte]', params.priceMax.toString())
+		}
+
+		switch (params.sortBy) {
+		case 'priceLow':
+			searchParams.append('sort[0]', 'priceMin:asc')
+			break
+		case 'bestRating':
+			searchParams.append('sort[0]', 'score:desc')
+			break
+		}
+
+		return {
+			url: `/services?${searchParams.toString()}&populate=*`,
+			method: 'GET',
+		}
+	},
+
+	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
+}
