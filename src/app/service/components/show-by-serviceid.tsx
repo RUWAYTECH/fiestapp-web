@@ -14,8 +14,10 @@ import useCartStore from '@stores/cart'
 interface ServiceDetailProps {
 	service: ServiceResponseDto;
 }
+
 export default function ShowByServiceId({ service }: ServiceDetailProps) {
 	const addToCart = useCartStore((state) => state.addItem)
+	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId})
 
 	const urlImage = config.imagePublicApiUrl
 
@@ -59,7 +61,6 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 		setScale(1)
 	}
 
-	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId})
 
 	return (
 		<>

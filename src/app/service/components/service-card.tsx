@@ -16,7 +16,7 @@ const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false }) =>
 	return (
 		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
 			{isLoading &&
-				Array(8).fill(null).map((_, index) => (
+				Array(12).fill(null).map((_, index) => (
 					<div key={index} className="flex flex-col h-full transition">
 						<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
 							<Skeleton className="h-full w-full rounded-t-lg" />
@@ -30,7 +30,7 @@ const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false }) =>
 			}
 			{!isLoading &&
 				data.map((item) => (
-					<Link key={item.documentId} href={`/service/${item.documentId}`} className="h-full">
+					<Link key={item?.documentId} href={`/service/${item?.documentId}`} className="h-full">
 						<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">
 							<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
 								<Image
@@ -43,25 +43,25 @@ const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false }) =>
 							</div>
 							<CardHeader className="flex flex-col justify-between flex-1 pr-3 pl-3">
 								<div className="flex justify-between items-center w-full gap-2">
-									<CardTitle className="truncate text-base">{item.name}</CardTitle>
+									<CardTitle className="truncate text-base">{item?.name}</CardTitle>
 									<div className="flex items-center">
 										{[...Array(5)].map((_, index) => (
 											<Star
 												key={index}
 												size={16}
-												className={index < item.score ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}
+												className={index < item?.score ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}
 											/>
 										))}
 									</div>
 								</div>
-								<CardDescription className="truncate text-sm">{item.address}</CardDescription>
-								<CardDescription className="line-clamp-2 text-xs">{item.description}</CardDescription>
+								<CardDescription className="truncate text-sm">{item?.address}</CardDescription>
+								<CardDescription className="line-clamp-2 text-xs">{item?.description}</CardDescription>
 								<div className="flex justify-between items-center w-full mb-4 text-sm">
 									<CardDescription className="font-bold">
-										Desde: <span className="text-red-500 ml-1">S/{item.priceMin}</span>
+										Desde: <span className="text-red-500 ml-1">S/{item?.priceMin}</span>
 									</CardDescription>
 									<CardDescription className="font-bold">
-										Hasta: <span className="text-red-500 ml-1">S/{item.priceMax}</span>
+										Hasta: <span className="text-red-500 ml-1">S/{item?.priceMax}</span>
 									</CardDescription>
 								</div>
 							</CardHeader>
