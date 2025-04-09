@@ -14,7 +14,12 @@ import { addToCart } from '@/lib/cart-util'
 interface ServiceDetailProps {
 	service: ServiceResponseDto;
 }
+
 export default function ShowByServiceId({ service }: ServiceDetailProps) {
+	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({
+		documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId
+	})
+
 	const urlImage = config.imagePublicApiUrl
 
 	const images = service?.fileImage?.map(img => img?.url || '') || []
@@ -57,7 +62,6 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 		setScale(1)
 	}
 
-	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId})
 
 	return (
 		<>
@@ -167,17 +171,17 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 						</div>
 
 						<div className='flex gap-4'>
-						<button
-							className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition"
-							onClick={() =>
-								addToCart({
-								  ...service,
-								  quantity: 1,
-								})
-							  }
-      					>
-							Añadir a la solicitud
-						</button>
+							<button
+								className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition"
+								onClick={() =>
+									addToCart({
+										...service,
+										quantity: 1,
+									})
+								}
+							>
+								Añadir a la solicitud
+							</button>
 						</div>
 					</div>
 				</div>
@@ -185,20 +189,20 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 			<Card className="p-6 bg-gray-100 rounded-lg shadow-lg">
 				<h1 className="text-2xl font-bold mb-2">Servicios</h1>
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
-				{isLoading &&
-					Array(8).fill(null).map((_, index) => (
-						<div key={index} className="flex flex-col h-full hover:shadow-lg transition">
-							<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
-								<Skeleton className="h-full w-full rounded-t-lg" />
+					{isLoading &&
+						Array(8).fill(null).map((_, index) => (
+							<div key={index} className="flex flex-col h-full hover:shadow-lg transition">
+								<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
+									<Skeleton className="h-full w-full rounded-t-lg" />
+								</div>
+								<div className="flex-grow flex flex-col justify-between p-3">
+									<Skeleton className="h-4 w-[90%]" />
+									<Skeleton className="h-4 w-[80%]" />
+								</div>
 							</div>
-							<div className="flex-grow flex flex-col justify-between p-3">
-								<Skeleton className="h-4 w-[90%]" />
-								<Skeleton className="h-4 w-[80%]" />
-							</div>
-						</div>
-					))
-				}
-				{!isLoading &&
+						))
+					}
+					{!isLoading &&
 					servicesData?.data?.map((item) => (
 						<Link key={item?.documentId} href={`/service/${item?.documentId}`} className="h-full">
 							<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">

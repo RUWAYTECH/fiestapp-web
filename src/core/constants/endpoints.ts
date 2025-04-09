@@ -17,9 +17,11 @@ export const endpoints = {
 		deleteService: '/services/delete',
 		getServiceById: '/services/:id?populate=*',
 		getServiceByUserId: '/services?filters[documentId][$ne]=:serviceDocumentId&filters[provider][documentId][$eq]=:documentId&populate=*',
-		getServiceCategoryById: '/services?filters[category][id][$eq]=:id&populate=*'
+		getServiceCategoryById: '/services?filters[category][id][$eq]=:id&populate=*',
+		getAllUbigeoServicesByUbigeo: '/ubigeo-services?filters[ubigeo][id][$in]=:idUbigeo&populate=*',
 	},
 	ubigeo:{
-		getAllUbigeo: '/ubigeos?populate=*&pagination[page]=1&pagination[pageSize]=1000',
+		getAllUbigeo: '/ubigeos?populate=*',
+		searchUbigeo: '/ubigeos?filters[$or][0][department][$containsi]=:search&filters[$or][1][province][$containsi]=:search&filters[$or][2][district][$containsi]=:search&populate=*',
 	}
 }
