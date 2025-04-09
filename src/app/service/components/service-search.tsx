@@ -317,13 +317,23 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 										activeDropdownAddress === 'address' ? 'block' : 'hidden'
 									)}
 								>
-									<input
-										type="text"
-										placeholder="Buscar lugares..."
-										value={searchTermAddress}
-										onChange={(e) => setSearchTermAddress(e.target.value)}
-										className="text-xs mb-2 p-2 w-full border border-gray-300 rounded-md"
-									/>
+									<div className="relative">
+										<input
+											type="text"
+											placeholder="Buscar lugares..."
+											value={searchTermAddress}
+											onChange={(e) => setSearchTermAddress(e.target.value)}
+											className="text-xs mb-2 p-2 w-full border border-gray-300 rounded-md pr-8"
+										/>
+										{searchTermAddress && (
+											<button
+												onClick={() => setSearchTermAddress('')}
+												className="absolute right-4 top-1 text-red-500"
+											>
+												X
+											</button>
+										)}
+									</div>
 									<div className="max-h-64 overflow-y-auto">
 										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
 											<li>
@@ -361,7 +371,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 			{/* modo mobile */}
 			<div className="md:hidden flex justify-between items-center bg-white shadow-md p-2 rounded-md mb-6">
-				<button className="text-gray-700 font-semibold" onClick={() => setOpenCategory(true)}>Categoría</button>
+				{!categoryId && (<button className="text-gray-700 font-semibold" onClick={() => setOpenCategory(true)}>Categoría</button>)}
 				<button className="text-gray-700 font-semibold" onClick={() => setOpenOrdenar(true)}>Ordenar</button>
 				<button className="text-gray-700 font-semibold flex items-center" onClick={() => setOpenAddress(true)}>
 					Ubigeo
@@ -497,13 +507,23 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 				</div>
 
 				<div className="overflow-y-auto flex-grow p-2 bg-white rounded-lg shadow-md">
-					<input
-						type="text"
-						placeholder="Buscar lugares..."
-						value={searchTermAddress}
-						onChange={(e) => setSearchTermAddress(e.target.value)}
-						className="text-xs mb-2 p-2 w-full border border-gray-300 rounded-md"
-					/>
+					<div className="relative">
+						<input
+							type="text"
+							placeholder="Buscar lugares..."
+							value={searchTermAddress}
+							onChange={(e) => setSearchTermAddress(e.target.value)}
+							className="text-xs mb-2 p-2 w-full border border-gray-300 rounded-md pr-8"
+						/>
+						{searchTermAddress && (
+							<button
+								onClick={() => setSearchTermAddress('')}
+								className="absolute right-4 top-1 text-red-500"
+							>
+								X
+							</button>
+						)}
+					</div>
 					<div className="overflow-y-auto">
 						<ul className="mt-2 space-y-2 divide-y divide-gray-200">
 							<li>
@@ -517,8 +537,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 									<span className="text-[12px] font-bold">Seleccionar todo</span>
 								</label>
 							</li>
-
-							{/* Lista de opciones */}
 							{ubigeo.map((option) => (
 								<li key={option.id}>
 									<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
@@ -535,7 +553,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 						</ul>
 					</div>
 				</div>
-				{/* Botón de Cerrar Fijo */}
 				<div className="border-t p-4 bg-white">
 					<button
 						className="w-full bg-red-500 text-white py-2 rounded-md"
