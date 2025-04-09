@@ -1,4 +1,4 @@
-import { createServices, getAllServices, getServiceById, getServiceByProviderDocumentId,allServiceCategoryById } from '@stateManagement/queries/serviceQuery'
+import { createServices, getAllServices, getServiceById, getServiceByProviderDocumentId,allServiceCategoryById, AllSearchServiceCategoryUbigeo } from '@stateManagement/queries/serviceQuery'
 import apiSlice from './apiSlice'
 
 export const serviceApi = apiSlice.injectEndpoints({
@@ -8,6 +8,7 @@ export const serviceApi = apiSlice.injectEndpoints({
 		getServiceById: builder.query(getServiceById),
 		getServiceByProviderDocumentId: builder.query(getServiceByProviderDocumentId),
 		allServiceCategoryById: builder.query(allServiceCategoryById),
+		AllSearchServiceCategoryUbigeo: builder.query(AllSearchServiceCategoryUbigeo),
 	})
 })
 
@@ -17,5 +18,6 @@ export const {
 	useGetServiceByIdQuery,
 	useGetServiceByProviderDocumentIdQuery,
 	useAllServiceCategoryByIdQuery,
+	useLazyAllSearchServiceCategoryUbigeoQuery,
 
 } = serviceApi
