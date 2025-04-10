@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Heart, Star } from 'lucide-react'
 import { Card, CardDescription, CardHeader, CardTitle } from '@components/ui/card'
@@ -13,10 +13,12 @@ import useCartStore from '@stores/cart'
 
 interface ServiceDetailProps {
 	service: ServiceResponseDto;
+	setHasChanges?: (hasChanges: boolean) => void;
 }
 
-export default function ShowByServiceId({ service }: ServiceDetailProps) {
+export default function ShowByServiceId({ service, setHasChanges }: ServiceDetailProps) {
 	const addToCart = useCartStore((state) => state.addItem)
+	const items = useCartStore((state) => state.items)
 	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId})
 
 	const urlImage = config.imagePublicApiUrl
@@ -61,6 +63,10 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 		setScale(1)
 	}
 
+	// if items in cart is empty, setHasChanges to false
+	useEffect(() => {
+		setHasChanges?.(items.length > 0)
+	}, [items, setHasChanges])
 
 	return (
 		<>

@@ -4,9 +4,9 @@ import { useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import CartModal from '@app/request/components/modal-car'
 import { LuShoppingCart, LuMenu, LuX } from 'react-icons/lu'
 import useCartStore from '@stores/cart'
+import CartDrawer from '@app/request/components/cart-drawer'
 
 const Navbar = () => {
 	const { data: auth } = useSession()
@@ -16,10 +16,6 @@ const Navbar = () => {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const [isModalOpen, setIsModalOpen] = useState(false)
-
-	// Función para abrir el modal del carrito
-	const openCartModal = () => setIsModalOpen(true)
-	const closeCartModal = () => setIsModalOpen(false)
 
 	const isActive = (path: string) => {
 		// Verifica si la ruta incluye "service" o "category" y si es la correcta
@@ -51,7 +47,7 @@ const Navbar = () => {
 				<div className="hidden sm:flex items-center space-x-4">
 					{auth ? (
 						<>
-							<Link href={`/profile`} className="font-medium">{auth.user?.name}</Link>
+							<Link href={'/profile'} className="font-medium">{auth.user?.name}</Link>
 							<button className="cursor-pointer text-red-500" onClick={() => signOut()}>Cerrar sesión</button>
 						</>
 					) : (
@@ -63,7 +59,7 @@ const Navbar = () => {
 				</div>
 
 				<div>
-					<button onClick={openCartModal} className="relative">
+					<button onClick={() => setIsModalOpen(true)} className="relative">
 						<LuShoppingCart className='size-6' />
 
 						{items.length > 0 && (
@@ -72,7 +68,8 @@ const Navbar = () => {
 							</span>
 						)}
 					</button>
-					<CartModal isOpen={isModalOpen} onClose={closeCartModal} />
+					{/* <CartModal isOpen={isModalOpen} onClose={closeCartModal} /> */}
+					<CartDrawer isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
 				</div>
 
 				{/* Botón de menú hamburguesa para móviles */}

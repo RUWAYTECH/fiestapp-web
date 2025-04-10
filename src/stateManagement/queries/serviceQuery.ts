@@ -20,7 +20,7 @@ export const getServiceById = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<ServiceResponseDto>) => response
+	transformResponse: (response: ApiResponseDto<{ data: ServiceResponseDto }>) => response
 }
 
 export const createServices = {
