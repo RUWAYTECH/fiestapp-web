@@ -39,7 +39,7 @@ const Navbar = () => {
 					<nav className="hidden sm:flex items-center">
 						<Link href="/" className={`px-2 ${isActive('/')}`}>Inicio</Link>
 						<Link href="/service" className={`px-2 ${isActive('/service')}`}>Servicios</Link>
-						<Link href="/contact" className='px-2'>Contacto</Link>
+						<Link href="/help" className='px-2'>Centro de ayuda</Link>
 					</nav>
 				</div>
 
@@ -92,7 +92,7 @@ const Navbar = () => {
 				<nav className="flex flex-col p-4 space-y-4">
 					<Link href="/" className={`px-2 ${isActive('/')}`} onClick={() => setIsOpen(false)}>Inicio</Link>
 					<Link href="/service" className={`px-2 ${isActive('/service')}`} onClick={() => setIsOpen(false)}>Servicios</Link>
-					<Link href="/contact" className='px-2' onClick={() => setIsOpen(false)}>Contacto</Link>
+					<Link href="/help" className='px-2' onClick={() => setIsOpen(false)}>Centro de ayuda</Link>
 					<hr />
 					{auth ? (
 						<>
