@@ -39,7 +39,9 @@ const LoginForm = () => {
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		signIn('credentials', { email: values.email, password: values.password, redirect: false }).then((res) => {
 			if (res && res.ok) {
-				router.push('/')
+				const redirectUrl = localStorage.getItem('redirectServiceUrl')
+				router.push(redirectUrl ? redirectUrl : '/')
+
 				return
 			}
 
@@ -55,6 +57,11 @@ const LoginForm = () => {
 		}
 	}, [searchParams])
 
+	const handleGoogleLogin = () => {
+		signIn('google', {
+			callbackUrl: localStorage.getItem('redirectServiceUrl') || '/',
+		})
+	}
 	return (
 		<Form {...form}>
 			<form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
@@ -70,7 +77,7 @@ const LoginForm = () => {
 					</p>
 				</div>
 				<FormItem>
-					<Button type="button" variant='outline' onClick={() => signIn('google')}>
+					<Button type="button" variant='outline' onClick={handleGoogleLogin}>
 						<GoogleIcon className='w-6 h-6' />
 						Continuar con Google
 					</Button>

@@ -23,5 +23,11 @@ export const endpoints = {
 	ubigeo:{
 		getAllUbigeo: '/ubigeos?populate=*',
 		searchUbigeo: '/ubigeos?filters[$or][0][department][$containsi]=:search&filters[$or][1][province][$containsi]=:search&filters[$or][2][district][$containsi]=:search&populate=*',
+	},
+	favorite:{
+		addFavorite: '/favorites',
+		allFavorite: '/favorites?populate=*',
+		getFavoriteByserviceId: '/favorites?filters[userId][$eq]=:userId&filters[service][$eq]=:serviceId&populate=*',
+		deleteFavorite: '/favorites/:favoriteId',
 	}
 }
