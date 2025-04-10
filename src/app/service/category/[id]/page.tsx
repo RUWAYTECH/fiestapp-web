@@ -13,6 +13,9 @@ const RutaPage: React.FC = () => {
 	const [search, setSearch] = useState('')
 	const [priceMin, setPriceMin] = useState<number | undefined>(undefined)
 	const [priceMax, setPriceMax] = useState<number | undefined>(undefined)
+	const [sortBy, setSortBy] = useState<string | undefined>(undefined)
+	const [selectedServices, setSelectedServices] = useState<string[] | undefined>(undefined)
+	const [selectedCategories, setSelectedCategories] = useState<string[] | undefined>(undefined)
 
 	const [dataSearchService,{data:servicesFilterData, isLoading: isLoadingServices}] = useLazyAllSearchServiceCategoryUbigeoQuery()
 
@@ -31,6 +34,16 @@ const RutaPage: React.FC = () => {
 		setSearch(data?.search || '')
 		const categoryId = [id]
 		const search = data.search || ''
+
+		setSelectedCategories(
+			data?.category ? (Array.isArray(data.category) ? data.category : [data.category]) : undefined
+		)
+
+		setSelectedServices(
+			data?.services ? (Array.isArray(data.services) ? data.services : [data.services]) : undefined
+		)
+		setSortBy(data?.sortBy)
+
 		const idCategory = Array.isArray(categoryId) ? categoryId.join(',') : categoryId
 		const idUbigeo = Array.isArray(data.ubigeo) ? data.ubigeo.join(',') : data.ubigeo
 		const idServices = Array.isArray(data.services) ? data.services.join(',') : data.services
@@ -40,8 +53,8 @@ const RutaPage: React.FC = () => {
 			idCategory,
 			idUbigeo,
 			idServices,
-			priceMin: data.priceMin,
-			priceMax: data.priceMax,
+			priceMin:priceMin ? priceMin : data.priceMin,
+			priceMax:priceMax ? priceMax : data.priceMax,
 			sortBy: data.sortBy
 		})
 	}
@@ -54,6 +67,9 @@ const RutaPage: React.FC = () => {
 			search,
 			priceMin,
 			priceMax,
+			sortBy,
+			services: selectedServices,
+			category: selectedCategories,
 		})
 	}
 
@@ -68,9 +84,8 @@ const RutaPage: React.FC = () => {
 			<div className="container mx-auto p-4">
 				<div>
 					<ServiceSearch onSubmited={dataSearch} ubigeo={UbigeoFilterData?.data || []} searchUbigeo={handleSearchUbigeo} categoryId={id} />
-					{!search && (<ServiceCard data={servicesFilterData?.data || []} isLoading={isLoadingServices} />)}
 				</div>
-				{search && (<>
+				<>
 					<div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
 						<aside  className="hidden md:block bg-white p-4 rounded-lg shadow-md border border-gray-200 w-[250px]">
 							<h2 className="text-lg font-semibold mb-4">Filtrar por</h2>
@@ -100,7 +115,7 @@ const RutaPage: React.FC = () => {
 							<ServiceCard data={servicesFilterData?.data || []} isLoading={isLoadingServices} />
 						</main>
 					</div>
-				</>)}
+				</>
 			</div>
 		</AppLayout>
 	)

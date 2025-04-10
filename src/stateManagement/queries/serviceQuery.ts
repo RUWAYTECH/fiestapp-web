@@ -84,6 +84,7 @@ export const AllSearchServiceCategoryUbigeo = {
 
 		if (params.idServices?.trim() === 'none') {
 			searchParams.append('filters[id][$in]', '')
+
 		} else if (params.idServices?.trim()) {
 			const ids = params.idServices
 				.split(',')
@@ -94,13 +95,13 @@ export const AllSearchServiceCategoryUbigeo = {
 
 		}
 
-		if (params.priceMin !== undefined) {
-			searchParams.append('filters[$or][0][priceMin][$gte]', params.priceMin.toString())
-			searchParams.append('filters[$or][1][priceMax][$gte]', params.priceMin.toString())
-		}
-		if (params.priceMax !== undefined) {
-			searchParams.append('filters[$or][2][priceMin][$lte]', params.priceMax.toString())
-			searchParams.append('filters[$or][3][priceMax][$lte]', params.priceMax.toString())
+		if (params.priceMin !== undefined && params.priceMax !== undefined) {
+			searchParams.append('filters[priceMax][$gte]', params.priceMin.toString())
+			searchParams.append('filters[priceMin][$lte]', params.priceMax.toString())
+		} else if (params.priceMin !== undefined) {
+			searchParams.append('filters[priceMax][$gte]', params.priceMin.toString())
+		} else if (params.priceMax !== undefined) {
+			searchParams.append('filters[priceMin][$lte]', params.priceMax.toString())
 		}
 
 		switch (params.sortBy) {
