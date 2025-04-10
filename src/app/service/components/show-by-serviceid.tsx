@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { ChevronLeft, ChevronRight, Heart, Star } from 'lucide-react'
 import { Card, CardDescription, CardHeader, CardTitle } from '@components/ui/card'
@@ -10,16 +10,18 @@ import { useGetServiceByProviderDocumentIdQuery } from '@stateManagement/apiSlic
 import Skeleton from '@components/ui/skeleton'
 import Link from 'next/link'
 import { addToCart } from '@/lib/cart-util'
+import { useSession } from 'next-auth/react'
+import { useAddFavoriteMutation, useDeleteFavoriteMutation, useLazyGetFavoriteByserviceIdQuery } from '@stateManagement/apiSlices/favoriteApi'
+import { jwtDecode } from 'jwt-decode'
 
 interface ServiceDetailProps {
 	service: ServiceResponseDto;
 }
 
 export default function ShowByServiceId({ service }: ServiceDetailProps) {
-	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({
-		documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId
-	})
 
+	const { data: auth } = useSession()
+	const [dataFavoriteId, setDataFavoriteId] = useState<number>()
 	const urlImage = config.imagePublicApiUrl
 
 	const images = service?.fileImage?.map(img => img?.url || '') || []
@@ -29,6 +31,15 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 
 	const [scale, setScale] = useState(1)
 	const [offset, setOffset] = useState({ x: 0, y: 0 })
+
+	const { data: servicesData, isLoading } = useGetServiceByProviderDocumentIdQuery({
+		documentId: service?.provider?.documentId || '', documentServiceId: service?.documentId
+	})
+
+	const [getFavoriteByserviceId] = useLazyGetFavoriteByserviceIdQuery()
+	const [addFavorite] = useAddFavoriteMutation()
+	const [deleteFavorite] = useDeleteFavoriteMutation()
+
 
 	const handleNextImage = () => {
 		if (!images.length) return
@@ -61,6 +72,96 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 	const handleMouseLeave = () => {
 		setScale(1)
 	}
+
+	const getUserIdFromToken = (token: string): string => {
+		const decoded: any = jwtDecode(token)
+		return decoded?.id || ''
+	}
+
+	const handleFavoriteClick = async () => {
+		if (!auth) {
+			// Guardar redirección y servicio pendiente si el usuario no está autenticado
+			localStorage.setItem('redirectServiceUrl', window.location.href)
+			localStorage.setItem('pendingFavoriteServiceId', service.id)
+			window.location.href = '/auth/login'
+			return
+		}
+
+		const userId = getUserIdFromToken(auth.accessToken)
+		if (!userId) return
+
+		let favoriteId: string | null = null
+
+		try {
+			// Intentar obtener el favorito existente
+			const response = await getFavoriteByserviceId({ serviceId: service.id, userId }).unwrap()
+			if (response?.data?.length > 0) {
+				favoriteId = response.data[0].documentId
+			}
+		} catch {
+			// Silenciar error, ya que puede no haber favorito y eso está bien
+		}
+
+		try {
+			if (favoriteId) {
+				// Si existe favorito, eliminarlo
+				await deleteFavorite({ favoriteId }).unwrap()
+				setIsFavorite(false)
+				setDataFavoriteId(undefined)
+			} else {
+				// Si no existe, agregarlo como favorito
+				const res = await addFavorite({ userId, service: service.id }).unwrap()
+				setIsFavorite(true)
+				setDataFavoriteId(res?.documentId)
+			}
+		} catch {
+			// Fallback en caso de error al agregar o eliminar
+			setIsFavorite(prev => !prev)
+		}
+	}
+
+	const handleGetFavorite = async (userId: string, serviceId: string) => {
+		try {
+			const response = await getFavoriteByserviceId({ serviceId, userId }).unwrap()
+			if (response?.data?.length > 0) {
+				const favorite = response.data[0]
+				setDataFavoriteId(favorite?.documentId)
+				setIsFavorite(true)
+			} else {
+				setIsFavorite(false)
+			}
+		} catch {
+			setIsFavorite(false)
+		}
+	}
+
+	// Solo se ejecuta una vez al montar
+	const hasRun = useRef(false)
+
+	useEffect(() => {
+		if (hasRun.current || !auth) return
+		hasRun.current = true
+
+		const userId = getUserIdFromToken(auth.accessToken)
+		if (!userId) return
+
+		handleGetFavorite(userId, service.id)
+
+		const pendingServiceId = localStorage.getItem('pendingFavoriteServiceId')
+		if (pendingServiceId && !dataFavoriteId && !isFavorite) {
+			(async () => {
+				try {
+					await addFavorite({ userId, service: pendingServiceId }).unwrap()
+					setIsFavorite(true)
+				} catch {
+					setIsFavorite(false)
+				} finally {
+					localStorage.removeItem('pendingFavoriteServiceId')
+					localStorage.removeItem('redirectServiceUrl')
+				}
+			})()
+		}
+	}, [])
 
 
 	return (
@@ -132,7 +233,7 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 							<h1 className="text-3xl font-bold mb-2">{service.name}</h1>
 							<button
 								className="ml-auto p-2 rounded-full transition"
-								onClick={() => setIsFavorite(!isFavorite)}
+								onClick={handleFavoriteClick}
 							>
 								<Heart
 									size={24}

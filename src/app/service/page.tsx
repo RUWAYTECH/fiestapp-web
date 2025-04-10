@@ -12,6 +12,9 @@ const ServicesPage: React.FC = () => {
 	const [search, setSearch] = useState('')
 	const [priceMin, setPriceMin] = useState<number | undefined>(undefined)
 	const [priceMax, setPriceMax] = useState<number | undefined>(undefined)
+	const [sortBy, setSortBy] = useState<string | undefined>(undefined)
+	const [selectedServices, setSelectedServices] = useState<string[] | undefined>(undefined)
+	const [selectedCategories, setSelectedCategories] = useState<string[] | undefined>(undefined)
 
 	const [dataSearchService,{data:servicesFilterData, isLoading: isLoadingServices}] = useLazyAllSearchServiceCategoryUbigeoQuery()
 
@@ -26,8 +29,14 @@ const ServicesPage: React.FC = () => {
 		priceMax?: number;
 		sortBy?: string;
 	}) => {
-
 		setSearch(data?.search || '')
+		setSelectedCategories(
+			data?.category ? (Array.isArray(data.category) ? data.category : [data.category]) : undefined
+		)
+		setSelectedServices(
+			data?.services ? (Array.isArray(data.services) ? data.services : [data.services]) : undefined
+		)
+		setSortBy(data?.sortBy)
 
 		const search = data.search || ''
 		const idCategory = Array.isArray(data.category) ? data.category.join(',') : data.category
@@ -39,8 +48,8 @@ const ServicesPage: React.FC = () => {
 			idCategory,
 			idUbigeo,
 			idServices,
-			priceMin: data.priceMin,
-			priceMax: data.priceMax,
+			priceMin:priceMin ? priceMin : data.priceMin,
+			priceMax:priceMax ? priceMax : data.priceMax,
 			sortBy: data.sortBy
 		})
 	}
@@ -53,6 +62,9 @@ const ServicesPage: React.FC = () => {
 			search,
 			priceMin,
 			priceMax,
+			sortBy,
+			services: selectedServices,
+			category: selectedCategories,
 		})
 	}
 
@@ -67,11 +79,10 @@ const ServicesPage: React.FC = () => {
 			<div className="container mx-auto p-4">
 				<div>
 					<ServiceSearch onSubmited={dataSearch} ubigeo={UbigeoFilterData?.data || []} searchUbigeo={handleSearchUbigeo} />
-					{!search && (<ServiceCard data={servicesFilterData?.data || []} isLoading={isLoadingServices} />)}
 				</div>
-				{search && (<>
+				<>
 					<div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
-						<aside  className="hidden md:block bg-white p-4 rounded-lg shadow-md border border-gray-200 w-[250px]">
+						<aside className="hidden md:block bg-white p-4 rounded-lg shadow-md border border-gray-200 w-[250px]">
 							<h2 className="text-lg font-semibold mb-4">Filtrar por</h2>
 							<div className="mb-4">
 								<h3 className="text-sm font-semibold text-gray-700 mb-2">Precio</h3>
@@ -99,7 +110,7 @@ const ServicesPage: React.FC = () => {
 							<ServiceCard data={servicesFilterData?.data || []} isLoading={isLoadingServices} />
 						</main>
 					</div>
-				</>)}
+				</>
 			</div>
 		</AppLayout>
 	)
