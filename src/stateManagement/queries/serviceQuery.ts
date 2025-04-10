@@ -1,4 +1,4 @@
-import { ApiResponseDto } from '@/types'
+import { ApiMetaResponse, ApiResponseDto } from '@/types'
 import { endpoints } from '@constants/endpoints'
 import { CreateServiceRequestDto, ServiceResponseDto } from '@stateManagement/models/service/create'
 
@@ -20,7 +20,7 @@ export const getServiceById = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<ServiceResponseDto>) => response
+	transformResponse: (response: ApiResponseDto<{ data: ServiceResponseDto }>) => response
 }
 
 export const createServices = {
@@ -41,7 +41,7 @@ export const getServiceByProviderDocumentId = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
+	transformResponse: (response: ApiResponseDto<{ data: ServiceResponseDto[], meta: ApiMetaResponse }>) => response
 }
 export const allServiceCategoryById = {
 	query: (id: string) => {

@@ -9,16 +9,19 @@ import { config } from '@config/config'
 import { useGetServiceByProviderDocumentIdQuery } from '@stateManagement/apiSlices/serviceApi'
 import Skeleton from '@components/ui/skeleton'
 import Link from 'next/link'
-import { addToCart } from '@/lib/cart-util'
+import useCartStore from '@stores/cart'
 import { useSession } from 'next-auth/react'
 import { useAddFavoriteMutation, useDeleteFavoriteMutation, useLazyGetFavoriteByserviceIdQuery } from '@stateManagement/apiSlices/favoriteApi'
 import { jwtDecode } from 'jwt-decode'
 
 interface ServiceDetailProps {
 	service: ServiceResponseDto;
+	setHasChanges?: (hasChanges: boolean) => void;
 }
 
-export default function ShowByServiceId({ service }: ServiceDetailProps) {
+export default function ShowByServiceId({ service, setHasChanges }: ServiceDetailProps) {
+	const addToCart = useCartStore((state) => state.addItem)
+	const items = useCartStore((state) => state.items)
 
 	const { data: auth } = useSession()
 	const [dataFavoriteId, setDataFavoriteId] = useState<number>()
@@ -72,6 +75,11 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 	const handleMouseLeave = () => {
 		setScale(1)
 	}
+
+	// if items in cart is empty, setHasChanges to false
+	useEffect(() => {
+		setHasChanges?.(items.length > 0)
+	}, [items, setHasChanges])
 
 	const getUserIdFromToken = (token: string): string => {
 		const decoded: any = jwtDecode(token)
@@ -304,45 +312,46 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 						))
 					}
 					{!isLoading &&
-					servicesData?.data?.map((item) => (
-						<Link key={item?.documentId} href={`/service/${item?.documentId}`} className="h-full">
-							<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">
-								<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
-									<Image
-										src={urlImage + (item?.fileImage?.[0]?.url || '')}
-										alt={item?.fileImage?.[0]?.name || 'Imagen sin nombre'}
-										width={400}
-										height={250}
-										className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110"
-									/>
-								</div>
-								<CardHeader className="flex flex-col justify-between flex-1 pr-3 pl-3">
-									<div className="flex justify-between items-center w-full gap-2">
-										<CardTitle className="truncate text-base">{item.name}</CardTitle>
-										<div className="flex items-center">
-											{[...Array(5)].map((_, index) => (
-												<Star
-													key={`${item.documentId}-star-${index}`}
-													size={16}
-													className={index < item.score ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}
-												/>
-											))}
+						servicesData?.data?.map((item) => (
+							<Link key={item?.documentId} href={`/service/${item?.documentId}`} className="h-full">
+								<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">
+									<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
+										<Image
+											src={urlImage + (item?.fileImage?.[0]?.url || '')}
+											alt={item?.fileImage?.[0]?.name || 'Imagen sin nombre'}
+											width={400}
+											height={250}
+											className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110"
+										/>
+									</div>
+									<CardHeader className="flex flex-col justify-between flex-1 pr-3 pl-3">
+										<div className="flex justify-between items-center w-full gap-2">
+											<CardTitle className="truncate text-base">{item.name}</CardTitle>
+											<div className="flex items-center">
+												{[...Array(5)].map((_, index) => (
+													<Star
+														key={`${item.documentId}-star-${index}`}
+														size={16}
+														className={index < item.score ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}
+													/>
+												))}
+											</div>
 										</div>
-									</div>
-									<CardDescription className="truncate text-sm">{item.address}</CardDescription>
-									<CardDescription className="line-clamp-2 text-xs">{item.description}</CardDescription>
-									<div className="flex justify-between items-center w-full mb-4 text-sm">
-										<CardDescription className="font-bold">
-											Desde: <span className="text-red-500 ml-1">S/{item.priceMin}</span>
-										</CardDescription>
-										<CardDescription className="font-bold">
-											Hasta: <span className="text-red-500 ml-1">S/{item.priceMax}</span>
-										</CardDescription>
-									</div>
-								</CardHeader>
-							</Card>
-						</Link>
-					))}
+										<CardDescription className="truncate text-sm">{item.address}</CardDescription>
+										<CardDescription className="line-clamp-2 text-xs">{item.description}</CardDescription>
+										<div className="flex justify-between items-center w-full mb-4 text-sm">
+											<CardDescription className="font-bold">
+												Desde: <span className="text-red-500 ml-1">S/{item.priceMin}</span>
+											</CardDescription>
+											<CardDescription className="font-bold">
+												Hasta: <span className="text-red-500 ml-1">S/{item.priceMax}</span>
+											</CardDescription>
+										</div>
+									</CardHeader>
+								</Card>
+							</Link>
+						))
+					}
 				</div>
 			</Card>
 		</>

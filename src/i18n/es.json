@@ -2,6 +2,8 @@
   "welcome": "Bienvenido a React y react-intl",
 	"validation": {
 		"required": "Este campo es obligatorio",
+		"string": "El campo debe ser una cadena de texto",
+		"number": "El campo debe ser un número",
 		"email": "El email no es válido",
 		"minLength": "El campo debe tener al menos {minLength} caracteres",
 		"maxLength": "El campo debe tener como máximo {maxLength} caracteres",
@@ -9,6 +11,12 @@
 		"max": "El valor debe ser menor o igual a {max}",
 		"pattern": "El valor no es válido",
 		"password": "La contraseña debe tener al menos 8 caracteres, una letra mayúscula, una letra minúscula y un número",
-		"passwordMatch": "Las contraseñas no coinciden"
+		"passwordMatch": "Las contraseñas no coinciden",
+		"integerPositive": "El valor debe ser un número entero positivo",
+		"integerNegative": "El valor debe ser un número entero negativo",
+		"integer": "El valor debe ser un número entero",
+		"decimal": "El valor debe ser un número decimal",
+		"dateFuture": "La fecha debe ser futura",
+		"datePast": "La fecha debe ser pasada"
 	}
 }

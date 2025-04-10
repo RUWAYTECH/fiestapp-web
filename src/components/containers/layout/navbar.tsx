@@ -1,30 +1,21 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
-import CartModal from '@app/request/components/modal-car'
-import { ShoppingCart } from "lucide-react";
-import { getCart } from '@/lib/cart-util'
-import { CartRequestDto } from '@stateManagement/models/cart/cart-request.dto'
+import { LuShoppingCart, LuMenu, LuX } from 'react-icons/lu'
+import useCartStore from '@stores/cart'
+import CartDrawer from '@app/request/components/cart-drawer'
 
 const Navbar = () => {
 	const { data: auth } = useSession()
+	const items = useCartStore((state) => state.items)
+
 	const pathname = usePathname()
 	const [isOpen, setIsOpen] = useState(false)
 
-	const [cart, setCart] = useState<CartRequestDto[]>([]);
-	const [isModalOpen, setIsModalOpen] = useState(false);
-  
-	useEffect(() => {
-		setCart(getCart());
-	}, []);
-  
-	// Función para abrir el modal del carrito
-	const openCartModal = () => setIsModalOpen(true);
-	const closeCartModal = () => setIsModalOpen(false);
+	const [isModalOpen, setIsModalOpen] = useState(false)
 
 	const isActive = (path: string) => {
 		// Verifica si la ruta incluye "service" o "category" y si es la correcta
@@ -56,7 +47,7 @@ const Navbar = () => {
 				<div className="hidden sm:flex items-center space-x-4">
 					{auth ? (
 						<>
-							<Link href={`/profile`} className="font-medium">{auth.user?.name}</Link>
+							<Link href={'/profile'} className="font-medium">{auth.user?.name}</Link>
 							<button className="cursor-pointer text-red-500" onClick={() => signOut()}>Cerrar sesión</button>
 						</>
 					) : (
@@ -68,21 +59,22 @@ const Navbar = () => {
 				</div>
 
 				<div>
-					<button onClick={openCartModal} className="relative">
-					<ShoppingCart />
-					
-					{cart.length > 0 && (
-						<span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
-							{cart.length}
-						</span>
-					)}
+					<button onClick={() => setIsModalOpen(true)} className="relative">
+						<LuShoppingCart className='size-6' />
+
+						{items.length > 0 && (
+							<span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
+								{items.length}
+							</span>
+						)}
 					</button>
-					<CartModal isOpen={isModalOpen} onClose={closeCartModal} />
+					{/* <CartModal isOpen={isModalOpen} onClose={closeCartModal} /> */}
+					<CartDrawer isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
 				</div>
 
 				{/* Botón de menú hamburguesa para móviles */}
 				<button className="sm:hidden text-gray-600" onClick={() => setIsOpen(true)}>
-					<Menu className="w-6 h-6" />
+					<LuMenu className="w-6 h-6" />
 				</button>
 			</div>
 
@@ -94,7 +86,7 @@ const Navbar = () => {
 				<div className="p-[10px] flex justify-between items-center border-b">
 					<span className="text-lg font-semibold">Menú</span>
 					<button onClick={() => setIsOpen(false)} className="text-gray-600">
-						<X className="w-6 h-6" />
+						<LuX className="w-6 h-6" />
 					</button>
 				</div>
 				<nav className="flex flex-col p-4 space-y-4">

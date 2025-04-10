@@ -24,6 +24,15 @@ export interface ApiResponseError {
 	status?: number
 }
 
+export interface ApiMetaResponse {
+	pagination: {
+		page: number
+		pageSize: number
+		pageCount: number
+		total: number
+	}
+}
+
 export interface User {
 	id: number
 	username: string
