@@ -4,6 +4,7 @@ import CategoryCard from '@components/containers/category-card/category-card'
 import { useGetAllCategoryQuery } from '@stateManagement/apiSlices/categoryApi'
 import { useGetAllServicesQuery } from '@stateManagement/apiSlices/serviceApi'
 import HomeSearch from '@components/containers/home-search/home-search'
+import { Skeleton } from '@/components/ui/skeleton'
 
 export default function Home() {
 	const { data: dataCategories = { data: [] }, isLoading } = useGetAllCategoryQuery({})
@@ -16,7 +17,19 @@ export default function Home() {
 
 			<div className='container mx-auto p-4 border border-radius-lg bg-base-100 shadow-xl rounded-lg'>
 				{isLoading ? (
-					<p className="text-center text-lg font-semibold">Cargando categorías...</p>
+					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-4">
+						{Array(12).fill(null).map((_, index) => (
+							<div key={index} className="flex flex-col h-full transition shadow-md rounded-lg overflow-hidden">
+								<div className="relative w-full h-40 overflow-hidden">
+									<Skeleton className="h-full w-full" />
+								</div>
+								<div className="flex-grow flex flex-col justify-between p-3">
+									<Skeleton className="h-4 w-[90%]" />
+									<Skeleton className="h-4 w-[80%] mt-2" />
+								</div>
+							</div>
+						))}
+					</div>
 				) : (
 					<CategoryCard categories={dataCategories?.data ?? []} />
 				)}

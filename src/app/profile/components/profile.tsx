@@ -39,7 +39,7 @@ const menuItems: MenuItem[] = [
     {
         id: "help",
         label: "Ayuda y Soporte",
-        href: "/help",
+        href: "/profile/help",
         icon: <HelpCircle className="w-5 h-5 text-gray-600" />
     },
 ];
