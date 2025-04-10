@@ -41,7 +41,6 @@ const LoginForm = () => {
 			if (res && res.ok) {
 				const redirectUrl = localStorage.getItem('redirectServiceUrl')
 				router.push(redirectUrl ? redirectUrl : '/')
-
 				return
 			}
 

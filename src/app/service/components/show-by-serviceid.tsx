@@ -76,7 +76,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 		setScale(1)
 	}
 
-	// if items in cart is empty, setHasChanges to false
+
 	useEffect(() => {
 		setHasChanges?.(items.length > 0)
 	}, [items, setHasChanges])
@@ -86,9 +86,25 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 		return decoded?.id || ''
 	}
 
+	const allFavoriteByUserIdByServiceId = async (userId: string, serviceId: string): Promise<string | null> => {
+		try {
+			const response = await getFavoriteByserviceId({ serviceId, userId }).unwrap()
+			if (response?.data?.length > 0) {
+				const favorite = response.data[0]
+				setDataFavoriteId(favorite?.documentId)
+				return favorite?.documentId ?? null
+			} else {
+				setDataFavoriteId(0)
+				return null
+			}
+		} catch (error) {
+			setIsFavorite(false)
+			return null
+		}
+	}
+
 	const handleFavoriteClick = async () => {
 		if (!auth) {
-			// Guardar redirección y servicio pendiente si el usuario no está autenticado
 			localStorage.setItem('redirectServiceUrl', window.location.href)
 			localStorage.setItem('pendingFavoriteServiceId', service.id)
 			window.location.href = '/auth/login'
@@ -99,9 +115,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 		if (!userId) return
 
 		let favoriteId: string | null = null
-
 		try {
-			// Intentar obtener el favorito existente
 			const response = await getFavoriteByserviceId({ serviceId: service.id, userId }).unwrap()
 			if (response?.data?.length > 0) {
 				favoriteId = response.data[0].documentId
@@ -112,64 +126,50 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 
 		try {
 			if (favoriteId) {
-				// Si existe favorito, eliminarlo
 				await deleteFavorite({ favoriteId }).unwrap()
 				setIsFavorite(false)
-				setDataFavoriteId(undefined)
 			} else {
-				// Si no existe, agregarlo como favorito
-				const res = await addFavorite({ userId, service: service.id }).unwrap()
+				await addFavorite({ userId, service: service.id }).unwrap()
 				setIsFavorite(true)
-				setDataFavoriteId(res?.documentId)
 			}
 		} catch {
-			// Fallback en caso de error al agregar o eliminar
 			setIsFavorite(prev => !prev)
 		}
 	}
 
-	const handleGetFavorite = async (userId: string, serviceId: string) => {
-		try {
-			const response = await getFavoriteByserviceId({ serviceId, userId }).unwrap()
-			if (response?.data?.length > 0) {
-				const favorite = response.data[0]
-				setDataFavoriteId(favorite?.documentId)
-				setIsFavorite(true)
-			} else {
-				setIsFavorite(false)
-			}
-		} catch {
-			setIsFavorite(false)
-		}
-	}
-
-	// Solo se ejecuta una vez al montar
 	const hasRun = useRef(false)
-
 	useEffect(() => {
 		if (hasRun.current || !auth) return
 		hasRun.current = true
 
-		const userId = getUserIdFromToken(auth.accessToken)
-		if (!userId) return
+		const runAsync = async () => {
+			const userId = getUserIdFromToken(auth.accessToken)
+			if (!userId) return
 
-		handleGetFavorite(userId, service.id)
+			const favoriteId = await allFavoriteByUserIdByServiceId(userId, service.id)
+			const pendingServiceId = localStorage.getItem('pendingFavoriteServiceId')
 
-		const pendingServiceId = localStorage.getItem('pendingFavoriteServiceId')
-		if (pendingServiceId && !dataFavoriteId && !isFavorite) {
-			(async () => {
-				try {
-					await addFavorite({ userId, service: pendingServiceId }).unwrap()
-					setIsFavorite(true)
-				} catch {
-					setIsFavorite(false)
-				} finally {
-					localStorage.removeItem('pendingFavoriteServiceId')
-					localStorage.removeItem('redirectServiceUrl')
-				}
-			})()
+			if (pendingServiceId && !favoriteId) {
+				await addFavorite({ userId, service: pendingServiceId }).unwrap()
+					.then(() => {
+						setIsFavorite(true)
+					})
+					.catch(() => {
+						setIsFavorite(false)
+					})
+					.finally(() => {
+						localStorage.removeItem('pendingFavoriteServiceId')
+						localStorage.removeItem('redirectServiceUrl')
+					})
+			} else if(favoriteId){
+				localStorage.removeItem('pendingFavoriteServiceId')
+				localStorage.removeItem('redirectServiceUrl')
+				setIsFavorite(true)
+			}
 		}
-	}, [])
+
+		runAsync()
+	}, [auth])
 
 
 	return (
