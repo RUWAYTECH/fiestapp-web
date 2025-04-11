@@ -29,5 +29,8 @@ export const endpoints = {
 		allFavorite: '/favorites?populate=*',
 		getFavoriteByserviceId: '/favorites?filters[userId][$eq]=:userId&filters[service][$eq]=:serviceId&populate=*',
 		deleteFavorite: '/favorites/:favoriteId',
+	},
+	request: {
+		createRequest: '/request-services/custom-create'
 	}
 }

@@ -15,6 +15,7 @@ import CartItem from './cart-item'
 import { useNavigationBlocker } from '@hooks/useNavigationBlocker'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@components/ui/dialog'
 import { useEffect, useState } from 'react'
+import { useCreateRequestMutation } from '@stateManagement/apiSlices/requestSlice'
 
 const now = new Date()
 now.setHours(0, 0, 0, 0)
@@ -51,6 +52,8 @@ const RequestForm = () => {
 
 	const formSchema = createRequestFormSchema(useTranslations())
 
+	const [createRequest, { isLoading }] = useCreateRequestMutation()
+
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -62,7 +65,27 @@ const RequestForm = () => {
 	})
 
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
-		console.log('Form submitted:', values)
+		const data = {
+			registerDate: values.date,
+			numberInvite: Number(values.guests),
+			approximateBudget: Number(values.budget),
+			message: values.details,
+			totalPrice: items.reduce((total, item) => total + item.priceMin * item.quantity, 0),
+			entityStatus: 'Solicitado',
+			provider: items?.[0]?.provider?.id ?? '',
+			requestServiceDetail: items.map((item) => ({
+				comment: '',
+				quantity: item.quantity,
+				priceFinal: item.priceMin,
+				service: item.providerId
+			}))
+		}
+
+		createRequest(data).then((res) => {
+			console.log(res)
+		}).catch((err) => {
+			console.log(err)
+		})
 	}
 
 	const [hasChanges, setHasChanges] = useState(true)
@@ -191,7 +214,7 @@ const RequestForm = () => {
 												)}
 											/>
 
-											<Button type="submit" className="w-full bg-rose-500 hover:bg-rose-600 text-white">
+											<Button type="submit" className="w-full bg-rose-500 hover:bg-rose-600 text-white" disabled={isLoading}>
 												Enviar Solicitud
 											</Button>
 										</form>
