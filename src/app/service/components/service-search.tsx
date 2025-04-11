@@ -6,7 +6,6 @@ import { Input } from '@components/ui/input'
 import { UbigeoResponseDto } from '@stateManagement/models/ubigeo/ubigeo'
 import { useGetAllCategoryQuery } from '@stateManagement/apiSlices/categoryApi'
 import { useLazyGetAllUbigeoServicesByUbigeoQuery } from '@stateManagement/apiSlices/ubigeoServicesApi'
-import { ca } from 'date-fns/locale'
 
 interface ServiceSearchProps {
 	onSubmited: (data: {
@@ -115,18 +114,18 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	}
 
 	const dataUbigeosId = (data: string[]) => {
-		const dataServicesId = data.join(',')
-		getUbigeoServices({ idUbigeo: dataServicesId })
+		const dataServicesIdByUbigeo = data.join(',')
+		getUbigeoServices({ idUbigeo: dataServicesIdByUbigeo })
 			.unwrap()
 			.then((response) => {
-				const dataServicesId: string[] = response?.data
+				const dataServicesIdByUbigeo: string[] = response?.data
 					?.map(item => item?.service?.id?.toString())
 					.filter(Boolean) || []
 
-				if (dataServicesId.length > 0) {
-					setIdServices(dataServicesId)
+				if (dataServicesIdByUbigeo.length > 0) {
+					setIdServices(dataServicesIdByUbigeo)
 				}
-				else if (data.length > 0 && dataServicesId.length === 0) {
+				else if (data.length > 0 && dataServicesIdByUbigeo.length === 0) {
 					setIdServices(['none'])
 				}
 				else if (data.length === 0) {
@@ -145,7 +144,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 		if (selectedAddressOptions.length > 0) {
 			dataUbigeosId(selectedAddressOptions)
 		}
-	}, [selectedAddressOptions])
+	}, [selectedAddressOptions,setSearchTermAddress])
 
 	useEffect(() => {
 		searchUbigeo(searchTermAddress)
@@ -162,6 +161,18 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 			category: selectedCategory,
 			ubigeo: selectedAddressOptions,
 			services: idServices,
+			sortBy: selectedSortOption,
+		})
+	}
+
+	const handleClearInputUbigeo = () => {
+		setSearchTermAddress('')
+		setSelectedAddressOptions([])
+		onSubmited({
+			search: searchInput,
+			category: selectedCategory,
+			ubigeo: [],
+			services: [],
 			sortBy: selectedSortOption,
 		})
 	}
@@ -327,7 +338,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 										/>
 										{searchTermAddress && (
 											<button
-												onClick={() => setSearchTermAddress('')}
+												onClick={handleClearInputUbigeo}
 												className="absolute right-4 top-1 text-red-500"
 											>
 												X
@@ -517,7 +528,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 						/>
 						{searchTermAddress && (
 							<button
-								onClick={() => setSearchTermAddress('')}
+								onClick={handleClearInputUbigeo}
 								className="absolute right-4 top-1 text-red-500"
 							>
 								X

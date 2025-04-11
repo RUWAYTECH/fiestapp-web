@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { ChevronLeft, ChevronRight, Heart, Star } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Heart, Star, LoaderCircle  } from 'lucide-react'
 import { Card, CardDescription, CardHeader, CardTitle } from '@components/ui/card'
 import BreadcrumbNavigation from '@components/containers/bread-crumb/bread-crumb'
 import { ServiceResponseDto } from '@stateManagement/models/service/create'
@@ -40,8 +40,8 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 	})
 
 	const [getFavoriteByserviceId] = useLazyGetFavoriteByserviceIdQuery()
-	const [addFavorite] = useAddFavoriteMutation()
-	const [deleteFavorite] = useDeleteFavoriteMutation()
+	const [addFavorite,{isLoading:isLoadingFavorite}] = useAddFavoriteMutation()
+	const [deleteFavorite,{isLoading:isLoadingDeleteFavorite}] = useDeleteFavoriteMutation()
 
 
 	const handleNextImage = () => {
@@ -242,11 +242,19 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 							<button
 								className="ml-auto p-2 rounded-full transition"
 								onClick={handleFavoriteClick}
+								disabled={isLoadingFavorite || isLoadingDeleteFavorite}
 							>
-								<Heart
-									size={24}
-									className={`${isFavorite ? 'text-pink-500 fill-red-500' : 'text-gray-400 fill-transparent'}`}
-								/>
+								{isLoadingFavorite||isLoadingDeleteFavorite ? (
+									<LoaderCircle className="animate-spin text-gray-500" size={24} />
+								) : (
+									<Heart
+										size={24}
+										className={`${isFavorite
+											? 'text-pink-500 fill-red-500'
+											: 'text-gray-400 fill-transparent'
+										}`}
+									/>
+								)}
 							</button>
 						</div>
 

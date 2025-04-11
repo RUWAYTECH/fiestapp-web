@@ -59,7 +59,7 @@ const RutaPage: React.FC = () => {
 		})
 	}
 
-	const handleSearch = () => {
+	const handleSearchPrice = () => {
 		if (priceMin !== undefined && priceMax !== undefined && priceMin > priceMax) {
 			return
 		}
@@ -79,6 +79,20 @@ const RutaPage: React.FC = () => {
 		})
 	}
 
+	const clearSearchPriceMinMax = () => {
+		setPriceMin(undefined)
+		setPriceMax(undefined)
+		const categoryId = [id]
+		dataSearchService({
+			search,
+			priceMin: undefined,
+			priceMax: undefined,
+			sortBy,
+			idServices: selectedServices ? selectedServices.join(',') : undefined,
+			idCategory: categoryId.join(','),
+		})
+	}
+
 	return (
 		<AppLayout>
 			<div className="container mx-auto p-4">
@@ -87,29 +101,38 @@ const RutaPage: React.FC = () => {
 				</div>
 				<>
 					<div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
-						<aside  className="hidden md:block bg-white p-4 rounded-lg shadow-md border border-gray-200 w-[250px]">
-							<h2 className="text-lg font-semibold mb-4">Filtrar por</h2>
-							<div className="mb-4">
-								<h3 className="text-sm font-semibold text-gray-700 mb-2">Precio</h3>
-								<div className="flex items-center space-x-2">
-									<input
-										type="number"
-										placeholder="Mínimo"
-										className="w-1/2 p-1 border rounded-md text-sm"
-										onChange={(e) => setPriceMin(e.target.value ? Number(e.target.value) : undefined)}
-									/>
-									<span>-</span>
-									<input
-										type="number"
-										placeholder="Máximo"
-										className="w-1/2 p-1 border rounded-md text-sm"
-										onChange={(e) => setPriceMax(e.target.value ? Number(e.target.value) : undefined)}
-									/>
+						<aside className="hidden md:block">
+							<div className='rounded-lg shadow-md border border-gray-200 bg-white p-4  w-[250px] '>
+								<h2 className="text-lg font-semibold mb-4">Filtrar por</h2>
+								<div className="mb-4">
+									<h3 className="text-sm font-semibold text-gray-700 mb-2">Precio</h3>
+									<div className="flex items-center space-x-2">
+										<input
+											type="number"
+											placeholder="Mínimo"
+											className="w-1/2 p-1 border rounded-md text-sm"
+											value={priceMin ?? ''}
+											onChange={(e) => setPriceMin(e.target.value ? Number(e.target.value) : undefined)}
+										/>
+										<span>-</span>
+										<input
+											type="number"
+											placeholder="Máximo"
+											className="w-1/2 p-1 border rounded-md text-sm"
+											value={priceMax ?? ''}
+											onChange={(e) => setPriceMax(e.target.value ? Number(e.target.value) : undefined)}
+										/>
+									</div>
 								</div>
+								{(priceMin || priceMax) && (
+									<button className="w-full bg-green-500 text-white py-2 rounded-md mt-2 hover:bg-green-600" onClick={clearSearchPriceMinMax}>
+										Limpiar filtros
+									</button>
+								)}
+								<button className="w-full bg-red-500 text-white py-2 rounded-md mt-2 hover:bg-red-600" onClick={handleSearchPrice}>
+									Aplicar filtros
+								</button>
 							</div>
-							<button className="w-full bg-blue-500 text-white py-2 rounded-md mt-2 hover:bg-blue-600" onClick={handleSearch}>
-								Aplicar filtros
-							</button>
 						</aside>
 						<main className="flex-1">
 							<ServiceCard data={servicesFilterData?.data || []} isLoading={isLoadingServices} />
