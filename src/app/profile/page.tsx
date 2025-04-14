@@ -28,11 +28,9 @@ const Profile: React.FC = () => {
 
 	return (
 		<>
-			{auth && (
-				<AppLayout>
-					<ProfilePage />
-				</AppLayout>
-			)}
+			<AppLayout>
+				<ProfilePage />
+			</AppLayout>
 		</>
 	)
 }

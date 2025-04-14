@@ -106,7 +106,7 @@ const ProfilePage = () => {
                 <div className="w-full md:w-1/4 mb-6 md:mb-0"> {/* Cambiado de 1/3 a 1/4 para más a la izquierda */}
                     <Card className="w-full max-w-md mx-auto md:ml-0 shadow-lg rounded-2xl overflow-hidden border-0">
                         <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 pb-20">
-                            <h1 className="text-white text-xl font-bold">Mi Perfil</h1>
+                            <h1 className="text-white text-xl font-bold">Mi Perfil q</h1>
                         </div>
 
                         <div className="relative px-6">
