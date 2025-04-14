@@ -82,9 +82,8 @@ export const AllSearchServiceCategoryUbigeo = {
 		}
 
 
-		if (params.idServices?.trim() === 'none') {
+		if (params.idServices === 'none' || params.idServices?.trim() === 'none') {
 			searchParams.append('filters[id][$in]', '')
-
 		} else if (params.idServices?.trim()) {
 			const ids = params.idServices
 				.split(',')

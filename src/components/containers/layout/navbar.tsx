@@ -35,7 +35,10 @@ const Navbar = () => {
 			<div className="max-w-5xl mx-auto flex items-center justify-between py-2 px-4">
 				{/* Logo y menú de escritorio */}
 				<div className="flex items-center space-x-4 text-sm text-accent-foreground">
-					<span className="font-bold text-lg">FiestApp</span>
+					<Link href="/" className="font-bold text-lg flex">
+						<span className="text-black dark:text-white">FIEST</span>
+						<span className="text-red-600">APP</span>
+					</Link>
 					<nav className="hidden sm:flex items-center">
 						<Link href="/" className={`px-2 ${isActive('/')}`}>Inicio</Link>
 						<Link href="/service" className={`px-2 ${isActive('/service')}`}>Servicios</Link>
