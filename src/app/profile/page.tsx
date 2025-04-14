@@ -12,6 +12,9 @@ const Profile: React.FC = () => {
 			localStorage.setItem('redirectProfileUrl', window.location.href)
 			window.location.href = '/auth/login'
 		}
+		else{
+			localStorage.removeItem('redirectProfileUrl')
+		}
 	}, [status])
 
 	if (status === 'loading') {
