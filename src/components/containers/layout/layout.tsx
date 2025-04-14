@@ -5,9 +5,11 @@ import Footer from './footer'
 const AppLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 	return (
 		<>
-			<Navbar />
-			{children}
-			<Footer />
+			<div className="min-h-screen flex flex-col">
+				<Navbar />
+				<main className="flex-grow">{children}</main>
+				<Footer />
+			</div>
 		</>
 	)
 }
