@@ -7,7 +7,7 @@ export const createRequestService = {
 		return {
 			url: endpoints.request.createRequest,
 			method: 'POST',
-			data
+			data: { data }
 		}
 	},
 	transformResponse: (response: ApiResponseDto<null>) => response
