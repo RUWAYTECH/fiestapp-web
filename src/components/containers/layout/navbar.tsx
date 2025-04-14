@@ -20,13 +20,13 @@ const Navbar = () => {
 	const isActive = (path: string) => {
 		// Verifica si la ruta incluye "service" o "category" y si es la correcta
 		if (pathname.includes('service') && path === '/service') {
-			return 'text-red-500 font-bold'
+			return 'text-primary font-bold'
 		}
 		if (pathname.includes('category') && path === '/category') {
-			return 'text-red-500 font-bold'
+			return 'text-primary font-bold'
 		}
 		if (pathname === path) {
-			return 'text-red-500 font-bold'
+			return 'text-primary font-bold'
 		}
 		return ''
 	}
@@ -36,8 +36,8 @@ const Navbar = () => {
 				{/* Logo y menú de escritorio */}
 				<div className="flex items-center space-x-4 text-sm text-accent-foreground">
 					<Link href="/" className="font-bold text-lg flex">
-						<span className="text-black dark:text-white">FIEST</span>
-						<span className="text-red-600">APP</span>
+						<span className="text-foreground dark:text-popover">FIEST</span>
+						<span className="text-primary" >APP</span>
 					</Link>
 					<nav className="hidden sm:flex items-center">
 						<Link href="/" className={`px-2 ${isActive('/')}`}>Inicio</Link>
@@ -51,7 +51,7 @@ const Navbar = () => {
 					{auth ? (
 						<>
 							<Link href={'/profile'} className="font-medium">{auth.user?.name}</Link>
-							<button className="cursor-pointer text-red-500" onClick={() => signOut()}>Cerrar sesión</button>
+							<button className="cursor-pointer text-primary" onClick={() => signOut()}>Cerrar sesión</button>
 						</>
 					) : (
 						<>
@@ -66,7 +66,7 @@ const Navbar = () => {
 						<LuShoppingCart className='size-6' />
 
 						{items.length > 0 && (
-							<span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full px-1">
+							<span className="absolute top-0 right-0 bg-primary text-white text-xs rounded-full px-1">
 								{items.length}
 							</span>
 						)}

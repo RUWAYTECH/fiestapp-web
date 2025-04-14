@@ -2,12 +2,17 @@
 
 import AppLayout from '@components/containers/layout/layout'
 import { useLazyAllSearchServiceCategoryUbigeoQuery } from '@stateManagement/apiSlices/serviceApi'
-import ServiceCard from './components/service-card'
 import ServiceSearch from './components/service-search'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLazySearchUbigeoQuery } from '@stateManagement/apiSlices/ubigeoApi'
+import ServiceCard from '@components/containers/service-card/service-card'
+import { useSearchParams } from 'next/navigation'
 
 const ServicesPage: React.FC = () => {
+	const searchParams = useSearchParams()
+	const idParam = searchParams.get('cat')
+	const id = idParam !== null ? Number(idParam) : undefined
+	const previousCatRef = useRef<string | null>(null)
 
 	const [search, setSearch] = useState('')
 	const [priceMin, setPriceMin] = useState<number | undefined>(undefined)
@@ -30,15 +35,18 @@ const ServicesPage: React.FC = () => {
 		sortBy?: string;
 	}) => {
 		setSearch(data?.search || '')
+
 		setSelectedCategories(
 			data?.category ? (Array.isArray(data.category) ? data.category : [data.category]) : undefined
 		)
+
 		setSelectedServices(
 			data?.services ? (Array.isArray(data.services) ? data.services : [data.services]) : undefined
 		)
 		setSortBy(data?.sortBy)
 
 		const search = data.search || ''
+
 		const idCategory = Array.isArray(data.category) ? data.category.join(',') : data.category
 		const idUbigeo = Array.isArray(data.ubigeo) ? data.ubigeo.join(',') : data.ubigeo
 		const idServices = Array.isArray(data.services) ? data.services.join(',') : data.services
@@ -87,11 +95,19 @@ const ServicesPage: React.FC = () => {
 		})
 	}
 
+	useEffect(() => {
+		const currentCat = searchParams.get('cat')
+		if (previousCatRef.current !== null && currentCat === null) {
+			window.location.reload()
+		}
+		previousCatRef.current = currentCat
+	}, [searchParams])
+
 	return (
 		<AppLayout>
 			<div className="container mx-auto p-4">
 				<div>
-					<ServiceSearch onSubmited={dataSearch} ubigeo={UbigeoFilterData?.data || []} searchUbigeo={handleSearchUbigeo} />
+					<ServiceSearch onSubmited={dataSearch} ubigeo={UbigeoFilterData?.data || []} searchUbigeo={handleSearchUbigeo} categoryId={id} />
 				</div>
 				<>
 					<div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-2">
@@ -103,27 +119,49 @@ const ServicesPage: React.FC = () => {
 									<div className="flex items-center space-x-2">
 										<input
 											type="number"
+											min="0"
 											placeholder="Mínimo"
 											className="w-1/2 p-1 border rounded-md text-sm"
 											value={priceMin ?? ''}
-											onChange={(e) => setPriceMin(e.target.value ? Number(e.target.value) : undefined)}
+											onKeyDown={(e) => {
+												if (e.key === '-' || e.key === 'e') {
+													e.preventDefault()
+												}
+											}}
+											onChange={(e) => {
+												const value = Number(e.target.value)
+												if (value >= 0 || e.target.value === '') {
+													setPriceMin(e.target.value ? value : undefined)
+												}
+											}}
 										/>
 										<span>-</span>
 										<input
 											type="number"
+											min="0"
 											placeholder="Máximo"
 											className="w-1/2 p-1 border rounded-md text-sm"
 											value={priceMax ?? ''}
-											onChange={(e) => setPriceMax(e.target.value ? Number(e.target.value) : undefined)}
+											onKeyDown={(e) => {
+												if (e.key === '-' || e.key === 'e') {
+													e.preventDefault()
+												}
+											}}
+											onChange={(e) => {
+												const value = Number(e.target.value)
+												if (value >= 0 || e.target.value === '') {
+													setPriceMax(e.target.value ? value : undefined)
+												}
+											}}
 										/>
 									</div>
 								</div>
 								{(priceMin || priceMax) && (
-									<button className="w-full bg-green-500 text-white py-2 rounded-md mt-2 hover:bg-green-600" onClick={clearSearchPriceMinMax}>
+									<button className="w-full bg-ring text-popover py-2 rounded-md mt-2 hover:bg-sidebar-ring" onClick={clearSearchPriceMinMax}>
 										Limpiar filtros
 									</button>
 								)}
-								<button className="w-full bg-red-500 text-white py-2 rounded-md mt-2 hover:bg-red-600" onClick={handleSearchPrice}>
+								<button className="w-full bg-primary text-popover py-2 rounded-md mt-2 hover:bg-primary-900" onClick={handleSearchPrice}>
 									Aplicar filtros
 								</button>
 							</div>

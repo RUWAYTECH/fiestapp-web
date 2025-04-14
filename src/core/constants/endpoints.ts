@@ -19,6 +19,7 @@ export const endpoints = {
 		getServiceByUserId: '/services?filters[documentId][$ne]=:serviceDocumentId&filters[provider][documentId][$eq]=:documentId&populate=*',
 		getServiceCategoryById: '/services?filters[category][id][$eq]=:id&populate=*',
 		getAllUbigeoServicesByUbigeo: '/ubigeo-services?filters[ubigeo][id][$in]=:idUbigeo&populate=*',
+		lastService: '/services?sort=createdAt:desc&sort=score:desc&pagination[page]=1&pagination[pageSize]=6&populate=*',
 	},
 	ubigeo:{
 		getAllUbigeo: '/ubigeos?populate=*',

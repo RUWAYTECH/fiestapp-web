@@ -46,7 +46,7 @@ const menuItems: MenuItem[] = [
 
 const Breadcrumb = ({ activeItem, items }: BreadcrumbProps) => {
     const currentItem = items.find(item => item.id === activeItem);
-    
+
     return (
         <div className="flex items-center text-sm text-gray-600 mb-4 md:hidden">
             <Link href="/profile" className="flex items-center">
@@ -66,9 +66,9 @@ const Breadcrumb = ({ activeItem, items }: BreadcrumbProps) => {
 const DynamicContent = ({ src }: DynamicContentProps) => {
     return (
         <div className="w-full h-full min-h-[500px]">
-            <iframe 
-                src={src} 
-                className="w-full h-full border-0" 
+            <iframe
+                src={src}
+                className="w-full h-full border-0"
                 title="Contenido dinámico"
             />
         </div>
@@ -81,14 +81,14 @@ const ProfilePage = () => {
     const [contentUrl, setContentUrl] = useState<string>("");
 
     const getInitials = (): string => {
-        return auth?.user?.name ? auth.user.name.charAt(0).toUpperCase() : "U";
+        return auth?.user?.name ? auth?.user?.name.charAt(0).toUpperCase() : "U";
     };
 
     useEffect(() => {
         if (activeItem) {
-            const selectedItem = menuItems.find(item => item.id === activeItem);
+            const selectedItem = menuItems.find(item => item?.id === activeItem);
             if (selectedItem) {
-                setContentUrl(selectedItem.href);
+                setContentUrl(selectedItem?.href);
             }
         }
     }, [activeItem]);
@@ -113,7 +113,7 @@ const ProfilePage = () => {
                             <div className="absolute -top-12 flex justify-center w-full left-0">
                                 <Avatar className="w-24 h-24 border-4 border-white rounded-full bg-white shadow-md">
                                     {auth?.user?.image ? (
-                                        <AvatarImage src={auth.user.image} alt={auth?.user?.name || "Usuario"} />
+                                        <AvatarImage src={auth?.user?.image} alt={auth?.user?.name || "Usuario"} />
                                     ) : (
                                         <AvatarFallback className="bg-gradient-to-br from-blue-400 to-blue-600 text-white text-xl">
                                             {getInitials()}
@@ -133,38 +133,38 @@ const ProfilePage = () => {
                                 {/* Elementos para móvil - navegación directa */}
                                 {menuItems.map((item) => (
                                     <div
-                                        key={`mobile-${item.id}`}
+                                        key={`mobile-${item?.id}`}
                                         className="block md:hidden"
                                     >
-                                        <Link href={item.href}>
+                                        <Link href={item?.href}>
                                             <div className="flex items-center justify-between w-full px-5 py-4 text-left rounded-lg bg-white hover:bg-gray-50 border border-gray-100 shadow-sm transition-all duration-200 hover:shadow">
                                                 <div className="flex items-center gap-4">
-                                                    {item.icon}
-                                                    <span className="font-medium">{item.label}</span>
+                                                    {item?.icon}
+                                                    <span className="font-medium">{item?.label}</span>
                                                 </div>
                                                 <ArrowRight className="w-4 h-4 text-gray-400" />
                                             </div>
                                         </Link>
                                     </div>
                                 ))}
-                                
+
                                 {/* Elementos para desktop */}
                                 {menuItems.map((item) => (
                                     <div
                                         key={`desktop-${item.id}`}
                                         className="hidden md:block cursor-pointer"
-                                        onClick={() => handleItemClick(item.id)}
+                                        onClick={() => handleItemClick(item?.id)}
                                     >
-                                        <div 
+                                        <div
                                             className={`flex items-center justify-between w-full px-5 py-4 text-left rounded-lg border border-gray-100 shadow-sm transition-all duration-200 hover:shadow ${
-                                                activeItem === item.id 
-                                                    ? "bg-blue-50 border-blue-200" 
+                                                activeItem === item?.id
+                                                    ? "bg-blue-50 border-blue-200"
                                                     : "bg-white hover:bg-gray-50"
                                             }`}
                                         >
                                             <div className="flex items-center gap-4">
-                                                {item.icon}
-                                                <span className="font-medium">{item.label}</span>
+                                                {item?.icon}
+                                                <span className="font-medium">{item?.label}</span>
                                             </div>
                                             <ArrowRight className="w-4 h-4 text-gray-400" />
                                         </div>

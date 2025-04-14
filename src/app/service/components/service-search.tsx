@@ -1,11 +1,13 @@
 import { Button } from '@components/ui/button'
 import { cn } from '@/lib/utils'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, use } from 'react'
 import { Filter, MapPin, Search, SortAsc, X } from 'lucide-react'
 import { Input } from '@components/ui/input'
 import { UbigeoResponseDto } from '@stateManagement/models/ubigeo/ubigeo'
 import { useGetAllCategoryQuery } from '@stateManagement/apiSlices/categoryApi'
 import { useLazyGetAllUbigeoServicesByUbigeoQuery } from '@stateManagement/apiSlices/ubigeoServicesApi'
+import { undefined } from 'zod'
+import { ca, se } from 'date-fns/locale'
 
 interface ServiceSearchProps {
 	onSubmited: (data: {
@@ -19,7 +21,7 @@ interface ServiceSearchProps {
 
 	ubigeo: UbigeoResponseDto[];
 	searchUbigeo: (search: string) => void;
-	categoryId?: string;
+	categoryId?: number;
 }
 
 const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searchUbigeo, categoryId }) => {
@@ -40,7 +42,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	const dropdownRefSort = useRef<HTMLDivElement>(null)
 	const dropdownRefAddress = useRef<HTMLDivElement>(null)
 
-	const [selectedCategory, setSelectedCategory] = useState<string[]>([])
+	const [selectedCategory, setSelectedCategory] = useState<(string)[]>([])
 	const [selectedSortOption, setSelectedSortOption] = useState('')
 	const [selectedAddressOptions, setSelectedAddressOptions] = useState<string[]>([])
 
@@ -51,6 +53,19 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 		{ id: 'priceLow', label: 'Precio más bajo' },
 		{ id: 'bestRating', label: 'Mejor valoración' },
 	]
+
+	useEffect(() => {
+		if(categoryId){
+			setSelectedCategory([categoryId])
+			handleSubmitSearch()
+		}
+	}, [categoryId])
+
+	useEffect(() => {
+		if (searchInput === '') {
+			handleSubmitSearch()
+		}
+	}, [searchInput])
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -105,11 +120,19 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	}
 
 	const handleSelectAllCategory = () => {
-		if (selectedCategory.length === categoryData?.data?.length) {
-			setSelectedCategory([])
+		const allCategoryIds = categoryData?.data?.map((filter) => filter.id) || []
+
+		if (selectedCategory.length === allCategoryIds.length) {
+			if (categoryId !== undefined && categoryId !== null) {
+				setSelectedCategory([categoryId])
+			} else {
+				setSelectedCategory([])
+			}
 		} else {
-			setSelectedCategory(categoryData?.data?.map((filter) => filter.id)|| [])
+			const uniqueIds = new Set([...allCategoryIds, categoryId])
+			setSelectedCategory(Array.from(uniqueIds))
 		}
+
 		handleSubmitSearch()
 	}
 
@@ -135,12 +158,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	}
 
 	useEffect(() => {
-		if (searchInput === '') {
-			handleSubmitSearch()
-		}
-	}, [searchInput])
-
-	useEffect(() => {
 		if (selectedAddressOptions.length > 0) {
 			dataUbigeosId(selectedAddressOptions)
 		}
@@ -151,13 +168,11 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 	}, [searchTermAddress])
 
-	useEffect(() => {
-		handleSubmitSearch()
-	}, [selectedCategory,selectedSortOption,idServices])
 
 	const handleSubmitSearch = () => {
 		onSubmited({
 			search: searchInput,
+			// eslint-disable-next-line no-constant-binary-expression
 			category: selectedCategory,
 			ubigeo: selectedAddressOptions,
 			services: idServices,
@@ -176,6 +191,10 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 			sortBy: selectedSortOption,
 		})
 	}
+
+	useEffect(() => {
+		handleSubmitSearch()
+	}, [selectedCategory, selectedSortOption, idServices,])
 
 	return (
 		<div>
@@ -209,58 +228,61 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 					{/* modo desktop */}
 					<div className="hidden md:block">
 						<div className="flex gap-2">
-							{!categoryId && (
-								<div className="relative">
-									<Button
-										className="flex items-center gap-1 px-4 py-2"
-										variant="outline"
-										onClick={() => {
-											setActiveDropdownCategory(activeDropdownCategory === 'categories' ? null : 'categories')
-											setActiveDropdownSort(null)
-											setActiveDropdownAddress(null)
-										}}
-									>
-										<Filter size={16} />
-										<span>Categoría</span>
-									</Button>
-									<div
-										ref={dropdownRefCategory}
-										className={cn(
-											'absolute left-0 mt-1 w-60 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
-											activeDropdownCategory === 'categories' ? 'block' : 'hidden'
-										)}
-									>
-										<div className="max-h-60 overflow-y-auto">
-											<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-												<li>
+							<div className="relative">
+								<Button
+									className="flex items-center gap-1 px-4 py-2"
+									variant="outline"
+									onClick={() => {
+										setActiveDropdownCategory(activeDropdownCategory === 'categories' ? null : 'categories')
+										setActiveDropdownSort(null)
+										setActiveDropdownAddress(null)
+									}}
+								>
+									<Filter size={16} />
+									<span>Categoría</span>
+								</Button>
+								<div
+									ref={dropdownRefCategory}
+									className={cn(
+										'absolute left-0 mt-1 w-60 bg-white border border-gray-300 rounded-lg shadow-lg p-3 z-50',
+										activeDropdownCategory === 'categories' ? 'block' : 'hidden'
+									)}
+								>
+									<div className="max-h-60 overflow-y-auto">
+										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
+											<li>
+												<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
+													<input
+														type="checkbox"
+														checked={selectedCategory.length === categoryData?.data?.length}
+														onChange={handleSelectAllCategory}
+														className="mr-2 accent-blue-500"
+													/>
+													<span className="font-bold text-sm">Seleccionar todo</span>
+												</label>
+											</li>
+											{categoryData?.data?.map((filter) => (
+												<li key={filter.id}>
 													<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 														<input
 															type="checkbox"
-															checked={selectedCategory.length === categoryData?.data?.length}
-															onChange={handleSelectAllCategory}
+															checked={selectedCategory.includes(filter.id)}
+															disabled={filter.id===categoryId}
+															onChange={() => {
+																if (filter.id !== categoryId) {
+																	handleCategoryChange(filter.id)
+																}
+															}}
 															className="mr-2 accent-blue-500"
 														/>
-														<span className="font-bold text-sm">Seleccionar todo</span>
+														{filter.name}
 													</label>
 												</li>
-												{categoryData?.data?.map((filter) => (
-													<li key={filter.id}>
-														<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
-															<input
-																type="checkbox"
-																checked={selectedCategory.includes(filter.id)}
-																onChange={() => handleCategoryChange(filter.id)}
-																className="mr-2 accent-blue-500"
-															/>
-															{filter.name}
-														</label>
-													</li>
-												))}
-											</ul>
-										</div>
+											))}
+										</ul>
 									</div>
 								</div>
-							)}
+							</div>
 
 							<div className="relative">
 								<Button
@@ -339,7 +361,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 										{searchTermAddress && (
 											<button
 												onClick={handleClearInputUbigeo}
-												className="absolute right-4 top-1 text-red-500"
+												className="absolute right-4 top-1 text-primary"
 											>
 												X
 											</button>
@@ -382,7 +404,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 			{/* modo mobile */}
 			<div className="md:hidden flex justify-between items-center bg-white shadow-md p-2 rounded-md mb-6">
-				{!categoryId && (<button className="text-gray-700 font-semibold" onClick={() => setOpenCategory(true)}>Categoría</button>)}
+				<button className="text-gray-700 font-semibold" onClick={() => setOpenCategory(true)}>Categoría</button>
 				<button className="text-gray-700 font-semibold" onClick={() => setOpenOrdenar(true)}>Ordenar</button>
 				<button className="text-gray-700 font-semibold flex items-center" onClick={() => setOpenAddress(true)}>
 					Ubigeo
@@ -425,7 +447,12 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 									<input
 										type="checkbox"
 										checked={selectedCategory.includes(filter.id)}
-										onChange={() => handleCategoryChange(filter.id)}
+										disabled={filter.id === Number(categoryId)}
+										onChange={() => {
+											if (filter.id !== Number(categoryId)) {
+												handleCategoryChange(filter.id)
+											}
+										}}
 										className="mr-2 accent-blue-500"
 									/>
 									{filter.name}
@@ -436,7 +463,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 				</div>
 				<div className="border-t p-4 bg-white">
 					<button
-						className="w-full bg-red-500 text-white py-2 rounded-md"
+						className="w-full bg-primary text-white py-2 rounded-md"
 						onClick={() => setOpenCategory(false)}
 					>
 						Cerrar
@@ -489,7 +516,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 				<div className="border-t p-4 bg-white">
 					<button
-						className="w-full bg-red-500 text-white py-2 rounded-md"
+						className="w-full bg-primary text-white py-2 rounded-md"
 						onClick={() => setOpenOrdenar(false)}
 					>
 						Cerrar
@@ -529,7 +556,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 						{searchTermAddress && (
 							<button
 								onClick={handleClearInputUbigeo}
-								className="absolute right-4 top-1 text-red-500"
+								className="absolute right-4 top-1 text-primary"
 							>
 								X
 							</button>
@@ -566,7 +593,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 				</div>
 				<div className="border-t p-4 bg-white">
 					<button
-						className="w-full bg-red-500 text-white py-2 rounded-md"
+						className="w-full bg-primary text-white py-2 rounded-md"
 						onClick={() => setOpenAddress(false)}
 					>
 						Cerrar

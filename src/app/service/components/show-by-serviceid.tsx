@@ -24,7 +24,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 	const items = useCartStore((state) => state.items)
 
 	const { data: auth } = useSession()
-	const [dataFavoriteId, setDataFavoriteId] = useState<number>()
+	//const [dataFavoriteId, setDataFavoriteId] = useState<number>()
 	const urlImage = config.imagePublicApiUrl
 
 	const images = service?.fileImage?.map(img => img?.url || '') || []
@@ -91,10 +91,10 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 			const response = await getFavoriteByserviceId({ serviceId, userId }).unwrap()
 			if (response?.data?.length > 0) {
 				const favorite = response.data[0]
-				setDataFavoriteId(favorite?.documentId)
+				//setDataFavoriteId(favorite?.documentId)
 				return favorite?.documentId ?? null
 			} else {
-				setDataFavoriteId(0)
+				//setDataFavoriteId(0)
 				return null
 			}
 		} catch (error) {
@@ -250,7 +250,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 									<Heart
 										size={24}
 										className={`${isFavorite
-											? 'text-pink-500 fill-red-500'
+											? 'text-pink-500 fill-primary'
 											: 'text-gray-400 fill-transparent'
 										}`}
 									/>
@@ -274,11 +274,11 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 						<div className='flex gap-6 mb-6'>
 							<div>
 								<p className='text-xl font-bold'>Desde</p>
-								<p className='text-2xl text-red-500'>S/{service.priceMin}</p>
+								<p className='text-2xl text-primary'>S/{service.priceMin}</p>
 							</div>
 							<div>
 								<p className='text-xl font-bold'>Hasta</p>
-								<p className='text-2xl text-red-500'>S/{service.priceMax}</p>
+								<p className='text-2xl text-primary'>S/{service.priceMax}</p>
 							</div>
 						</div>
 
@@ -289,7 +289,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 
 						<div className='flex gap-4'>
 							<button
-								className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-600 transition"
+								className="bg-primary text-white px-6 py-2 rounded-full hover:bg-red-600 transition"
 								onClick={() =>
 									addToCart({
 										...service,
@@ -349,10 +349,10 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 										<CardDescription className="line-clamp-2 text-xs">{item.description}</CardDescription>
 										<div className="flex justify-between items-center w-full mb-4 text-sm">
 											<CardDescription className="font-bold">
-												Desde: <span className="text-red-500 ml-1">S/{item.priceMin}</span>
+												Desde: <span className="text-primary ml-1">S/{item.priceMin}</span>
 											</CardDescription>
 											<CardDescription className="font-bold">
-												Hasta: <span className="text-red-500 ml-1">S/{item.priceMax}</span>
+												Hasta: <span className="text-primary ml-1">S/{item.priceMax}</span>
 											</CardDescription>
 										</div>
 									</CardHeader>

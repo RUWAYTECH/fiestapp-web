@@ -9,14 +9,31 @@ import Link from 'next/link'
 interface ServiceListProps {
 	data: ServiceResponseDto[];
 	isLoading?: boolean;
+	gridCols?: number;
 }
 
-const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false }) => {
+const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false, gridCols }) => {
 	const urlImage = config.imagePublicApiUrl
+	const getGridColsClass = (colsLg = 4) => {
+		switch (colsLg) {
+		case 1:
+			return 'lg:grid-cols-1'
+		case 2:
+			return 'lg:grid-cols-2'
+		case 3:
+			return 'lg:grid-cols-3'
+		case 5:
+			return 'lg:grid-cols-5'
+		case 6:
+			return 'lg:grid-cols-6'
+		default:
+			return 'lg:grid-cols-4'
+		}
+	}
 	return (
-		<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+		<div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 ${getGridColsClass(gridCols)} gap-4 w-full`}>
 			{isLoading &&
-				Array(12).fill(null).map((_, index) => (
+				Array(gridCols||12).fill(null).map((_, index) => (
 					<div key={index} className="flex flex-col h-full transition">
 						<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
 							<Skeleton className="h-full w-full rounded-t-lg" />

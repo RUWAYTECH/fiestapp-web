@@ -120,3 +120,13 @@ export const AllSearchServiceCategoryUbigeo = {
 
 	transformResponse: (response: ServiceResponseDto[]) => response
 }
+
+export const LastService = {
+	query: () => {
+		return {
+			url: endpoints.service.lastService,
+			method: 'GET',
+		}
+	},
+	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
+}
