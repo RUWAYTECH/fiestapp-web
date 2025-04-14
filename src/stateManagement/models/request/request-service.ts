@@ -8,7 +8,7 @@ export interface RequestServiceDetailRequestDto {
 export interface RequestServiceRequestDto {
 	message: string
 	totalPrice: number
-	registerDate: string
+	registerDate: string | Date
 	entityStatus: string
 	provider: string | number
 	numberInvite: number

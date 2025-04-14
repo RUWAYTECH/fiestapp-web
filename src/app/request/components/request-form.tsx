@@ -16,17 +16,20 @@ import { useNavigationBlocker } from '@hooks/useNavigationBlocker'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@components/ui/dialog'
 import { useEffect, useState } from 'react'
 import { useCreateRequestMutation } from '@stateManagement/apiSlices/requestSlice'
+import { DatePickerField } from '@components/ui/datePickerField'
+import { useRouter } from 'next/navigation'
+import { toastService } from '@/core/services/toast'
+import { ApiResponseError } from '@/types'
 
 const now = new Date()
 now.setHours(0, 0, 0, 0)
-const formattedDate = now.toISOString().split('T')[0]
 
 const createRequestFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
-	date: z.string({ message: t('validation.string') }).nonempty({ message: t('validation.required') }).refine(
+	date: z.date({ message: t('validation.string') }).refine(
 		(value) => {
 			const formattedNow = now.toISOString().split('T')[0]
 
-			return new Date(value) >= new Date(formattedNow)
+			return value >= new Date(formattedNow)
 		}, { message: t('validation.dateFuture') }
 	),
 	guests: z.string().nonempty({ message: t('validation.required') }).refine(
@@ -49,6 +52,8 @@ const RequestForm = () => {
 	const removeItem = useCartStore((state) => state.removeItem)
 	const addItem = useCartStore((state) => state.addItem)
 	const discountItem = useCartStore((state) => state.discountItem)
+	const clearCart = useCartStore((state) => state.clearCart)
+	const router = useRouter()
 
 	const formSchema = createRequestFormSchema(useTranslations())
 
@@ -57,7 +62,7 @@ const RequestForm = () => {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			date: '',
+			date: undefined,
 			guests: '',
 			budget: '',
 			details: ''
@@ -81,10 +86,12 @@ const RequestForm = () => {
 			}))
 		}
 
-		createRequest(data).then((res) => {
-			console.log(res)
-		}).catch((err) => {
-			console.log(err)
+		createRequest(data).then(() => {
+			clearCart()
+			toastService.success('Solicitud enviada con éxito')
+			router.push('/profile/request')
+		}).catch((err: ApiResponseError) => {
+			toastService.error(err?.data?.message || 'Error al enviar la solicitud')
 		})
 	}
 
@@ -137,17 +144,16 @@ const RequestForm = () => {
 									<h2 className="font-medium text-lg mb-4">Información del Evento</h2>
 									<Form {...form}>
 										<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+
 											<FormField
 												control={form.control}
 												name="date"
 												render={({ field }) => (
-													<FormItem>
-														<FormLabel>Fecha del Evento*</FormLabel>
-														<FormControl>
-															<Input type="date" min={formattedDate} {...field} />
-														</FormControl>
-														<FormMessage />
-													</FormItem>
+													<DatePickerField
+														{...field}
+														min={now}
+														label="Fecha del Evento*"
+													/>
 												)}
 											/>
 
