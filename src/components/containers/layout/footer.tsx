@@ -8,10 +8,10 @@ const Footer = () => {
 					<div className="space-y-3">
 						<h3 className="font-semibold text-lg mb-4">FiestApp</h3>
 						<nav className="flex flex-col space-y-2">
-							<Link href="/sobre" className="hover:underline">
+							<Link href="/fiestapp/about-us" className="hover:underline">
 								Sobre nosotros
 							</Link>
-							<Link href="/privacidad" className="hover:underline">
+							<Link href="/fiestapp/privacy" className="hover:underline">
 								Privacidad
 							</Link>
 						</nav>
@@ -19,7 +19,7 @@ const Footer = () => {
 					<div className="space-y-3">
 						<h3 className="font-semibold text-lg mb-4">Legal</h3>
 						<nav className="flex flex-col space-y-2">
-							<Link href="/terminos" className="hover:underline">
+							<Link href="/fiestapp/terms-conditions" className="hover:underline">
 								Términos y Condiciones
 							</Link>
 							<Link href="/registro-proveedor" className="hover:underline">
