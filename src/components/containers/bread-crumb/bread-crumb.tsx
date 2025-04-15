@@ -22,7 +22,7 @@ export default function BreadcrumbNavigation({ inicio, secondLink, currentPage }
 						</BreadcrumbItem>
 						<BreadcrumbSeparator />
 						<BreadcrumbItem>
-							<BreadcrumbPage>{currentPage}</BreadcrumbPage>
+							<BreadcrumbPage className='text-primary'>{currentPage}</BreadcrumbPage>
 						</BreadcrumbItem>
 					</BreadcrumbList>
 				</Breadcrumb>

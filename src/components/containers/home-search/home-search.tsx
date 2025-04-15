@@ -58,7 +58,7 @@ const HomeSearch: React.FC<ServiceListProps> = ({ services }) => {
 									{filteredServices.map((service) => (
 										<Link
 											key={service.id}
-											href={`/service/${service.id}`}
+											href={`/service/${service.documentId}`}
 											passHref
 										>
 											<CommandItem>{service.name}</CommandItem>

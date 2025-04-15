@@ -16,7 +16,7 @@ const RutaPage = () => {
 		skip: !id,
 	})
 
-	const [hasChanges, setHasChanges] = useState(true)
+	const [hasChanges, setHasChanges] = useState(false)
 	const {
 		shouldShowModal,
 		confirmNavigation,

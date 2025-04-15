@@ -22,3 +22,13 @@ export const createCategory = {
 	},
 	transformResponse: (response: ApiResponseDto<CategoryResponseDto>) => response
 }
+
+export const Lastcategory = {
+	query: () => {
+		return {
+			url: endpoints.category.lastcategory,
+			method: 'GET',
+		}
+	},
+	transformResponse: (response: ApiResponseDto<CategoryResponseDto[]>) => response
+}
