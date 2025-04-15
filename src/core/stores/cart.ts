@@ -34,9 +34,9 @@ const useCartStore = create<CartState>()(persist((set, get) => {
 				if (existingItem && existingItem.quantity > 1) {
 					const updatedItems = state.items.map((i) => i.id === id ? { ...i, quantity: i.quantity - 1 } : i)
 					return { items: updatedItems }
-				} else {
-					return { items: state.items.filter((i) => i.id !== id) }
 				}
+
+				return { items: state.items }
 			})
 		},
 		removeItem: (id) => {
