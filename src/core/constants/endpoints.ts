@@ -8,7 +8,8 @@ export const endpoints = {
 		createCategory: '/categories/create',
 		updateCategory: '/categories/update',
 		deleteCategory: '/categories/delete',
-		getCategoryById: '/categories/:id'
+		getCategoryById: '/categories/:id',
+		lastcategory: '/categories?sort=createdAt:desc&sort=score:desc&pagination[page]=1&pagination[pageSize]=6&populate=*',
 	},
 	service:{
 		getAllService: '/services?populate=*',
