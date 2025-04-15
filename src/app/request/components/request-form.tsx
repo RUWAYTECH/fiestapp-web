@@ -82,7 +82,7 @@ const RequestForm = () => {
 				comment: '',
 				quantity: item.quantity,
 				priceFinal: item.priceMin,
-				service: item.providerId
+				service: item.id
 			}))
 		}
 
