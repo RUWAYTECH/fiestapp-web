@@ -1,7 +1,6 @@
 import { ApiResponseDto } from '@/types'
 import { endpoints } from '@constants/endpoints'
-import { RequestServiceRequestDto } from '@stateManagement/models/request/request-service'
-import { ServiceResponseDto } from '@stateManagement/models/service/create'
+import { RequestServiceRequestDto, RequestServiceResponseDto } from '@stateManagement/models/request/request-service'
 
 export const createRequestService = {
 	query: (data: RequestServiceRequestDto) => {
@@ -21,5 +20,5 @@ export const getMyRequestService = {
 			method: 'GET'
 		}
 	},
-	transformResponse: (response: ApiResponseDto<{ data: ServiceResponseDto[] }>) => response,
+	transformResponse: (response: ApiResponseDto<{ data: RequestServiceResponseDto[] }>) => response,
 }
