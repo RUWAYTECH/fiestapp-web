@@ -46,7 +46,10 @@ const eslintConfig = [
 			'no-tabs': 'off',
 			'@/indent': [
 				'error',
-				'tab'
+				'tab',
+				{
+					'SwitchCase': 1
+				}
 			],
 			'@typescript-eslint/explicit-function-return-type': 'off',
 			'@typescript-eslint/no-floating-promises': 'off'

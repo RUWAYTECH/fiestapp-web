@@ -22,13 +22,13 @@ const menuItems: MenuItem[] = [
 	{
 		id: 'requests',
 		label: 'Mis Cotizaciones',
-		href: 'profile/request',
+		href: '/profile/request',
 		icon: <FileText className='w-5 h-5 text-gray-600' />
 	},
 	{
 		id: 'favorites',
 		label: 'Favoritos',
-		href: 'profile/favorites',
+		href: '/profile/favorites',
 		icon: <Heart className='w-5 h-5 text-gray-600' />
 	},
 	{
@@ -56,7 +56,7 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
 					<div className="w-full md:w-1/4 mb-6 md:mb-0"> {/* Cambiado de 1/3 a 1/4 para más a la izquierda */}
 						<Card className="w-full max-w-md mx-auto md:ml-0 shadow-lg rounded-2xl overflow-hidden border-0">
 							<div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 pb-20">
-								<h1 className="text-white text-xl font-bold">Mi Perfil w</h1>
+								<h1 className="text-white text-xl font-bold">Mi Perfil</h1>
 							</div>
 
 							<div className="relative px-6">
@@ -82,20 +82,19 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
 								<div className="space-y-6">
 									{/* Elementos para móvil - navegación directa */}
 									{menuItems.map((item) => (
-										<div
+										<Link
 											key={`mobile-${item.id}`}
 											className="block md:hidden"
+											href={item.href}
 										>
-											<Link href={item.href}>
-												<div className="flex items-center justify-between w-full px-5 py-4 text-left rounded-lg bg-white hover:bg-gray-50 border border-gray-100 shadow-sm transition-all duration-200 hover:shadow">
-													<div className="flex items-center gap-4">
-														{item.icon}
-														<span className="font-medium">{item.label}</span>
-													</div>
-													<ArrowRight className="w-4 h-4 text-gray-400" />
+											<div className="flex items-center justify-between w-full px-5 py-4 text-left rounded-lg bg-white hover:bg-gray-50 border border-gray-100 shadow-sm transition-all duration-200 hover:shadow">
+												<div className="flex items-center gap-4">
+													{item.icon}
+													<span className="font-medium">{item.label}</span>
 												</div>
-											</Link>
-										</div>
+												<ArrowRight className="w-4 h-4 text-gray-400" />
+											</div>
+										</Link>
 									))}
 
 									{/* Elementos para desktop */}
@@ -106,7 +105,7 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
 											href={item.href}
 										>
 											<div
-												className={`flex items-center justify-between w-full px-5 py-4 text-left rounded-lg border border-gray-100 shadow-sm transition-all duration-200 hover:shadow ${pathname === `/${item.href}`
+												className={`flex items-center justify-between w-full px-5 py-4 text-left rounded-lg border border-gray-100 shadow-sm transition-all duration-200 hover:shadow ${pathname === `${item.href}`
 													? 'bg-blue-50 border-blue-200'
 													: 'bg-white hover:bg-gray-50'
 												}`}
@@ -135,9 +134,9 @@ const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
 						</Card>
 					</div>
 
-					<div className="w-full md:w-3/4 hidden md:block">
+					<div className="w-full md:w-3/4">
 						<Card className="w-full h-full shadow-lg rounded-2xl overflow-hidden border-0">
-							<CardContent className="p-6">
+							<CardContent className="p-4">
 								{children}
 							</CardContent>
 						</Card>

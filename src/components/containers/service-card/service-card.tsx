@@ -50,7 +50,7 @@ const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false, grid
 					<Link key={item?.documentId} href={`/service/${item?.documentId}`} className="h-full">
 						<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">
 							<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
-								<Image
+								<img
 									src={urlImage + (item?.fileImage?.[0]?.url || '')}
 									alt={item?.fileImage?.[0]?.name || 'Imagen sin nombre'}
 									width={400}

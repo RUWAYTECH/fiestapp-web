@@ -1,6 +1,7 @@
 import { ApiResponseDto } from '@/types'
 import { endpoints } from '@constants/endpoints'
 import { FavoriteRequestDto, FavoriteResponseDto } from '@stateManagement/models/favorite/favorite'
+import { ServiceResponseDto } from '@stateManagement/models/service/create'
 
 export const allFavorite = {
 	query: () => {
@@ -46,4 +47,14 @@ export const deleteFavorite = {
 		}
 	},
 	transformResponse: (response: FavoriteResponseDto[]) => response
+}
+
+export const getMyFavorite = {
+	query: () => {
+		return {
+			url: endpoints.favorite.getMyFavorite,
+			method: 'GET',
+		}
+	},
+	transformResponse: (response: ApiResponseDto<{ data: ServiceResponseDto[] }>) => response
 }
