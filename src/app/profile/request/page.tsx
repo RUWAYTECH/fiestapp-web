@@ -1,8 +1,18 @@
-import React from 'react'
+'use client'
+
+import ServiceCard from '@components/containers/service-card/service-card'
+import { useGetMyRequestServiceQuery } from '@stateManagement/apiSlices/requestSlice'
 
 const MyRequestPage = () => {
+	const { data, isLoading } = useGetMyRequestServiceQuery(undefined)
+
 	return (
-		<div>MyRequestPage</div>
+		<div>
+			<ServiceCard
+				data={data?.data || []}
+				isLoading={isLoading}
+			/>
+		</div>
 	)
 }
 

@@ -31,9 +31,9 @@ const Profile: React.FC = () => {
 
 	return (
 		<>
-			<AppLayout>
+			{/* <AppLayout>
 				<ProfilePage />
-			</AppLayout>
+			</AppLayout> */}
 		</>
 	)
 }

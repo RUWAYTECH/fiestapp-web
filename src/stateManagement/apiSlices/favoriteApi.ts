@@ -1,5 +1,5 @@
 import apiSlice from './apiSlice'
-import { addFavorite, allFavorite, deleteFavorite, getFavoriteByserviceId } from '@stateManagement/queries/favoriteQuery'
+import { addFavorite, allFavorite, deleteFavorite, getFavoriteByserviceId, getMyFavorite } from '@stateManagement/queries/favoriteQuery'
 
 export const favoriteApi = apiSlice.injectEndpoints({
 	endpoints: (builder) => ({
@@ -7,6 +7,7 @@ export const favoriteApi = apiSlice.injectEndpoints({
 		getFavoriteByserviceId: builder.query(getFavoriteByserviceId),
 		addFavorite: builder.mutation(addFavorite),
 		deleteFavorite: builder.mutation(deleteFavorite),
+		getMyFavorite: builder.query(getMyFavorite)
 	})
 })
 
@@ -16,5 +17,5 @@ export const {
 	useLazyGetFavoriteByserviceIdQuery,
 	useAddFavoriteMutation,
 	useDeleteFavoriteMutation,
-
+	useGetMyFavoriteQuery,
 } = favoriteApi
