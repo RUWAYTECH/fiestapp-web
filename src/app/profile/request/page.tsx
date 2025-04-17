@@ -3,11 +3,12 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@components/ui/accordion'
 import { Badge } from '@components/ui/badge'
 import { Card } from '@components/ui/card'
+import Skeleton from '@components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/table'
 import { useGetMyRequestServiceQuery } from '@stateManagement/apiSlices/requestSlice'
 
 const MyRequestPage = () => {
-	const { data } = useGetMyRequestServiceQuery(undefined)
+	const { data, isFetching } = useGetMyRequestServiceQuery(undefined)
 
 	const getEstadoColor = (estado: string) => {
 		switch (estado) {
@@ -27,6 +28,11 @@ const MyRequestPage = () => {
 	return (
 		<div>
 			<Accordion type="single" collapsible className="w-full space-y-4">
+				{isFetching && (
+					[...Array(3)].map((_, index) => (
+						<Skeleton key={index} className="h-16 w-full rounded-md" /> // Skeleton loading state
+					))
+				)}
 				{data?.data?.map((item) => (
 					<AccordionItem key={item.id} value={item.id.toString()} className="border rounded-lg overflow-hidden">
 						<Card>
