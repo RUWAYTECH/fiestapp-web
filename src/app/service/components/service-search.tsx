@@ -114,33 +114,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 		await dataUbigeosId(updatedIds)
 	}
 
-	const handleSelectAllAddress = async () => {
-		const ubigeoIds = ubigeo.map((u) => u.id)
-
-		const yaEstabanSeleccionados = selectedAddressOptions.filter(id => !ubigeoIds.includes(id))
-		const yaEstabanDatos = selectedAddressData.filter(item => !ubigeoIds.includes(item.id))
-		const todosUbigeoSeleccionados = ubigeoIds.every(id => selectedAddressOptions.includes(id))
-
-		if (todosUbigeoSeleccionados) {
-			setSelectedAddressOptions(yaEstabanSeleccionados)
-			setSelectedAddressData(yaEstabanDatos)
-			await dataUbigeosId(yaEstabanSeleccionados)
-		} else {
-			const nuevosIds = ubigeoIds.filter(id => !selectedAddressOptions.includes(id))
-			const nuevosData = ubigeo.filter(item => nuevosIds.includes(item.id))
-
-			const opcionesFinales = [...selectedAddressOptions, ...nuevosIds]
-			const dataFinal = [
-				...selectedAddressData,
-				...nuevosData.filter(nuevo => !selectedAddressData.some(e => e.id === nuevo.id)),
-			]
-
-			setSelectedAddressOptions(opcionesFinales)
-			setSelectedAddressData(dataFinal)
-			await dataUbigeosId(opcionesFinales)
-		}
-	}
-
 
 	const handleCategoryChange = (filterId: string) => {
 		setSelectedCategory(prevSelectedCategory => {
@@ -419,28 +392,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 										</div>
 									))}
 
-									{selectedAddressData.length > 5 && !mostrarTodo && (
-										<div className="flex items-center rounded-full mb-1">
-											<button
-												onClick={() => setMostrarTodo(true)}
-												className="text-[12px] text-blue-700 ml-1 underline"
-											>
-												... Ver más
-											</button>
-										</div>
-									)}
-
-									{selectedAddressData.length > 5 && mostrarTodo && (
-										<div className="flex items-center rounded-full mb-1">
-											<button
-												onClick={() => setMostrarTodo(false)}
-												className="text-[12px] text-blue-700 ml-1 underline"
-											>
-												mostrar menos
-											</button>
-										</div>
-									)}
-
 									{selectedAddressOptions.length > 0 && (
 										<button
 											className="text-[10px] text-primary mt-1 ml-1 underline"
@@ -452,17 +403,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 									<div className="max-h-64 overflow-y-auto">
 										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-											<li>
-												<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
-													<input
-														type="checkbox"
-														checked={ubigeo.every((item) => selectedAddressOptions.includes(item.id))}
-														onChange={handleSelectAllAddress}
-														className="mr-2 accent-blue-500 w-3 h-3"
-													/>
-													<span className="text-[12px] font-bold">Seleccionar todo</span>
-												</label>
-											</li>
 											{ubigeo?.map((option) => (
 												<li key={option.id}>
 													<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
@@ -471,6 +411,10 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 															checked={selectedAddressOptions.includes(option?.id)}
 															onChange={() => handleAddressChange(option?.id)}
 															className="mr-2 accent-blue-500 w-3 h-3"
+															disabled={
+																selectedAddressOptions.length >= 5 &&
+																!selectedAddressOptions.includes(option?.id)
+															}
 														/>
 														<span className="text-[10px] font-bold">{`${option?.department} - ${option?.province} - ${option?.district}`}</span>
 													</label>
@@ -657,28 +601,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 						</div>
 					))}
 
-					{selectedAddressData.length > 5 && !mostrarTodo && (
-						<div className="flex items-center rounded-full mb-1">
-							<button
-								onClick={() => setMostrarTodo(true)}
-								className="text-[12px] text-blue-700 ml-1 underline"
-							>
-								... Ver más
-							</button>
-						</div>
-					)}
-
-					{selectedAddressData.length > 5 && mostrarTodo && (
-						<div className="flex items-center rounded-full mb-1">
-							<button
-								onClick={() => setMostrarTodo(false)}
-								className="text-[12px] text-blue-700 ml-1 underline"
-							>
-								mostrar menos
-							</button>
-						</div>
-					)}
-
 					{selectedAddressOptions.length > 0 && (
 						<button
 							className="text-[10px] text-primary mt-1 ml-1 underline"
@@ -690,17 +612,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 					<div className="max-h-64 overflow-y-auto">
 						<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-							<li>
-								<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
-									<input
-										type="checkbox"
-										checked={ubigeo.every((item) => selectedAddressOptions.includes(item.id))}
-										onChange={handleSelectAllAddress}
-										className="mr-2 accent-blue-500 w-3 h-3"
-									/>
-									<span className="text-[12px] font-bold">Seleccionar todo</span>
-								</label>
-							</li>
 							{ubigeo?.map((option) => (
 								<li key={option.id}>
 									<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
@@ -709,6 +620,10 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 											checked={selectedAddressOptions.includes(option?.id)}
 											onChange={() => handleAddressChange(option?.id)}
 											className="mr-2 accent-blue-500 w-3 h-3"
+											disabled={
+												selectedAddressOptions.length >= 5 &&
+												!selectedAddressOptions.includes(option?.id)
+											}
 										/>
 										<span className="text-[10px] font-bold">{`${option?.department} - ${option?.province} - ${option?.district}`}</span>
 									</label>
