@@ -6,6 +6,8 @@ import { Input } from '@components/ui/input'
 import { UbigeoResponseDto } from '@stateManagement/models/ubigeo/ubigeo'
 import { useGetAllCategoryQuery } from '@stateManagement/apiSlices/categoryApi'
 import { useLazyGetAllUbigeoServicesByUbigeoQuery } from '@stateManagement/apiSlices/ubigeoServicesApi'
+import { UbigeoServiceResponseDto } from '@stateManagement/models/ubigeoServices/ubigeoServices'
+import { CategoryResponseDto } from '@stateManagement/models/category/create'
 
 interface ServiceSearchProps {
 	onSubmited: (data: {
@@ -15,14 +17,22 @@ interface ServiceSearchProps {
 		services?: string | string[],
 		priceMin?: number,
 		priceMax?: number,
-		sortBy?: string}) => void;
+		sortBy?: string
+	}) => void;
 
-	ubigeo: UbigeoResponseDto[];
+	dataUbigeo: UbigeoResponseDto[];
 	searchUbigeo: (search: string) => void;
 	categoryId?: number;
 }
 
-const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searchUbigeo, categoryId }) => {
+interface AddressSelected {
+	id: number;
+	department: string;
+	province: string;
+	district: string;
+}
+
+const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, dataUbigeo, searchUbigeo, categoryId }) => {
 	const {data: categoryData} = useGetAllCategoryQuery({})
 	const [getUbigeoServices] = useLazyGetAllUbigeoServicesByUbigeoQuery()
 
@@ -43,9 +53,9 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	const [selectedCategory, setSelectedCategory] = useState<(string)[]>([])
 	const [selectedSortOption, setSelectedSortOption] = useState('')
 	const [selectedAddressOptions, setSelectedAddressOptions] = useState<string[]>([])
-	const [selectedAddressData, setSelectedAddressData] = useState<any[]>([])
-	const [mostrarTodo, setMostrarTodo] = useState(false)
-	const itemsMostrados = mostrarTodo ? selectedAddressData : selectedAddressData.slice(0, 5)
+	const [selectedAddressData, setSelectedAddressData] = useState< AddressSelected[]>([])
+
+	const itemsMostrados: AddressSelected[] = selectedAddressData.slice(0, 5)
 
 	const [searchTermAddress, setSearchTermAddress] = useState('')
 	const [idServices, setIdServices] = useState<string[]>([])
@@ -57,7 +67,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 	useEffect(() => {
 		if(categoryId){
-			setSelectedCategory([categoryId])
+			setSelectedCategory([String(categoryId)])
 			handleSubmitSearch()
 		}
 	}, [categoryId])
@@ -93,19 +103,16 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	const handleAddressChange = async (optionId: string) => {
 		const isSelected = selectedAddressOptions.includes(optionId)
 		let updatedIds: string[] = []
-		let updatedData: any[] = []
+		let updatedData: AddressSelected[] = []
 
 		if (isSelected) {
 			updatedIds = selectedAddressOptions.filter(id => id !== optionId)
-			updatedData = selectedAddressData.filter(item => item.id !== optionId)
+			updatedData = selectedAddressData.filter((item) => item.id !== Number(optionId))
 		} else {
 			updatedIds = [...selectedAddressOptions, optionId]
-			const item = ubigeo.find((u) => u.id === optionId)
+			const item = dataUbigeo.find((u) => u.id === Number(optionId))
 			if (item) {
 				updatedData = [...selectedAddressData, item]
-			} else {
-				const response = await dataUbigeosId([optionId])
-				updatedData = [...selectedAddressData, ...(response || [])]
 			}
 		}
 
@@ -126,17 +133,20 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 	}
 
 	const handleSelectAllCategory = () => {
-		const allCategoryIds = categoryData?.data?.map((filter) => filter.id) || []
+		const allCategoryIds = categoryData?.map((filter: CategoryResponseDto) => String(filter.id)) || []
 
-		if (selectedCategory.length === allCategoryIds.length) {
+		const isAllSelected = allCategoryIds.every(id => selectedCategory.includes(id))
+
+		if (isAllSelected) {
+			// Desmarcar todos, excepto si hay un categoryId fijo
 			if (categoryId !== undefined && categoryId !== null) {
-				setSelectedCategory([categoryId])
+				setSelectedCategory([String(categoryId)])
 			} else {
 				setSelectedCategory([])
 			}
 		} else {
-			const uniqueIds = new Set([...allCategoryIds, categoryId])
-			setSelectedCategory(Array.from(uniqueIds))
+			// Seleccionar todos los IDs válidos (evita undefined o duplicados)
+			setSelectedCategory(allCategoryIds)
 		}
 
 		handleSubmitSearch()
@@ -147,9 +157,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 		getUbigeoServices({ idUbigeo: dataServicesIdByUbigeo })
 			.unwrap()
 			.then((response) => {
-				const dataServicesIdByUbigeo: string[] = response?.data
-					?.map(item => item?.service?.id?.toString())
-					.filter(Boolean) || []
+				const dataServicesIdByUbigeo: string[] = response?.map((item:UbigeoServiceResponseDto) => item?.service?.id?.toString()).filter(Boolean) || []
 
 				if (dataServicesIdByUbigeo.length > 0) {
 					setIdServices(dataServicesIdByUbigeo)
@@ -265,20 +273,20 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 												<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 													<input
 														type="checkbox"
-														checked={selectedCategory.length === categoryData?.data?.length}
+														checked={selectedCategory.length === (categoryData?.length || 0)}
 														onChange={handleSelectAllCategory}
 														className="mr-2 accent-blue-500"
 													/>
 													<span className="font-bold text-sm">Seleccionar todo</span>
 												</label>
 											</li>
-											{categoryData?.data?.map((filter) => (
+											{categoryData?.map((filter:CategoryResponseDto) => (
 												<li key={filter.id}>
 													<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 														<input
 															type="checkbox"
-															checked={selectedCategory.includes(filter.id)}
-															onChange={() => {	handleCategoryChange(filter.id)	}}
+															checked={selectedCategory.includes(String(filter.id))}
+															onChange={() => handleCategoryChange(String(filter.id))}
 															className="mr-2 accent-blue-500"
 														/>
 														{filter.name}
@@ -377,15 +385,15 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 										)}
 									</div>
 
-									{itemsMostrados.map((item) => (
+									{itemsMostrados.map((item:AddressSelected) => (
 										<div
-											key={item.id}
+											key={item?.id}
 											className="flex items-center bg-blue-100 text-blue-700 text-[10px] px-4 py-0.5 rounded-full mb-1"
 										>
-											{`${item.department} - ${item.province} - ${item.district}`}
+											{`${item?.department} - ${item?.province} - ${item?.district}`}
 											<button
 												className="ml-1 text-blue-500 hover:text-blue-700 text-xs"
-												onClick={() => handleAddressChange(item.id)}
+												onClick={() => handleAddressChange(String(item.id))}
 											>
 												<X size={18} />
 											</button>
@@ -403,17 +411,17 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 									<div className="max-h-64 overflow-y-auto">
 										<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-											{ubigeo?.map((option) => (
+											{dataUbigeo?.map((option) => (
 												<li key={option.id}>
 													<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 														<input
 															type="checkbox"
-															checked={selectedAddressOptions.includes(option?.id)}
-															onChange={() => handleAddressChange(option?.id)}
+															checked={selectedAddressOptions.includes(String(option?.id))}
+															onChange={() => handleAddressChange(String(option?.id))}
 															className="mr-2 accent-blue-500 w-3 h-3"
 															disabled={
 																selectedAddressOptions.length >= 5 &&
-																!selectedAddressOptions.includes(option?.id)
+																!selectedAddressOptions.includes(String(option?.id))
 															}
 														/>
 														<span className="text-[10px] font-bold">{`${option?.department} - ${option?.province} - ${option?.district}`}</span>
@@ -462,20 +470,20 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 							<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 								<input
 									type="checkbox"
-									checked={selectedCategory.length === categoryData?.data?.length}
+									checked={selectedCategory.length === (categoryData?.length || 0)}
 									onChange={handleSelectAllCategory}
 									className="mr-2 accent-blue-500"
 								/>
 								<span className="font-bold text-sm">Seleccionar todo</span>
 							</label>
 						</li>
-						{categoryData?.data?.map((filter) => (
+						{categoryData?.map((filter: CategoryResponseDto) => (
 							<li key={filter.id}>
 								<label className="flex items-center text-sm text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 									<input
 										type="checkbox"
-										checked={selectedCategory.includes(filter.id)}
-										onChange={() => handleCategoryChange(filter.id)}
+										checked={selectedCategory.includes(String(filter.id))}
+										onChange={() => handleCategoryChange(String(filter.id))}
 										className="mr-2 accent-blue-500"
 									/>
 									{filter.name}
@@ -594,7 +602,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 							{`${item.department} - ${item.province} - ${item.district}`}
 							<button
 								className="ml-1 text-blue-500 hover:text-blue-700 text-xs"
-								onClick={() => handleAddressChange(item.id)}
+								onClick={() => handleAddressChange(String(item?.id))}
 							>
 								<X size={18} />
 							</button>
@@ -612,17 +620,17 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, ubigeo, searc
 
 					<div className="max-h-64 overflow-y-auto">
 						<ul className="mt-2 space-y-2 divide-y divide-gray-200">
-							{ubigeo?.map((option) => (
+							{dataUbigeo?.map((option) => (
 								<li key={option.id}>
 									<label className="flex items-center text-[8px] text-gray-600 hover:text-blue-500 cursor-pointer m-1">
 										<input
 											type="checkbox"
-											checked={selectedAddressOptions.includes(option?.id)}
-											onChange={() => handleAddressChange(option?.id)}
+											checked={selectedAddressOptions.includes(String(option?.id))}
+											onChange={() => handleAddressChange(String(option?.id))}
 											className="mr-2 accent-blue-500 w-3 h-3"
 											disabled={
 												selectedAddressOptions.length >= 5 &&
-												!selectedAddressOptions.includes(option?.id)
+												!selectedAddressOptions.includes(String(option?.id))
 											}
 										/>
 										<span className="text-[10px] font-bold">{`${option?.department} - ${option?.province} - ${option?.district}`}</span>

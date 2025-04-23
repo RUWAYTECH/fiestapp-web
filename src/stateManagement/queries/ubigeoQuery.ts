@@ -9,7 +9,7 @@ export const getAllUbigeo = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<UbigeoResponseDto[]>) => response
+	transformResponse: (response: { data: ApiResponseDto<UbigeoResponseDto[]> }) => response.data
 }
 
 export const searchUbigeo = {
@@ -19,5 +19,5 @@ export const searchUbigeo = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: UbigeoResponseDto[]) => response
+	transformResponse: (response: { data: ApiResponseDto<UbigeoResponseDto[]> }) => response.data
 }

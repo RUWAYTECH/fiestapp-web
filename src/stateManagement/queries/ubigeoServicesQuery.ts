@@ -24,5 +24,6 @@ export const getAllUbigeoServicesByUbigeo = {
 		}
 	},
 
-	transformResponse: (response: ApiResponseDto<UbigeoServiceResponseDto[]>) => response
+	//transformResponse: (response: ApiResponseDto<UbigeoServiceResponseDto[]>) => response
+	transformResponse: (response: { data: ApiResponseDto<UbigeoServiceResponseDto[]> }) => response.data
 }

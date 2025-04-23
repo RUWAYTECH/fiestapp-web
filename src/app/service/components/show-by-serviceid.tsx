@@ -18,13 +18,17 @@ interface ServiceDetailProps {
 	service: ServiceResponseDto;
 	setHasChanges?: (hasChanges: boolean) => void;
 }
-
+interface tokkenJWT {
+	exp: number;
+	iat: number;
+	id:	number | string;
+}
 export default function ShowByServiceId({ service, setHasChanges }: ServiceDetailProps) {
 	const addToCart = useCartStore((state) => state.addItem)
 	const items = useCartStore((state) => state.items)
 
 	const { data: auth } = useSession()
-	//const [dataFavoriteId, setDataFavoriteId] = useState<number>()
+
 	const urlImage = config.imagePublicApiUrl
 
 	const images = service?.fileImage?.map(img => img?.url || '') || []
@@ -82,8 +86,8 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 	}, [items, setHasChanges])
 
 	const getUserIdFromToken = (token: string): string => {
-		const decoded: any = jwtDecode(token)
-		return decoded?.id || ''
+		const decoded: tokkenJWT = jwtDecode(token)
+		return decoded?.id?.toString() || ''
 	}
 
 	const allFavoriteByUserIdByServiceId = async (userId: string, serviceId: string): Promise<string | null> => {
@@ -91,13 +95,11 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 			const response = await getFavoriteByserviceId({ serviceId, userId }).unwrap()
 			if (response?.data?.length > 0) {
 				const favorite = response.data[0]
-				//setDataFavoriteId(favorite?.documentId)
 				return favorite?.documentId ?? null
 			} else {
-				//setDataFavoriteId(0)
 				return null
 			}
-		} catch (error) {
+		} catch {
 			setIsFavorite(false)
 			return null
 		}
@@ -111,22 +113,22 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 			return
 		}
 
-		const userId = getUserIdFromToken(auth.accessToken)
+		const userId = getUserIdFromToken(auth.accessToken || '')
 		if (!userId) return
 
-		let favoriteId: string | null = null
+		let favoriteId: number | null = null
 		try {
 			const response = await getFavoriteByserviceId({ serviceId: service.id, userId }).unwrap()
 			if (response?.data?.length > 0) {
-				favoriteId = response.data[0].documentId
+				favoriteId = Number(response?.data[0]?.documentId)
 			}
 		} catch {
-			// Silenciar error, ya que puede no haber favorito y eso está bien
+			// Silenciar error
 		}
 
 		try {
 			if (favoriteId) {
-				await deleteFavorite({ favoriteId }).unwrap()
+				await deleteFavorite({ favoriteId}).unwrap()
 				setIsFavorite(false)
 			} else {
 				await addFavorite({ userId, service: service.id }).unwrap()
@@ -143,7 +145,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 		hasRun.current = true
 
 		const runAsync = async () => {
-			const userId = getUserIdFromToken(auth.accessToken)
+			const userId = getUserIdFromToken(auth.accessToken || '')
 			if (!userId) return
 
 			const favoriteId = await allFavoriteByUserIdByServiceId(userId, service.id)

@@ -1,7 +1,5 @@
 'use client'
-import AppLayout from '@components/containers/layout/layout'
 import { useSession } from 'next-auth/react'
-import ProfilePage from './components/profile'
 import { useEffect } from 'react'
 
 const Profile: React.FC = () => {
@@ -20,20 +18,16 @@ const Profile: React.FC = () => {
 	if (status === 'loading') {
 		return (
 			<div className="flex justify-center items-center h-screen">
-				{/* <p>Cargando...</p> */}
 			</div>
 		)
 	}
 
-	if (status === 'unauthenticated') {
+	if (status === 'unauthenticated' && !auth) {
 		return null
 	}
 
 	return (
 		<>
-			{/* <AppLayout>
-				<ProfilePage />
-			</AppLayout> */}
 		</>
 	)
 }

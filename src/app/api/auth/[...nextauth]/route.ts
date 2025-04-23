@@ -63,7 +63,7 @@ const handler = NextAuth({
 				})
 
 				const data = await res.json() as ApiResponseDto<LoginResponseDto>
-				console.log('data', data)
+
 				if (res.ok && data?.user) {
 					account.accessToken = data.jwt
 					user.id = data.user.id.toString()

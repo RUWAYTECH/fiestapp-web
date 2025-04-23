@@ -10,13 +10,13 @@ import ServiceCard from '@components/containers/service-card/service-card'
 export default function Home() {
 	const {data:dataLastCategory, isLoading: isLoadingLastCategory} = useLastcategoryQuery({})
 
-	const { data: dataServices = { data: [] }} = useGetAllServicesQuery({})
+	const { data: dataServices } = useGetAllServicesQuery({})
 
 	const {data: dataLastService, isLoading: isLoadingLastService} = useLastServiceQuery({})
 
 	return (
 		<AppLayout>
-			<HomeSearch services={dataServices?.data ?? []} />
+			<HomeSearch services={dataServices ?? []} />
 
 			<div className='container mx-auto p-4 border border-radius-lg bg-base-100 shadow-md rounded-lg mb-6'>
 				<h1 className="text-lg font-bold text-center mb-4">Categorías</h1>
@@ -35,12 +35,12 @@ export default function Home() {
 						))}
 					</div>
 				) : (
-					<CategoryCard categories={dataLastCategory?.data ?? []} />
+					<CategoryCard categories={dataLastCategory ?? []} />
 				)}
 			</div>
 			<div className='container mx-auto p-4 border border-radius-lg bg-base-100 shadow-md rounded-lg mb-6'>
 				<h1 className="text-lg font-bold text-center mb-4">Nuevos servicios</h1>
-				<ServiceCard data={dataLastService?.data ?? []} isLoading={isLoadingLastService} gridCols={6}/>
+				<ServiceCard data={dataLastService ?? []} isLoading={isLoadingLastService} gridCols={6}/>
 			</div>
 		</AppLayout>
 	)

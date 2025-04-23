@@ -1,8 +1,9 @@
 export interface UbigeoResponseDto {
-	id: string,
+	id: number,
 	documentId: string,
 	code: string,
 	district: string,
 	province: string,
 	department: string
+
 }

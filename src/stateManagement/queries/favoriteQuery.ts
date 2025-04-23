@@ -20,7 +20,8 @@ export const getFavoriteByserviceId = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<FavoriteResponseDto[]>) => response
+	//transformResponse: (response: ApiResponseDto<FavoriteResponseDto[]>) => response
+	transformResponse: (response: ApiResponseDto<{ data: FavoriteResponseDto[] }>) => response
 }
 
 export const addFavorite = {

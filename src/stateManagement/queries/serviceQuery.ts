@@ -9,7 +9,8 @@ export const getAllServices = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
+	//transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
+	transformResponse: (response: { data: ApiResponseDto<ServiceResponseDto[]> }) => response.data
 }
 
 //realizaremos una consulta por serviceId
@@ -72,13 +73,15 @@ export const AllSearchServiceCategoryUbigeo = {
 			searchParams.append('filters[name][$containsi]', params.search.trim())
 		}
 
-		if (params.idCategory?.trim()) {
-			const ids = params.idCategory
-				.split(',')
-				.map(id => id.trim())
-				.filter(id => id)
+		if(params.idCategory!=='undefined'){
+			if (params.idCategory?.trim()) {
+				const ids = params.idCategory
+					.split(',')
+					.map(id => id.trim())
+					.filter(id => id)
 
-			ids.forEach(id => searchParams.append('filters[category][id][$in]', id))
+				ids.forEach(id => searchParams.append('filters[category][id][$in]', id))
+			}
 		}
 
 
@@ -104,12 +107,12 @@ export const AllSearchServiceCategoryUbigeo = {
 		}
 
 		switch (params.sortBy) {
-		case 'priceLow':
-			searchParams.append('sort[0]', 'priceMin:asc')
-			break
-		case 'bestRating':
-			searchParams.append('sort[0]', 'score:desc')
-			break
+			case 'priceLow':
+				searchParams.append('sort[0]', 'priceMin:asc')
+				break
+			case 'bestRating':
+				searchParams.append('sort[0]', 'score:desc')
+				break
 		}
 
 		return {
@@ -118,7 +121,7 @@ export const AllSearchServiceCategoryUbigeo = {
 		}
 	},
 
-	transformResponse: (response: ServiceResponseDto[]) => response
+	transformResponse: (response: { data: ApiResponseDto<ServiceResponseDto[]> }) => response.data
 }
 
 export const LastService = {
@@ -128,5 +131,5 @@ export const LastService = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
+	transformResponse: (response: { data: ApiResponseDto<ServiceResponseDto[]> }) => response.data
 }

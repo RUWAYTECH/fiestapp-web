@@ -9,7 +9,8 @@ export const getAllCategory = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<CategoryResponseDto[]>) => response
+	//transformResponse: (response: ApiResponseDto<CategoryResponseDto[]>) => response
+	transformResponse: (response: { data: ApiResponseDto<CategoryResponseDto[]> }) => response.data
 }
 
 export const createCategory = {
@@ -30,5 +31,5 @@ export const Lastcategory = {
 			method: 'GET',
 		}
 	},
-	transformResponse: (response: ApiResponseDto<CategoryResponseDto[]>) => response
+	transformResponse: (response: { data: ApiResponseDto<CategoryResponseDto[]> }) => response.data
 }

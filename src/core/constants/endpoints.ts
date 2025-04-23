@@ -9,7 +9,7 @@ export const endpoints = {
 		updateCategory: '/categories/update',
 		deleteCategory: '/categories/delete',
 		getCategoryById: '/categories/:id',
-		lastcategory: '/categories?sort=createdAt:desc&sort=score:desc&pagination[page]=1&pagination[pageSize]=6&populate=*',
+		lastcategory: '/categories?sort=createdAt:desc&pagination[page]=1&pagination[pageSize]=6&populate=*',
 	},
 	service:{
 		getAllService: '/services?populate=*',

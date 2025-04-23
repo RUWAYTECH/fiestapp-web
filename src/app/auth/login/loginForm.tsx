@@ -39,7 +39,7 @@ const LoginForm = () => {
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
 		signIn('credentials', { email: values.email, password: values.password, redirect: false }).then((res) => {
 			if (res && res.ok) {
-				router.push(localStorage.getItem('redirectServiceUrl') || localStorage.getItem('redirectProfileUrl') || '/')
+				router.push(localStorage.getItem('redirectServiceUrl') || localStorage.getItem('redirectProfileUrl') || localStorage.getItem('redirectRequestUrl') || '/')
 				return
 			}
 
@@ -57,7 +57,7 @@ const LoginForm = () => {
 
 	const handleGoogleLogin = () => {
 		signIn('google', {
-			callbackUrl: localStorage.getItem('redirectServiceUrl') || localStorage.getItem('redirectProfileUrl') || '/',
+			callbackUrl: localStorage.getItem('redirectServiceUrl') || localStorage.getItem('redirectProfileUrl') || localStorage.getItem('redirectRequestUrl') || '/',
 		})
 	}
 	return (

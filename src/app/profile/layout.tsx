@@ -1,7 +1,7 @@
 'use client'
 
 import AppLayout from '@components/containers/layout/layout'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -40,11 +40,33 @@ const menuItems: MenuItem[] = [
 ]
 
 const ProfileLayout = ({ children }: { children: React.ReactNode }) => {
-	const { data: auth } = useSession()
+	const { data: auth,status } = useSession()
 	const pathname = usePathname()
 
 	const getInitials = (): string => {
 		return auth?.user?.name ? auth.user.name.charAt(0).toUpperCase() : 'U'
+	}
+
+	useEffect(() => {
+		if (status === 'unauthenticated') {
+			localStorage.setItem('redirectProfileUrl', window.location.href)
+			window.location.href = '/auth/login'
+		}
+		else {
+			localStorage.removeItem('redirectProfileUrl')
+		}
+	}, [status])
+
+	if (status === 'loading') {
+		return (
+			<div className="flex justify-center items-center h-screen">
+				{/* <p>Cargando...</p> */}
+			</div>
+		)
+	}
+
+	if (status === 'unauthenticated') {
+		return null
 	}
 
 	return (

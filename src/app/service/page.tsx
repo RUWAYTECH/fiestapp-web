@@ -107,7 +107,7 @@ const ServicesPage: React.FC = () => {
 		<AppLayout>
 			<div className="container mx-auto p-4">
 				<div>
-					<ServiceSearch onSubmited={dataSearch} ubigeo={UbigeoFilterData?.data || []} searchUbigeo={handleSearchUbigeo} categoryId={id} />
+					<ServiceSearch onSubmited={dataSearch} dataUbigeo={UbigeoFilterData || []} searchUbigeo={handleSearchUbigeo} categoryId={id} />
 				</div>
 				<>
 					<div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-2">
@@ -167,7 +167,7 @@ const ServicesPage: React.FC = () => {
 							</div>
 						</aside>
 						<main className="flex-1">
-							<ServiceCard data={servicesFilterData?.data || []} isLoading={isLoadingServices} />
+							<ServiceCard data={servicesFilterData || []} isLoading={isLoadingServices} />
 						</main>
 					</div>
 				</>

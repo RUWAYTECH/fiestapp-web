@@ -3,7 +3,6 @@ import Skeleton from '@components/ui/skeleton'
 import { config } from '@config/config'
 import { ServiceResponseDto } from '@stateManagement/models/service/create'
 import { Star } from 'lucide-react'
-import Image from 'next/image'
 import Link from 'next/link'
 
 interface ServiceListProps {
@@ -16,18 +15,18 @@ const ServiceCard: React.FC<ServiceListProps> = ({ data, isLoading = false, grid
 	const urlImage = config.imagePublicApiUrl
 	const getGridColsClass = (colsLg = 4) => {
 		switch (colsLg) {
-		case 1:
-			return 'lg:grid-cols-1'
-		case 2:
-			return 'lg:grid-cols-2'
-		case 3:
-			return 'lg:grid-cols-3'
-		case 5:
-			return 'lg:grid-cols-5'
-		case 6:
-			return 'lg:grid-cols-6'
-		default:
-			return 'lg:grid-cols-4'
+			case 1:
+				return 'lg:grid-cols-1'
+			case 2:
+				return 'lg:grid-cols-2'
+			case 3:
+				return 'lg:grid-cols-3'
+			case 5:
+				return 'lg:grid-cols-5'
+			case 6:
+				return 'lg:grid-cols-6'
+			default:
+				return 'lg:grid-cols-4'
 		}
 	}
 	return (
