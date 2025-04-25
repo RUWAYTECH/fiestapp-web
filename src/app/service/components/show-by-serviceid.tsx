@@ -49,10 +49,10 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 
 
 	const handleNextImage = () => {
-		if (!images.length) return
+		if (!images?.length) return
 
 		const currentIndex = images.indexOf(selectedImage)
-		const nextIndex = (currentIndex + 1) % images.length
+		const nextIndex = (currentIndex + 1) % images?.length
 		setSelectedImage(images[nextIndex])
 	}
 
@@ -60,7 +60,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 		if (!images.length) return
 
 		const currentIndex = images.indexOf(selectedImage)
-		const prevIndex = (currentIndex - 1 + images.length) % images.length
+		const prevIndex = (currentIndex - 1 + images?.length) % images?.length
 		setSelectedImage(images[prevIndex])
 	}
 
@@ -94,7 +94,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 		try {
 			const response = await getFavoriteByserviceId({ serviceId, userId }).unwrap()
 			if (response?.data?.length > 0) {
-				const favorite = response.data[0]
+				const favorite = response?.data[0]
 				return favorite?.documentId ?? null
 			} else {
 				return null
@@ -113,7 +113,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 			return
 		}
 
-		const userId = getUserIdFromToken(auth.accessToken || '')
+		const userId = getUserIdFromToken(auth?.accessToken || '')
 		if (!userId) return
 
 		let favoriteId: number | null = null
@@ -206,13 +206,20 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 									}}
 								>
 									<div className="relative max-w-[700px] max-h-[450px] flex items-center justify-center overflow-hidden">
-										<Image
-											src={urlImage + selectedImage}
-											alt={service?.name || ''}
-											width={600}
-											height={450}
-											className="rounded-lg shadow-lg object-cover w-full h-auto max-w-[600px] max-h-[450px]"
-										/>
+										{images[0] ? (
+											<Image
+												src={images[0] ? (urlImage + selectedImage) : ''}
+												alt={service?.name || ''}
+												width={600}
+												height={450}
+												className="rounded-lg shadow-lg object-cover w-full h-auto max-w-[600px] max-h-[450px]"
+											/>
+										) :
+											(
+												<div className="w-full h-full bg-gray-100 rounded-lg shadow-lg flex items-center justify-center text-gray-500 text-lg">
+													Sin imagen
+												</div>
+											)}
 									</div>
 								</div>
 							</div>
@@ -224,15 +231,15 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 							</button>
 						</div>
 						<div className="flex gap-2 mt-4">
-							{service.fileImage && service.fileImage.map((img, index) => (
+							{service?.fileImage && service?.fileImage?.map((img, index) => (
 								<Image
 									key={index}
-									src={urlImage +`${img.url}` || ''}
-									alt={img.name || ''}
+									src={urlImage +`${img?.url}` || ''}
+									alt={img?.name || ''}
 									width={80}
 									height={80}
-									className={`cursor-pointer rounded-lg border-2 transition ${selectedImage === img.url || ''? 'border-red-500' : 'border-gray-300'}`}
-									onClick={() => setSelectedImage(img.url || '')}
+									className={`cursor-pointer rounded-lg border-2 transition ${selectedImage === img?.url || ''? 'border-red-500' : 'border-gray-300'}`}
+									onClick={() => setSelectedImage(img?.url || '')}
 								/>
 							))}
 						</div>
@@ -240,7 +247,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 
 					<div className='w-full md:w-1/2 pl-6'>
 						<div className="flex justify-between items-center w-full">
-							<h1 className="text-3xl font-bold mb-2">{service.name}</h1>
+							<h1 className="text-3xl font-bold mb-2">{service?.name}</h1>
 							<button
 								className="ml-auto p-2 rounded-full transition"
 								onClick={handleFavoriteClick}
@@ -336,25 +343,25 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 									</div>
 									<CardHeader className="flex flex-col justify-between flex-1 pr-3 pl-3">
 										<div className="flex justify-between items-center w-full gap-2">
-											<CardTitle className="truncate text-base">{item.name}</CardTitle>
+											<CardTitle className="truncate text-base">{item?.name}</CardTitle>
 											<div className="flex items-center">
 												{[...Array(5)].map((_, index) => (
 													<Star
-														key={`${item.documentId}-star-${index}`}
+														key={`${item?.documentId}-star-${index}`}
 														size={16}
-														className={index < item.score ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}
+														className={index < item?.score ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}
 													/>
 												))}
 											</div>
 										</div>
-										<CardDescription className="truncate text-sm">{item.address}</CardDescription>
-										<CardDescription className="line-clamp-2 text-xs">{item.description}</CardDescription>
+										<CardDescription className="truncate text-sm">{item?.address}</CardDescription>
+										<CardDescription className="line-clamp-2 text-xs">{item?.description}</CardDescription>
 										<div className="flex justify-between items-center w-full mb-4 text-sm">
 											<CardDescription className="font-bold">
-												Desde: <span className="text-primary ml-1">S/{item.priceMin}</span>
+												Desde: <span className="text-primary ml-1">S/{item?.priceMin}</span>
 											</CardDescription>
 											<CardDescription className="font-bold">
-												Hasta: <span className="text-primary ml-1">S/{item.priceMax}</span>
+												Hasta: <span className="text-primary ml-1">S/{item?.priceMax}</span>
 											</CardDescription>
 										</div>
 									</CardHeader>

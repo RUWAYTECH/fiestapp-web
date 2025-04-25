@@ -17,6 +17,8 @@
 		"integer": "El valor debe ser un número entero",
 		"decimal": "El valor debe ser un número decimal",
 		"dateFuture": "La fecha debe ser futura",
-		"datePast": "La fecha debe ser pasada"
+		"datePast": "La fecha debe ser pasada",
+		"imageType": "El archivo debe ser una imagen JPEG o PNG",
+		"dniLength": "El DNI debe tener 8 caracteres"
 	}
 }
