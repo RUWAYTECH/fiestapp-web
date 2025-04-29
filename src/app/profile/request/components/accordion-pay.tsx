@@ -14,12 +14,6 @@ import { Input } from '@components/ui/input'
 import { Button } from '@/components/ui/button'
 
 const createRequestFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
-	documentDni: z.string().nonempty({ message: t('validation.required') }).refine(
-		(value) => {
-			const num = Number.parseInt(value)
-			return !isNaN(num) && Number.isInteger(num) && value.length === 8
-		}, { message: t('validation.dniLength') }
-	),
 	codeTransaction: z.string().nonempty({ message: t('validation.required') }).refine(
 		(value) => {
 			const num = Number.parseInt(value)
@@ -52,27 +46,6 @@ export default function AccordionPay() {
 		<div className="p-6 bg-gray-50">
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
-					<FormField
-						control={form.control}
-						name="documentDni"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Ingresa tu DNI</FormLabel>
-								<FormControl>
-									<Input
-										type='text'
-										placeholder="Ej: 50"
-										{...field}
-										onChange={(e) => {
-											const value = e.target.value.replace(/[^0-9]/g, '')
-											field.onChange(value)
-										}}
-									/>
-								</FormControl>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
 					<FormField
 						control={form.control}
 						name="codeTransaction"
@@ -150,7 +123,6 @@ export default function AccordionPay() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			documentDni: '',
 			codeTransaction: '',
 			image: undefined
 		}
@@ -159,7 +131,6 @@ export default function AccordionPay() {
 	const { reset } = form
 	useEffect(() => {
 		reset({
-			documentDni: '',
 			codeTransaction: '',
 			image: undefined,
 		})
@@ -206,32 +177,6 @@ export default function AccordionPay() {
 					</div>
 				)}
 				{activeIndex === 0 && renderForm()}
-			</div>
-
-			<div>
-				<div
-					className="p-4 flex justify-between items-center cursor-pointer bg-cyan-400 border rounded-lg"
-					onClick={() => toggleAccordion(1)}
-				>
-					<h2 className="text-lg font-semibold text-gray-800">Paypal</h2>
-					<span className="text-gray-600">{activeIndex === 1 ? '-' : '+'}</span>
-				</div>
-				{activeIndex === 1 && (
-					<div className="bg-white">
-						<div className="p-2 bg-gray-50 text-sm text-gray-700">
-							Puedes realizar el pago mediante tu cuenta de Paypal escaneando el código o ingresando tu usuario y contraseña.
-						</div>
-						<div className="p-4 flex justify-center">
-							<Button
-								onClick={() => window.open('https://www.paypal.com/paypalme/tucuenta', '_blank')}
-								className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-							>
-								Ir a Paypal
-							</Button>
-						</div>
-						{renderForm()}
-					</div>
-				)}
 			</div>
 
 			<div className="border rounded-lg shadow-md bg-fuchsia-400">

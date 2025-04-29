@@ -5,7 +5,7 @@ import { Badge } from '@components/ui/badge'
 import { Card } from '@components/ui/card'
 import Skeleton from '@components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@components/ui/table'
-import { useGetMyRequestServiceQuery, useGetRequestServicesResponseProviderQuery } from '@stateManagement/apiSlices/requestSlice'
+import { useGetMyRequestServiceQuery } from '@stateManagement/apiSlices/requestSlice'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react'
 
@@ -15,7 +15,6 @@ import AccordionPay from './components/accordion-pay'
 
 const MyRequestPage = () => {
 	const { data, isFetching } = useGetMyRequestServiceQuery(undefined)
-	const { data: dataServicesProvider, isFetching: isServicesProvider } = useGetRequestServicesResponseProviderQuery(undefined)
 	const [openModal, setOpenModal] = useState(false)
 
 
@@ -129,19 +128,21 @@ const MyRequestPage = () => {
 											<Table>
 												<TableHeader>
 													<TableRow>
-														<TableHead>Otro Campo</TableHead>
-														<TableHead className="text-right">Ejemplo</TableHead>
-														<TableHead className="text-right">Más Datos</TableHead>
-														<TableHead className="text-right">Total</TableHead>
+														<TableHead>Servicio</TableHead>
+														<TableHead className="text-right">Comentario</TableHead>
+														<TableHead className="text-right">Cantidad</TableHead>
+														<TableHead className="text-right">Precio final</TableHead>
 													</TableRow>
 												</TableHeader>
 												<TableBody>
-													<TableRow>
-														<TableCell>Ejemplo</TableCell>
-														<TableCell className="text-right">1</TableCell>
-														<TableCell className="text-right">S/ 50.00</TableCell>
-														<TableCell className="text-right font-medium">S/ 50.00</TableCell>
-													</TableRow>
+													{item.requestServiceDetails.map((itm) => (
+														<TableRow key={itm.id}>
+															<TableCell>{itm.service.name}</TableCell>
+															<TableCell className="text-right">{itm.comment}</TableCell>
+															<TableCell className="text-right">{itm.quantity}</TableCell>
+															<TableCell className="text-right font-medium">S/ {(itm.priceFinal).toFixed(2)}</TableCell>
+														</TableRow>
+													))}
 												</TableBody>
 											</Table>
 										</div>
