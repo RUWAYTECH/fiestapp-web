@@ -59,6 +59,10 @@ function DialogContent({
     xl: "sm:max-w-[1200px]",
     "2xl": "sm:max-w-2xl",
   }[size] ?? `sm:max-w-[${size}]`
+	const {
+    'aria-describedby': ariaDescribedBy,
+    ...restProps
+  } = props
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -69,6 +73,8 @@ function DialogContent({
           className
         )}
         {...props}
+				aria-describedby={ariaDescribedBy ?? undefined}
+        {...restProps}
       >
         {children}
         <DialogPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4">

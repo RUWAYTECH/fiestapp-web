@@ -43,7 +43,7 @@ export const addFavorite = {
 export const deleteFavorite = {
 	query: (params: { favoriteId: number }) => {
 		return {
-			url: endpoints.favorite.deleteFavorite.replace(':favoriteId', params.favoriteId.toString()),
+			url: endpoints.favorite.deleteFavorite.replace(':favoriteId', `${params.favoriteId}`),
 			method: 'DELETE',
 		}
 	},

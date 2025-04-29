@@ -22,3 +22,13 @@ export const getMyRequestService = {
 	},
 	transformResponse: (response: ApiResponseDto<{ data: RequestServiceResponseDto[] }>) => response,
 }
+
+export const getRequestServicesResponseProvider = {
+	query: () => {
+		return {
+			url: endpoints.request.getRequestServicesResponseProvider,
+			method: 'GET',
+		}
+	},
+	transformResponse: (response: ApiResponseDto<{ data: RequestServiceResponseDto[] }>) => response
+}

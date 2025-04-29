@@ -19,7 +19,7 @@ export const endpoints = {
 		getServiceById: '/services/:id?populate=*',
 		getServiceByUserId: '/services?filters[documentId][$ne]=:serviceDocumentId&filters[provider][documentId][$eq]=:documentId&populate=*',
 		getServiceCategoryById: '/services?filters[category][id][$eq]=:id&populate=*',
-		getAllUbigeoServicesByUbigeo: '/ubigeo-services?filters[ubigeo][id][$in]=:idUbigeo&populate=*',
+		getAllUbigeoServicesByUbigeo: '/services/get-services-by-filters',
 		lastService: '/services?sort=createdAt:desc&sort=score:desc&pagination[page]=1&pagination[pageSize]=6&populate=*',
 	},
 	ubigeo:{
@@ -30,11 +30,12 @@ export const endpoints = {
 		addFavorite: '/favorites',
 		allFavorite: '/favorites?populate=*',
 		getFavoriteByserviceId: '/favorites?filters[userId][$eq]=:userId&filters[service][$eq]=:serviceId&populate=*',
-		deleteFavorite: '/favorites/:favoriteId',
+		deleteFavorite: '/favorites/delete-favorite/:favoriteId',
 		getMyFavorite: '/favorites/find-favorites',
 	},
 	request: {
 		createRequest: '/request-services/custom-create',
 		getMyRequest: '/request-services/get-request-services',
+		getRequestServicesResponseProvider: '/request-services/get-request-service-by-provider',
 	}
 }

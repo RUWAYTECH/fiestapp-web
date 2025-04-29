@@ -5,8 +5,6 @@ import { Filter, MapPin, Search, SortAsc, X } from 'lucide-react'
 import { Input } from '@components/ui/input'
 import { UbigeoResponseDto } from '@stateManagement/models/ubigeo/ubigeo'
 import { useGetAllCategoryQuery } from '@stateManagement/apiSlices/categoryApi'
-import { useLazyGetAllUbigeoServicesByUbigeoQuery } from '@stateManagement/apiSlices/ubigeoServicesApi'
-import { UbigeoServiceResponseDto } from '@stateManagement/models/ubigeoServices/ubigeoServices'
 import { CategoryResponseDto } from '@stateManagement/models/category/create'
 
 interface ServiceSearchProps {
@@ -34,7 +32,6 @@ interface AddressSelected {
 
 const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, dataUbigeo, searchUbigeo, categoryId }) => {
 	const {data: categoryData} = useGetAllCategoryQuery({})
-	const [getUbigeoServices] = useLazyGetAllUbigeoServicesByUbigeoQuery()
 
 	const [activeDropdownCategory, setActiveDropdownCategory] = useState<string | null>(null)
 	const [activeDropdownSort, setActiveDropdownSort] = useState<string | null>(null)
@@ -58,7 +55,6 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, dataUbigeo, s
 	const itemsMostrados: AddressSelected[] = selectedAddressData.slice(0, 5)
 
 	const [searchTermAddress, setSearchTermAddress] = useState('')
-	const [idServices, setIdServices] = useState<string[]>([])
 
 	const sortOptions = [
 		{ id: 'priceLow', label: 'Precio más bajo' },
@@ -118,7 +114,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, dataUbigeo, s
 
 		setSelectedAddressOptions(updatedIds)
 		setSelectedAddressData(updatedData)
-		await dataUbigeosId(updatedIds)
+		//await dataUbigeosId(updatedIds)
 	}
 
 
@@ -152,30 +148,11 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, dataUbigeo, s
 		handleSubmitSearch()
 	}
 
-	const dataUbigeosId = (data: string[]) => {
-		const dataServicesIdByUbigeo = data.join(',')
-		getUbigeoServices({ idUbigeo: dataServicesIdByUbigeo })
-			.unwrap()
-			.then((response) => {
-				const dataServicesIdByUbigeo: string[] = response?.map((item:UbigeoServiceResponseDto) => item?.service?.id?.toString()).filter(Boolean) || []
-
-				if (dataServicesIdByUbigeo.length > 0) {
-					setIdServices(dataServicesIdByUbigeo)
-				}
-				else if (data.length > 0 && dataServicesIdByUbigeo.length === 0) {
-					setIdServices(['none'])
-				}
-				else if (data.length === 0) {
-					setIdServices([''])
-				}
-			})
-	}
-
-	useEffect(() => {
-		if (selectedAddressOptions.length > 0) {
-			dataUbigeosId(selectedAddressOptions)
-		}
-	}, [selectedAddressOptions,setSearchTermAddress])
+	// useEffect(() => {
+	// 	if (selectedAddressOptions.length > 0) {
+	// 		dataUbigeosId(selectedAddressOptions)
+	// 	}
+	// }, [selectedAddressOptions,setSearchTermAddress])
 
 	useEffect(() => {
 		searchUbigeo(searchTermAddress)
@@ -186,10 +163,8 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, dataUbigeo, s
 	const handleSubmitSearch = () => {
 		onSubmited({
 			search: searchInput,
-			// eslint-disable-next-line no-constant-binary-expression
 			category: selectedCategory,
 			ubigeo: selectedAddressOptions,
-			services: idServices,
 			sortBy: selectedSortOption,
 		})
 	}
@@ -213,7 +188,7 @@ const ServiceSearch: React.FC<ServiceSearchProps> = ({ onSubmited, dataUbigeo, s
 
 	useEffect(() => {
 		handleSubmitSearch()
-	}, [selectedCategory, selectedSortOption, idServices])
+	}, [selectedCategory, selectedSortOption, selectedAddressData])
 
 	return (
 		<div>

@@ -18,7 +18,7 @@ const ServicesPage: React.FC = () => {
 	const [priceMin, setPriceMin] = useState<number | undefined>(undefined)
 	const [priceMax, setPriceMax] = useState<number | undefined>(undefined)
 	const [sortBy, setSortBy] = useState<string | undefined>(undefined)
-	const [selectedServices, setSelectedServices] = useState<string[] | undefined>(undefined)
+	const [selectedUbigeo, setSelectedUbigeo] = useState<string[] | undefined>(undefined)
 	const [selectedCategories, setSelectedCategories] = useState<string[] | undefined>(undefined)
 
 	const [dataSearchService,{data:servicesFilterData, isLoading: isLoadingServices}] = useLazyAllSearchServiceCategoryUbigeoQuery()
@@ -29,19 +29,19 @@ const ServicesPage: React.FC = () => {
 		search?: string;
 		category?: string | string[];
 		ubigeo?: string | string[];
-		services?: string | string[];
 		priceMin?: number;
 		priceMax?: number;
 		sortBy?: string;
 	}) => {
+
 		setSearch(data?.search || '')
 
 		setSelectedCategories(
 			data?.category ? (Array.isArray(data.category) ? data.category : [data.category]) : undefined
 		)
 
-		setSelectedServices(
-			data?.services ? (Array.isArray(data.services) ? data.services : [data.services]) : undefined
+		setSelectedUbigeo(
+			data?.ubigeo ? (Array.isArray(data.ubigeo) ? data.ubigeo : [data.ubigeo]) : undefined
 		)
 		setSortBy(data?.sortBy)
 
@@ -49,13 +49,11 @@ const ServicesPage: React.FC = () => {
 
 		const idCategory = Array.isArray(data.category) ? data.category.join(',') : data.category
 		const idUbigeo = Array.isArray(data.ubigeo) ? data.ubigeo.join(',') : data.ubigeo
-		const idServices = Array.isArray(data.services) ? data.services.join(',') : data.services
 
 		dataSearchService({
 			search,
 			idCategory,
 			idUbigeo,
-			idServices,
 			priceMin: data.priceMin ?? priceMin,
 			priceMax: data.priceMax ?? priceMax,
 			sortBy: data.sortBy
@@ -71,7 +69,7 @@ const ServicesPage: React.FC = () => {
 			priceMin,
 			priceMax,
 			sortBy,
-			services: selectedServices,
+			ubigeo: selectedUbigeo,
 			category: selectedCategories,
 		})
 	}
@@ -90,7 +88,7 @@ const ServicesPage: React.FC = () => {
 			priceMin: undefined,
 			priceMax: undefined,
 			sortBy,
-			idServices: selectedServices ? selectedServices.join(',') : undefined,
+			idUbigeo: selectedUbigeo ? selectedUbigeo.join(',') : undefined,
 			idCategory: selectedCategories ? selectedCategories.join(',') : undefined,
 		})
 	}

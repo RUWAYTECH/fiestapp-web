@@ -118,7 +118,7 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 		try {
 			const response = await getFavoriteByserviceId({ serviceId: service.id, userId }).unwrap()
 			if (response?.data?.length > 0) {
-				favoriteId = Number(response?.data[0]?.documentId)
+				favoriteId = Number(response?.data[0]?.id)
 			}
 		} catch {
 			// Silenciar error

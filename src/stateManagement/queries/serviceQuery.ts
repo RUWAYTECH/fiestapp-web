@@ -54,13 +54,11 @@ export const allServiceCategoryById = {
 	transformResponse: (response: ApiResponseDto<ServiceResponseDto[]>) => response
 }
 
-
 export const AllSearchServiceCategoryUbigeo = {
 	query: (params: {
 		search?: string;
 		idCategory?: string;
 		idUbigeo?: string;
-		idServices?: string;
 		priceMin?: number;
 		priceMax?: number;
 		sortBy?: string;
@@ -85,16 +83,25 @@ export const AllSearchServiceCategoryUbigeo = {
 		}
 
 
-		if (params.idServices === 'none' || params.idServices?.trim() === 'none') {
-			searchParams.append('filters[id][$in]', '')
-		} else if (params.idServices?.trim()) {
-			const ids = params.idServices
+		// if (params.idServices === 'none' || params.idServices?.trim() === 'none') {
+		// 	searchParams.append('filters[id][$in]', '')
+		// } else if (params.idServices?.trim()) {
+		// 	const ids = params.idServices
+		// 		.split(',')
+		// 		.map(id => id.trim())
+		// 		.filter(id => id)
+
+		// 	ids.forEach(id => searchParams.append('filters[id][$in]', id))
+
+		// }
+
+		if (params.idUbigeo?.trim()) {
+			const ids = params.idUbigeo
 				.split(',')
 				.map(id => id.trim())
 				.filter(id => id)
 
-			ids.forEach(id => searchParams.append('filters[id][$in]', id))
-
+			ids.forEach(id => searchParams.append('filters[ubigeoService][ubigeo][id][$in]', id))
 		}
 
 		if (params.priceMin !== undefined && params.priceMax !== undefined) {
@@ -116,7 +123,7 @@ export const AllSearchServiceCategoryUbigeo = {
 		}
 
 		return {
-			url: `/services?${searchParams.toString()}&populate=*`,
+			url: endpoints.service.getAllUbigeoServicesByUbigeo+`?${searchParams.toString()}&populate=*`,
 			method: 'GET',
 		}
 	},
