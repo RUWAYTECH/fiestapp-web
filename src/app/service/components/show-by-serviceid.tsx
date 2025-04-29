@@ -13,19 +13,22 @@ import useCartStore from '@stores/cart'
 import { useSession } from 'next-auth/react'
 import { useAddFavoriteMutation, useDeleteFavoriteMutation, useLazyGetFavoriteByserviceIdQuery } from '@stateManagement/apiSlices/favoriteApi'
 import { jwtDecode } from 'jwt-decode'
+import { Dialog, DialogHeader, DialogFooter, DialogContent, DialogTitle, DialogDescription } from '@components/ui/dialog'
+import { Button } from '@components/ui/button'
 
 interface ServiceDetailProps {
 	service: ServiceResponseDto;
-	setHasChanges?: (hasChanges: boolean) => void;
 }
 interface tokkenJWT {
 	exp: number;
 	iat: number;
 	id:	number | string;
 }
-export default function ShowByServiceId({ service, setHasChanges }: ServiceDetailProps) {
+export default function ShowByServiceId({ service }: ServiceDetailProps) {
 	const addToCart = useCartStore((state) => state.addItem)
 	const items = useCartStore((state) => state.items)
+	const clearCart = useCartStore((state) => state.clearCart)
+	const [showConfirmation, setShowConfirmation] = useState(false)
 
 	const { data: auth } = useSession()
 
@@ -79,11 +82,6 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 	const handleMouseLeave = () => {
 		setScale(1)
 	}
-
-
-	useEffect(() => {
-		setHasChanges?.(items.length > 0)
-	}, [items, setHasChanges])
 
 	const getUserIdFromToken = (token: string): string => {
 		const decoded: tokkenJWT = jwtDecode(token)
@@ -173,6 +171,29 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 		runAsync()
 	}, [auth])
 
+	const handleAddToCart = () => {
+		// si existe algun servicio en el carrito que tiene como provider differente al provider del servicio actual, eliminarlo
+		const differentProviderItems = items.filter(item => item.provider?.id !== service?.provider?.id)
+		if (differentProviderItems.length > 0) {
+			setShowConfirmation(true)
+			return
+		}
+
+		addToCart({
+			...service,
+			quantity: 1,
+		})
+	}
+
+	const handleConfirmAddToCart = () => {
+		clearCart()
+		addToCart({
+			...service,
+			quantity: 1,
+		})
+
+		setShowConfirmation(false)
+	}
 
 	return (
 		<>
@@ -231,7 +252,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 							</button>
 						</div>
 						<div className="flex gap-2 mt-4">
-							{service?.fileImage && service?.fileImage?.map((img, index) => (
+							{service?.fileImage && service?.fileImage?.[0] && service?.fileImage?.map((img, index) => (
 								<Image
 									key={index}
 									src={urlImage +`${img?.url}` || ''}
@@ -299,12 +320,7 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 						<div className='flex gap-4'>
 							<button
 								className="bg-primary text-white px-6 py-2 rounded-full hover:bg-red-600 transition"
-								onClick={() =>
-									addToCart({
-										...service,
-										quantity: 1,
-									})
-								}
+								onClick={handleAddToCart}
 							>
 								Añadir a la solicitud
 							</button>
@@ -333,13 +349,15 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 							<Link key={item?.documentId} href={`/service/${item?.documentId}`} className="h-full">
 								<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">
 									<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
-										<Image
-											src={urlImage + (item?.fileImage?.[0]?.url || '')}
-											alt={item?.fileImage?.[0]?.name || 'Imagen sin nombre'}
-											width={400}
-											height={250}
-											className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110"
-										/>
+										{item?.fileImage?.[0] && (
+											<Image
+												src={urlImage + (item?.fileImage?.[0]?.url || '')}
+												alt={item?.fileImage?.[0]?.name || 'Imagen sin nombre'}
+												width={400}
+												height={250}
+												className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110"
+											/>
+										)}
 									</div>
 									<CardHeader className="flex flex-col justify-between flex-1 pr-3 pl-3">
 										<div className="flex justify-between items-center w-full gap-2">
@@ -371,6 +389,25 @@ export default function ShowByServiceId({ service, setHasChanges }: ServiceDetai
 					}
 				</div>
 			</Card>
+
+			<Dialog open={showConfirmation} onOpenChange={(open) => setShowConfirmation(open)}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>¿Estás seguro?</DialogTitle>
+						<DialogDescription>
+							Al añadir este servicio al carrito, se eliminarán los servicios de otros proveedores. ¿Deseas continuar?
+						</DialogDescription>
+					</DialogHeader>
+					<DialogFooter className="flex justify-end gap-2">
+						<Button variant="secondary" onClick={() => setShowConfirmation(false)}>
+							No, Cancelar
+						</Button>
+						<Button variant="destructive" onClick={handleConfirmAddToCart}>
+							Sí, Continuar
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
 		</>
 	)
 }

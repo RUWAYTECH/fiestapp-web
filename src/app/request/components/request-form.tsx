@@ -12,9 +12,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
 import CartItem from './cart-item'
-import { useNavigationBlocker } from '@hooks/useNavigationBlocker'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@components/ui/dialog'
-import { useEffect, useState } from 'react'
 import { useCreateRequestMutation } from '@stateManagement/apiSlices/requestSlice'
 import { DatePickerField } from '@components/ui/datePickerField'
 import { useRouter } from 'next/navigation'
@@ -94,17 +91,6 @@ const RequestForm = () => {
 			toastService.error(err?.data?.message || 'Error al enviar la solicitud')
 		})
 	}
-
-	const [hasChanges, setHasChanges] = useState(true)
-	const {
-		shouldShowModal,
-		confirmNavigation,
-		cancelNavigation,
-	} = useNavigationBlocker(hasChanges, '/service/')
-
-	useEffect(() => {
-		setHasChanges(items.length > 0)
-	}, [items, setHasChanges])
 
 	return (
 		<div className="container mx-auto py-6 px-4 md:px-6">
@@ -238,24 +224,6 @@ const RequestForm = () => {
 					)}
 				</CardContent>
 			</Card>
-			<Dialog open={shouldShowModal} onOpenChange={(open) => !open && cancelNavigation()}>
-				<DialogContent>
-					<DialogHeader>
-						<DialogTitle>¿Estás seguro que quieres salir?</DialogTitle>
-						<DialogDescription>
-							Si sales de la pantalla de servicios, se perderán los servicios que has añadido al carrito.
-						</DialogDescription>
-					</DialogHeader>
-					<DialogFooter className="flex justify-end gap-2">
-						<Button variant="secondary" onClick={cancelNavigation}>
-							Cancelar
-						</Button>
-						<Button variant="destructive" onClick={confirmNavigation}>
-							Vaciar y salir
-						</Button>
-					</DialogFooter>
-				</DialogContent>
-			</Dialog>
 		</div>
 	)
 }
