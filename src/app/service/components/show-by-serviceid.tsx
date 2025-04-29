@@ -349,15 +349,20 @@ export default function ShowByServiceId({ service }: ServiceDetailProps) {
 							<Link key={item?.documentId} href={`/service/${item?.documentId}`} className="h-full">
 								<Card className="h-full flex flex-col overflow-hidden hover:shadow-lg transition min-h-[300px] w-full">
 									<div className="relative w-full h-40 overflow-hidden rounded-t-lg">
-										{item?.fileImage?.[0] && (
+										{item?.fileImage?.[0]?.url ? (
 											<Image
-												src={urlImage + (item?.fileImage?.[0]?.url || '')}
+												src={item?.fileImage?.[0]?.url ? (urlImage + (item?.fileImage?.[0]?.url)) : ''}
 												alt={item?.fileImage?.[0]?.name || 'Imagen sin nombre'}
 												width={400}
 												height={250}
 												className="w-full h-full object-cover transition-transform duration-1000 hover:scale-110"
 											/>
-										)}
+										) :
+											(
+												<div className="w-full h-full bg-gray-100 rounded-lg shadow-lg flex items-center justify-center text-gray-500 text-lg">
+													Sin imagen
+												</div>
+											)}
 									</div>
 									<CardHeader className="flex flex-col justify-between flex-1 pr-3 pl-3">
 										<div className="flex justify-between items-center w-full gap-2">
