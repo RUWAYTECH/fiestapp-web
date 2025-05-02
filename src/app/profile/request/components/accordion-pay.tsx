@@ -6,15 +6,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@components/ui/form'
 import { useTranslations } from 'next-intl'
-import { useCreateRequestMutation } from '@stateManagement/apiSlices/requestSlice'
 import { toastService } from '@/core/services/toast'
 import { ApiResponseError } from '@/types'
 import useCartStore from '@stores/cart'
 import { Input } from '@components/ui/input'
 import { Button } from '@/components/ui/button'
+import { useCreatePaymentServiceMutation } from '@stateManagement/apiSlices/paymentApi'
+import { useUploadImageMutation } from '@stateManagement/apiSlices/imagesApi'
 
 const createRequestFormSchema = (t: ReturnType<typeof useTranslations>) => z.object({
-	codeTransaction: z.string().nonempty({ message: t('validation.required') }).refine(
+	transferNumber: z.string().nonempty({ message: t('validation.required') }).refine(
 		(value) => {
 			const num = Number.parseInt(value)
 			return !isNaN(num) && Number.isInteger(num)
@@ -28,7 +29,15 @@ const createRequestFormSchema = (t: ReturnType<typeof useTranslations>) => z.obj
 		})
 })
 
-export default function AccordionPay() {
+interface AccordionPayProps {
+	onClose?: () => void
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	dataService?: any
+}
+
+export default function AccordionPay (props: AccordionPayProps) {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { onClose, dataService } = props
 	const [activeIndex, setActiveIndex] = useState<number | null>(null)
 	const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null)
 
@@ -38,9 +47,9 @@ export default function AccordionPay() {
 
 	const formSchema = createRequestFormSchema(useTranslations())
 
-	const [createRequest, { isLoading }] = useCreateRequestMutation()
+	const [uploadImage] = useUploadImageMutation()
+	const [createPayment, { isLoading }] = useCreatePaymentServiceMutation()
 	const clearCart = useCartStore((state) => state.clearCart)
-	const items = useCartStore((state) => state.items)
 
 	const renderForm = () => (
 		<div className="p-6 bg-gray-50">
@@ -48,7 +57,7 @@ export default function AccordionPay() {
 				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
 					<FormField
 						control={form.control}
-						name="codeTransaction"
+						name="transferNumber"
 						render={({ field }) => (
 							<FormItem>
 								<FormLabel>Código de transacción*</FormLabel>
@@ -108,7 +117,7 @@ export default function AccordionPay() {
 	)
 
 	const handleImageChange = (file: File) => {
-		form.setValue('image', file) // Actualiza el valor en el formulario
+		form.setValue('image', file)
 		if (file) {
 			const reader = new FileReader()
 			reader.onloadend = () => {
@@ -123,7 +132,7 @@ export default function AccordionPay() {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
-			codeTransaction: '',
+			transferNumber: '',
 			image: undefined
 		}
 	})
@@ -131,35 +140,33 @@ export default function AccordionPay() {
 	const { reset } = form
 	useEffect(() => {
 		reset({
-			codeTransaction: '',
+			transferNumber: '',
 			image: undefined,
 		})
 		setPreviewImageUrl(null)
 	}, [activeIndex, reset])
 
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
-		console.log('submit',values)
-		// const data = {
-		// 	numberInvite: Number(values.guests),
-		// 	approximateBudget: Number(values.budget),
-		// 	message: values.details,
-		// 	totalPrice: items.reduce((total, item) => total + item.priceMin * item.quantity, 0),
-		// 	entityStatus: 'Solicitado',
-		// 	provider: items?.[0]?.provider?.id ?? '',
-		// 	requestServiceDetail: items.map((item) => ({
-		// 		comment: '',
-		// 		quantity: item.quantity,
-		// 		priceFinal: item.priceMin,
-		// 		service: item.id
-		// 	}))
-		// }
-		// createRequest(data).then(() => {
-		// 	clearCart()
-		// 	toastService.success('Solicitud enviada con éxito')
-		// 	//router.push('/profile/request')
-		// }).catch((err: ApiResponseError) => {
-		// 	toastService.error(err?.data?.message || 'Error al enviar la solicitud')
-		// })
+		const dataUpload = {
+			paymentImage: values.image,
+		}
+		uploadImage(dataUpload).then((item) => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const uploadedImageIds = item.data.map((img: any) => img.id)
+			const dataPayment = {
+				transferNumber: values.transferNumber,
+				paymentImage: uploadedImageIds || [],
+			}
+			createPayment(dataPayment).then(() => {
+				clearCart()
+				toastService.success('Pago realizado con éxito')
+				onClose?.()
+			}).catch((err: ApiResponseError) => {
+				toastService.error(err?.data?.message || 'Error al enviar pago')
+			})
+		}).catch((err: ApiResponseError) => {
+			toastService.error(err?.data?.message || 'Error al subir imagen')
+		})
 	}
 	return (
 		<div className="space-y-4">

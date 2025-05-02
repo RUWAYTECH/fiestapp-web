@@ -37,5 +37,13 @@ export const endpoints = {
 		createRequest: '/request-services/custom-create',
 		getMyRequest: '/request-services/get-request-services',
 		getRequestServicesResponseProvider: '/request-services/get-request-service-by-provider',
+	},
+	payment:{
+		createPayment: '/service-payments',
+		getAllPayment: '/service-payments?populate=*',
+		getPaymentById: '/service-payments/:id',
+	},
+	images:{
+		uploadImage: '/upload',
 	}
 }

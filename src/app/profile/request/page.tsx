@@ -41,16 +41,13 @@ const MyRequestPage = () => {
 		setOpenModal(false)
 	}
 
-	const onSubmit = (values: any) => {
-		console.log(values)
-	}
 
 	return (
 		<div>
 			<Accordion type="single" collapsible className="w-full space-y-4">
 				{isFetching && (
 					[...Array(3)].map((_, index) => (
-						<Skeleton key={index} className="h-16 w-full rounded-md" /> // Skeleton loading state
+						<Skeleton key={index} className="h-16 w-full rounded-md" />
 					))
 				)}
 				{data?.data?.map((item) => (
@@ -166,7 +163,7 @@ const MyRequestPage = () => {
 				<DialogContent size="md">
 					<DialogHeader>
 						<DialogTitle className='mb-4 text-center'>Elija el método de pago</DialogTitle>
-						<AccordionPay />
+						<AccordionPay onClose={handleCloseModal} dataService={data} />
 					</DialogHeader>
 					<DialogFooter className="flex justify-end gap-2">
 						<Button variant="secondary" onClick={() => handleCloseModal()}>
