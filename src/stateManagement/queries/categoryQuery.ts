@@ -1,0 +1,35 @@
+import { ApiResponseDto } from '@/types'
+import { endpoints } from '@constants/endpoints'
+import { CategoryResponseDto, CreateCategoryRequestDto } from '@stateManagement/models/category/create'
+
+export const getAllCategory = {
+	query: () => {
+		return {
+			url: endpoints.category.getAllCategory,
+			method: 'GET',
+		}
+	},
+	//transformResponse: (response: ApiResponseDto<CategoryResponseDto[]>) => response
+	transformResponse: (response: { data: ApiResponseDto<CategoryResponseDto[]> }) => response.data
+}
+
+export const createCategory = {
+	query: (data: CreateCategoryRequestDto) => {
+		return {
+			url: endpoints.category.createCategory,
+			method: 'POST',
+			data,
+		}
+	},
+	transformResponse: (response: ApiResponseDto<CategoryResponseDto>) => response
+}
+
+export const Lastcategory = {
+	query: () => {
+		return {
+			url: endpoints.category.lastcategory,
+			method: 'GET',
+		}
+	},
+	transformResponse: (response: { data: ApiResponseDto<CategoryResponseDto[]> }) => response.data
+}
