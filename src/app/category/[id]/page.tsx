@@ -7,7 +7,7 @@ import { useGetServiceByIdQuery } from '@stateManagement/apiSlices/serviceApi'
 const RutaPage: React.FC = () => {
 	const pathname = usePathname()
 	const id = pathname.split('/').pop()
-	const { data: servicesByIdData, isLoading } = useGetServiceByIdQuery(id ?? '', {
+	const { data: servicesByIdData } = useGetServiceByIdQuery(id ?? '', {
 		skip: !id,
 	})
 	return (
