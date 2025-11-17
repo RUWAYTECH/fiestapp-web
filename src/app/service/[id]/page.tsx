@@ -20,4 +20,6 @@ const RutaPage = () => {
 		</AppLayout>
 	)
 }
+
+export const runtime = 'edge'
 export default RutaPage

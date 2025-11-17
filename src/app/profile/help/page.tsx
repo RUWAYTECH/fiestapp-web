@@ -1,6 +1,6 @@
 'use client'
 
-import FAQAccordion from "@app/help/components/FAQAccordion"
+import FAQAccordion from '@app/help/components/FAQAccordion'
 
 export default function HelpCenterPage() {
 	return (

@@ -18,7 +18,7 @@ const CategoryPage: React.FC = () => {
 					{isLoading ? (
 						<p className="text-center text-lg font-semibold">Cargando categorías...</p>
 					) : (
-						<CategoryCard categories={dataCategories?.data ?? []} />
+						<CategoryCard categories={Array.isArray(dataCategories) ? dataCategories : dataCategories?.data ?? []} />
 					)}
 				</div>
 			</div>
