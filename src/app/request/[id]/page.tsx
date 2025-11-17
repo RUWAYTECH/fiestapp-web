@@ -22,4 +22,5 @@ const RequestPage = async ({ params }: RequestPageProps) => {
 	)
 }
 
+export const runtime = 'edge'
 export default RequestPage

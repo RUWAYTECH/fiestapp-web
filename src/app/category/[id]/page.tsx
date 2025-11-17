@@ -31,4 +31,6 @@ const RutaPage: React.FC = () => {
 		</AppLayout>
 	)
 }
+
+export const runtime = 'edge'
 export default RutaPage
