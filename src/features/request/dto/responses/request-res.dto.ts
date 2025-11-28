@@ -9,7 +9,7 @@ export interface RequestResDto extends RequestCommonDto {
 	user: User;
 	provider: Provider;
 	status: RequestStatus;
-	priceFinal: number | null;
+	finalPrice: number | null;
 	createdAt: Date;
 	payment: RequestPaymentDto | null;
 }

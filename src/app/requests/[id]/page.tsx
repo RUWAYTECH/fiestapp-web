@@ -67,7 +67,12 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
 												<p className="text-sm">
 													S/ {item.price} x {item.quantity}
 												</p>
-												<p className="text-sm font-semibold">S/ {item.price * item.quantity}</p>
+												<p className="text-sm font-semibold flex gap-2">
+													{(item.price * item.quantity).toFixed(2) !== item.total.toFixed(2) && (
+														<s className="text-muted-foreground mr-1">S/ {(item.price * item.quantity).toFixed(2)}</s>
+													)}
+													S/ {item.total.toFixed(2)}
+												</p>
 											</div>
 										</div>
 										{request.status !== RequestStatus.REQUESTED && (
@@ -115,13 +120,13 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
 							<div className="flex justify-between mb-1">
 								<p className="text-sm font-light">Subtotal ({request.items.length} servicios)</p>
 								<p className="text-sm font-light text-foreground">
-									S/ {request.items.reduce((acc, item) => acc + item.price * item.quantity, 0)}
+									S/ {request.items.reduce((acc, item) => acc + item.total, 0)}
 								</p>
 							</div>
 							<Separator className="my-2" />
 							<div className="flex justify-between text-foreground font-semibold">
 								<p>Total</p>
-								<p>S/ {request.priceFinal}</p>
+								<p>S/ {request.finalPrice}</p>
 							</div>
 						</CardContent>
 					</Card>
