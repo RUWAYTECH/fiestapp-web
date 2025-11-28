@@ -38,7 +38,7 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
 					</p>
 					<p className="text-sm mt-4">{request.comment}</p>
 				</div>
-				{request.status === RequestStatus.REQUESTED && <RequestPaymentButton data={request} />}
+				{request.status === RequestStatus.IN_PROGRESS && <RequestPaymentButton data={request} />}
 			</Card>
 			<div className="flex relative flex-col md:grid md:grid-cols-[1fr_20rem] md:[grid-template-areas:'detail_shipping'] gap-4">
 				<div className="md:[grid-area:detail]">

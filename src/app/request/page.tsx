@@ -131,7 +131,7 @@ export default function RequestPage() {
 			clearCart();
 
 			form.reset();
-			router.push('/profile/requests');
+			router.push('/requests');
 		} catch (error) {
 			dispatchToast.apiRes(error as unknown as ApiResponse<null>);
 		} finally {
