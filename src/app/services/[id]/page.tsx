@@ -1,5 +1,4 @@
 import { Container } from '@/components/custom/container';
-import { Card } from '@/components/ui/card';
 import { ServiceCardActions } from '@/features/service/components/service-card-actions';
 import { ServiceGallery } from '@/features/service/components/service-gallery';
 import { ServiceList } from '@/features/service/components/service-list';
@@ -17,7 +16,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
 	if (!response || !response.data) {
 		return (
 			<Container>
-				<div>Service not found</div>
+				<div>Lo sentimos, el servicio que buscas no existe o ha sido eliminado.</div>
 			</Container>
 		);
 	}

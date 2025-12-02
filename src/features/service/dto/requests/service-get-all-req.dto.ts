@@ -5,5 +5,5 @@ export interface ServiceGetAllReqDto extends GetAllReqDto {
 	providerId?: string[];
 	ubigeoId?: string[];
 	status?: boolean;
-	sortBy?: 'price' | 'rating';
+	sortBy?: 'PRICE' | 'RATING' | 'CREATED_AT';
 }

@@ -20,7 +20,9 @@ export async function ServiceList({ q, category, sort, ubigeo, page = 1, hidePag
 		pageSize,
 		search: q,
 		categoryId: Array.isArray(category) ? category : category ? [category] : undefined,
-		sortBy: sort as 'price' | 'rating' | undefined,
+		sortBy: ['price', 'rating', 'created_at'].includes(sort || '')
+			? (sort?.toUpperCase() as 'PRICE' | 'RATING' | 'CREATED_AT')
+			: undefined,
 		ubigeoId: Array.isArray(ubigeo) ? ubigeo : ubigeo ? [ubigeo] : undefined
 	});
 

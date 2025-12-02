@@ -12,8 +12,8 @@ interface ServiceSortDropdownProps {
 }
 
 export function ServiceSortDropdown({ defaultSelected, onChange }: ServiceSortDropdownProps) {
-	const [selectedOption, setSelectedOption] = useState<'price' | 'valoration' | ''>(
-		['price', 'valoration'].includes(defaultSelected || '') ? (defaultSelected as 'price' | 'valoration') : ''
+	const [selectedOption, setSelectedOption] = useState<'price' | 'rating' | ''>(
+		['price', 'rating'].includes(defaultSelected || '') ? (defaultSelected as 'price' | 'rating') : ''
 	);
 
 	const handleClear = () => {
@@ -33,7 +33,7 @@ export function ServiceSortDropdown({ defaultSelected, onChange }: ServiceSortDr
 				<div className="flex flex-col gap-3 max-h-48 overflow-y-auto">
 					<RadioGroup
 						value={selectedOption}
-						onValueChange={(value: 'price' | 'valoration') => {
+						onValueChange={(value: 'price' | 'rating') => {
 							setSelectedOption(value);
 							onChange?.(value);
 						}}
@@ -43,7 +43,7 @@ export function ServiceSortDropdown({ defaultSelected, onChange }: ServiceSortDr
 							<span className="text-sm">Precio más bajo</span>
 						</label>
 						<label className="flex items-center gap-3 cursor-pointer">
-							<RadioGroupItem value="valoration" />
+							<RadioGroupItem value="rating" />
 							<span className="text-sm">Mejor valoración</span>
 						</label>
 					</RadioGroup>

@@ -1,6 +1,7 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Container } from '@/components/custom/container';
 import { Image } from '@/components/custom/image';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { formatShowDate } from '@/core/lib/date';
 import { RequestPaymentButton } from '@/features/request/components/request-payment-button';
@@ -9,6 +10,7 @@ import { RequestService } from '@/features/request/services/request.service';
 import { Separator } from '@radix-ui/react-dropdown-menu';
 import { Calendar, CreditCard, MapPin } from 'lucide-react';
 import { getServerSession } from 'next-auth';
+import Link from 'next/link';
 
 interface RequestDetailPageProps {
 	params: Promise<{ id: string }>;
@@ -27,11 +29,19 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
 
 	return (
 		<Container>
+			<Button asChild variant="outline" className="mb-4">
+				<Link href="/requests">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" className="inline size-5" fill="currentColor">
+						<path d="M199.7 299.8C189.4 312.4 190.2 330.9 201.9 342.6L329.9 470.6C339.1 479.8 352.8 482.5 364.8 477.5C376.8 472.5 384.6 460.9 384.6 447.9L384.6 191.9C384.6 179 376.8 167.3 364.8 162.3C352.8 157.3 339.1 160.1 329.9 169.2L201.9 297.2L199.7 299.6z" />
+					</svg>
+					Volver a mis solicitudes
+				</Link>
+			</Button>
 			<Card className="p-4 mb-6 shadow-none flex flex-row flex-wrap items-start justify-between gap-4">
 				<div className="flex-1">
-					<p className="flex text-sm gap-4">
+					<p className="flex text-sm gap-4 flex-wrap">
 						<span className="text-green-600">{statusLabel[request.status]}</span>
-						<span className="flex items-center gap-1 text-muted-foreground text-nowrap">
+						<span className="flex items-center gap-1 text-muted-foreground text-wrap md:text-nowrap">
 							<Calendar className="size-4 text-sky-600" />
 							Solicitado el {formatShowDate(request.createdAt)}
 						</span>
