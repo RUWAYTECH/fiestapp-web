@@ -77,11 +77,11 @@ export function CartDrawer() {
 
 								<div className="space-y-2">
 									<Button className="w-full" onClick={closeCart} asChild>
-										<Link href="/request">Proceder a pagar</Link>
+										<Link href="/request">Proceder a solicitar</Link>
 									</Button>
 									<SheetClose asChild>
 										<Button variant="outline" className="w-full">
-											Seguir comprando
+											Seguir cotizando
 										</Button>
 									</SheetClose>
 								</div>
