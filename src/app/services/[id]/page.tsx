@@ -5,9 +5,35 @@ import { ServiceGallery } from '@/features/service/components/service-gallery';
 import { ServiceList } from '@/features/service/components/service-list';
 import { ServiceService } from '@/features/service/services/service.service';
 import { MapPin, Star } from 'lucide-react';
+import { Metadata } from 'next';
 
 interface ServicePageProps {
 	params: Promise<{ id: string }>;
+}
+
+export async function generateMetadata({ params }: ServicePageProps): Promise<Metadata> {
+	const resolvedParams = await params;
+	const response = await ServiceService.getById(resolvedParams.id);
+
+	if (!response?.data) {
+		return {
+			title: 'Servicio no encontrado'
+		};
+	}
+
+	const service = response.data;
+
+	return {
+		title: `${service.name} - ${service.provider.name}`,
+		description:
+			service.description?.slice(0, 160) ||
+			`Contrata ${service.name} para tu próxima fiesta. Precios desde S/${service.priceMin}`,
+		openGraph: {
+			title: service.name,
+			description: service.description,
+			images: service.images?.[0] ? [{ url: service.images[0] }] : []
+		}
+	};
 }
 
 export default async function ServicePage({ params }: ServicePageProps) {

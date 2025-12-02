@@ -1,4 +1,14 @@
 import { Container } from '@/components/custom/container';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+	title: 'Sobre Nosotros - Conoce a FiestApp',
+	description:
+		'Somos FiestApp, la plataforma líder para encontrar y contratar servicios de fiestas en Latinoamérica. Conoce nuestra misión y visión.',
+	alternates: {
+		canonical: 'https://fiestapp.com/about-us'
+	}
+};
 
 export default function AboutUsPage() {
 	return (

@@ -7,6 +7,7 @@ import {
 	SORT_PARAM_KEY,
 	UBIGEO_PARAM_KEY
 } from '@/features/service/constants/search-params';
+import { Metadata } from 'next';
 import { Suspense } from 'react';
 
 interface ServicesPageProps {
@@ -17,6 +18,15 @@ interface ServicesPageProps {
 		[UBIGEO_PARAM_KEY]?: string[] | string;
 	}>;
 }
+
+export const metadata: Metadata = {
+	title: 'Servicios para Fiestas - Locales, Decoración, Catering y Más',
+	description:
+		'Explora nuestra amplia variedad de servicios para fiestas. Filtra por categoría, ubicación y precio. Locales, decoración, animación, tortas y más.',
+	alternates: {
+		canonical: 'https://fiestapp.com/services'
+	}
+};
 
 export default async function ServicesPage({ searchParams }: ServicesPageProps) {
 	const resolvedParams = await searchParams;

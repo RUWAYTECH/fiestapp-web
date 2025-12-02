@@ -8,5 +8,6 @@ export const configEnv = {
 		prset: process.env.NEXT_PUBLIC_CLOUDINARY_PRESET ?? ''
 	},
 	paymentNumber: process.env.NEXT_PUBLIC_PAYMENT_NUMBER ?? '',
-	paymentBank: process.env.NEXT_PUBLIC_PAYMENT_BANK ?? ''
+	paymentBank: process.env.NEXT_PUBLIC_PAYMENT_BANK ?? '',
+	gaId: process.env.NEXT_PUBLIC_GA_ID ?? ''
 };

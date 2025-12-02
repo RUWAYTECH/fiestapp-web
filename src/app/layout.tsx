@@ -5,14 +5,72 @@ import Providers from './providers';
 import { Layout } from '@/components/layout/layout';
 import { Toaster } from '@/components/ui/sonner';
 import { ConfirmDialog } from '@/components/custom/confirm-dialog';
+import { GoogleAnalytics } from '@next/third-parties/google';
+import { configEnv } from '@/core/config';
 
 export const metadata: Metadata = {
-	title: 'FiestApp',
-	description: 'Encuentra todo para tu fiesta en un solo lugar.',
-	icons: {
-		icon: '/favicon.ico',
-		shortcut: '/favicon.ico',
-		apple: '/favicon.ico'
+	title: {
+		default: 'FiestApp - Encuentra Servicios para tu Fiesta | Locales, Decoración y Más',
+		template: '%s | FiestApp'
+	},
+	description:
+		'Descubre y contrata los mejores servicios para fiestas: locales, decoración, tortas, animación, catering y más. Organiza eventos inolvidables en un solo lugar.',
+	keywords: [
+		'servicios para fiestas',
+		'organizar eventos',
+		'locales para fiestas',
+		'decoración de fiestas',
+		'tortas personalizadas',
+		'animación infantil',
+		'catering para eventos',
+		'fiestas infantiles',
+		'cumpleaños',
+		'eventos sociales',
+		'alquiler de locales',
+		'fiestas Perú'
+	],
+	authors: [{ name: 'FiestApp' }],
+	creator: 'FiestApp',
+	publisher: 'FiestApp',
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			'max-video-preview': -1,
+			'max-image-preview': 'large',
+			'max-snippet': -1
+		}
+	},
+	openGraph: {
+		type: 'website',
+		locale: 'es_PE',
+		url: 'https://fiestapp.com',
+		siteName: 'FiestApp',
+		title: 'FiestApp - Encuentra Todo para tu Fiesta en un Solo Lugar',
+		description:
+			'Descubre y contrata los mejores servicios para fiestas: locales, decoración, tortas, animación y más.',
+		images: [
+			{
+				url: '/og-image.png',
+				width: 1200,
+				height: 630,
+				alt: 'FiestApp - Servicios para Fiestas'
+			}
+		]
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: 'FiestApp - Servicios para Fiestas',
+		description: 'Encuentra locales, decoración, tortas y más para tu próximo evento.',
+		images: ['/og-image.png']
+	},
+	verification: {
+		google: 'tu-codigo-google-search-console'
+	},
+	alternates: {
+		canonical: 'https://fiestapp.com'
 	}
 };
 
@@ -31,6 +89,7 @@ export default function RootLayout({
 				</Providers>
 				<Toaster position="top-center" richColors />
 				<ConfirmDialog />
+				<GoogleAnalytics gaId={configEnv.gaId} />
 			</body>
 		</html>
 	);
