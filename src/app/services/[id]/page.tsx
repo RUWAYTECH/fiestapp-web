@@ -1,4 +1,5 @@
 import { Container } from '@/components/custom/container';
+import { Badge } from '@/components/ui/badge';
 import { ServiceCardActions } from '@/features/service/components/service-card-actions';
 import { ServiceGallery } from '@/features/service/components/service-gallery';
 import { ServiceList } from '@/features/service/components/service-list';
@@ -37,14 +38,17 @@ export default async function ServicePage({ params }: ServicePageProps) {
 						))}
 					</div>
 					<p className="text-gray-600 mb-4">{service.description}</p>
-					<div className="flex gap-6 mb-6 flex-wrap">
+					<div className="flex gap-6 mb-4 flex-wrap">
 						<p className="text-xl font-bold">
-							Desde <span className="font-normal text-2xl text-primary">S/{service.priceMin}</span>
+							Desde <span className="font-normal text-2xl text-primary">S/ {service.priceMin}</span>
 						</p>
 						<p className="text-xl font-bold">
-							Hasta <span className="font-normal text-2xl text-primary">S/{service.priceMax}</span>
+							Hasta <span className="font-normal text-2xl text-primary">S/ {service.priceMax}</span>
 						</p>
 					</div>
+					<Badge variant="outline" className="mb-4 text-blue-600">
+						{service.provider.name}
+					</Badge>
 					<div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
 						<MapPin size={20} />
 						<span>{service.address}</span>

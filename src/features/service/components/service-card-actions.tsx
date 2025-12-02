@@ -50,8 +50,7 @@ export function ServiceCardActions({ service }: ServiceCardActionsProps) {
 		if (existWithDifferentProvider) {
 			const confirmed = await confirm({
 				title: '¿Estás seguro?',
-				description:
-					'Al añadir este servicio al carrito, se eliminarán los servicios de otros proveedores. ¿Deseas continuar?',
+				description: `Al añadir este servicio al carrito, se eliminarán los servicios de otros proveedores que no sean (${existWithDifferentProvider.name}). ¿Deseas continuar?`,
 				confirmText: 'Sí, continuar',
 				cancelText: 'No, cancelar'
 			});
