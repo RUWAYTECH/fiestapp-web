@@ -141,14 +141,14 @@ export function RequestPaymentForm({ onClose, requestId }: RequestPaymentFormPro
 					<TabsContent value="yape_plin">
 						<div className="flex flex-col gap-4">
 							<p className="text-sm">Realiza el pago a través de Yape o Plin utilizando el siguiente número:</p>
-							<h3 className="text-lg font-semibold">+51 987 654 321</h3>
+							<h3 className="text-lg font-semibold">{configEnv.paymentNumber}</h3>
 							<p className="text-sm">Luego, sube el comprobante de pago para completar la solicitud.</p>
 						</div>
 					</TabsContent>
 					<TabsContent value="card">
 						<div className="flex flex-col gap-4">
 							<p className="text-sm">Realiza una transferencia o depósito a la siguiente cuenta bancaria:</p>
-							<h3 className="text-lg font-semibold">Banco XYZ - Cuenta: 1234567890 - CCI: 00123456789012345678</h3>
+							<h3 className="text-lg font-semibold">{configEnv.paymentBank}</h3>
 							<p className="text-sm">Luego, sube el comprobante de pago para completar la solicitud.</p>
 						</div>
 					</TabsContent>

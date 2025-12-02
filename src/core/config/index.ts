@@ -6,5 +6,7 @@ export const configEnv = {
 	cloudinary: {
 		url: process.env.NEXT_PUBLIC_CLOUDINARY_URL ?? '',
 		prset: process.env.NEXT_PUBLIC_CLOUDINARY_PRESET ?? ''
-	}
+	},
+	paymentNumber: process.env.NEXT_PUBLIC_PAYMENT_NUMBER ?? '',
+	paymentBank: process.env.NEXT_PUBLIC_PAYMENT_BANK ?? ''
 };
