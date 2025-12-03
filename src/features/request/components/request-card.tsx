@@ -15,7 +15,7 @@ export function RequestCard({ request }: { request: RequestResDto }) {
 					<Badge className={statusColor[request.status] || 'bg-gray-600 text-white'}>{request.status}</Badge>
 				</h3>
 				<p className="text-sm text-muted-foreground">Solicitado el {formatShowDate(request.createdAt)}</p>
-				<p className="text-sm font-semibold">Total: S/ {request.priceFinal}</p>
+				<p className="text-sm font-semibold">Total: S/ {request.finalPrice}</p>
 			</div>
 			<div className="">
 				<Button variant="default" size="sm">
