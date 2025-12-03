@@ -75,6 +75,12 @@ export default function SignUpForm() {
 				<FormInputField control={form.control} name="email" label="Correo electrónico" type="email" />
 				<FormInputField control={form.control} name="name" label="Nombre" type="text" />
 				<FormInputField control={form.control} name="password" label="Contraseña" type="password" />
+				<p className="text-sm text-muted-foreground">
+					¿Ya tienes una cuenta?{' '}
+					<a href="/auth/login" className="text-primary hover:underline">
+						Inicia sesión aquí
+					</a>
+				</p>
 				<Button type="submit" className="w-full" disabled={loading}>
 					{loading && <LoaderCircle className="animate-spin size-5" />}
 					Registrarse

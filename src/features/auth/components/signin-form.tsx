@@ -12,6 +12,7 @@ import { useState } from 'react';
 import { LoaderCircle } from 'lucide-react';
 import { messages, validationMessages } from '@/core/constants/validation-messages';
 import { dispatchToast } from '@/core/lib/toast';
+import Link from 'next/link';
 
 export default function SignInForm() {
 	const [loading, setLoading] = useState(false);
@@ -56,6 +57,12 @@ export default function SignInForm() {
 			<form onSubmit={form.handleSubmit(submitHandler)} className="space-y-4">
 				<FormInputField control={form.control} name="email" label="Correo electrónico" type="email" />
 				<FormInputField control={form.control} name="password" label="Contraseña" type="password" />
+				<p className="text-sm text-muted-foreground">
+					¿No tienes una cuenta?{' '}
+					<Link href="/auth/register" className="text-primary hover:underline">
+						Regístrate aquí
+					</Link>
+				</p>
 				<Button type="submit" className="w-full" disabled={loading}>
 					{loading && <LoaderCircle className="animate-spin size-5" />}
 					Iniciar sesión
