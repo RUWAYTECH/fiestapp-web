@@ -182,7 +182,7 @@ export function RequestPaymentForm({ onClose, requestId }: RequestPaymentFormPro
 				)}
 				<Separator />
 				<div className="flex justify-end gap-4">
-					<Button variant="secondary" onClick={onClose} className="ml-2" disabled={loading}>
+					<Button type="button" variant="secondary" onClick={onClose} className="ml-2" disabled={loading}>
 						Cancelar
 					</Button>
 					<Button type="submit" disabled={loading}>
