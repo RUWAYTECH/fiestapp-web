@@ -1,17 +1,13 @@
-import { Card, CardContent } from '@components/ui/card'
-import { Suspense } from 'react'
-import LoginForm from './loginForm'
+import SignInForm from '@/features/auth/components/signin-form';
 
-const LoginPage = async () => {
+export default function LoginPage() {
 	return (
-		<Card className="mx-auto my-auto max-w-xl w-full">
-			<CardContent>
-				<Suspense fallback={<div className="flex items-center justify-center p-4">Loading...</div>}>
-					<LoginForm />
-				</Suspense>
-			</CardContent>
-		</Card>
-	)
+		<>
+			<h1 className="text-2xl font-bold text-center">Inicia sesión en tu cuenta</h1>
+			<p className="text-muted-foreground text-sm text-balance text-center mb-6">
+				Introduce tu correo electrónico a continuación para iniciar sesión en tu cuenta
+			</p>
+			<SignInForm />
+		</>
+	);
 }
-
-export default LoginPage

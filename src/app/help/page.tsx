@@ -1,23 +1,24 @@
-'use client'
+import { Container } from '@/components/custom/container';
+import FAQAcordion from '@/features/help/components/faq-acordion';
+import { Metadata } from 'next';
 
-import AppLayout from '@components/containers/layout/layout'
-import FAQAccordion from './components/FAQAccordion'
+export const metadata: Metadata = {
+	title: 'Centro de Ayuda - Preguntas Frecuentes',
+	description:
+		'Resuelve tus dudas sobre cómo usar FiestApp. Encuentra respuestas sobre reservas, pagos, cancelaciones y más.',
+	alternates: {
+		canonical: 'https://fiestapp.com/help'
+	}
+};
 
-export default function HelpCenterPage() {
+export default function HelpPage() {
 	return (
-		<AppLayout>
-			<section className="py-12">
-				<div className="container mx-auto px-4">
-					<h1 className="text-3xl font-bold text-center text-primary mb-8">
-						Centro de Ayuda
-					</h1>
-					<p className="text-center text-gray-700 mb-12">
-						Encuentra respuestas a tus preguntas frecuentes sobre nuestros
-						servicios.
-					</p>
-					<FAQAccordion />
-				</div>
-			</section>
-		</AppLayout>
-	)
+		<Container>
+			<h1 className="text-3xl font-bold text-center text-primary mb-8">Centro de Ayuda</h1>
+			<p className="text-center text-gray-700 mb-12">
+				Encuentra respuestas a tus preguntas frecuentes sobre nuestros servicios.
+			</p>
+			<FAQAcordion />
+		</Container>
+	);
 }

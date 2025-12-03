@@ -1,49 +1,25 @@
-export const endpoints = {
+export const ep = {
 	auth: {
 		login: '/auth/login',
-		register: '/auth/local/register'
+		register: '/auth/register',
+		oauthSignIn: '/auth/oauth-signin'
 	},
-	category:{
-		getAllCategory: '/categories?populate=*',
-		createCategory: '/categories/create',
-		updateCategory: '/categories/update',
-		deleteCategory: '/categories/delete',
-		getCategoryById: '/categories/:id',
-		lastcategory: '/categories?sort=createdAt:desc&pagination[page]=1&pagination[pageSize]=6&populate=*',
+	category: {
+		getAll: '/categories'
 	},
-	service:{
-		getAllService: '/services?populate=*',
-		createService: '/services/create',
-		updateService: '/services/update',
-		deleteService: '/services/delete',
-		getServiceById: '/services/:id?populate=*',
-		getServiceByUserId: '/services?filters[documentId][$ne]=:serviceDocumentId&filters[provider][documentId][$eq]=:documentId&populate=*',
-		getServiceCategoryById: '/services?filters[category][id][$eq]=:id&populate=*',
-		getAllUbigeoServicesByUbigeo: '/services/get-services-by-filters',
-		lastService: '/services?sort=createdAt:desc&sort=score:desc&pagination[page]=1&pagination[pageSize]=6&populate=*',
+	service: {
+		getAll: '/services',
+		getById: '/services/:id',
+		toggleFavorite: '/services/:id/favorite',
+		getFavorites: '/services/favorites'
 	},
-	ubigeo:{
-		getAllUbigeo: '/ubigeos?populate=*',
-		searchUbigeo: '/ubigeos?filters[$or][0][department][$containsi]=:search&filters[$or][1][province][$containsi]=:search&filters[$or][2][district][$containsi]=:search&populate=*',
-	},
-	favorite:{
-		addFavorite: '/favorites',
-		allFavorite: '/favorites?populate=*',
-		getFavoriteByserviceId: '/favorites?filters[userId][$eq]=:userId&filters[service][$eq]=:serviceId&populate=*',
-		deleteFavorite: '/favorites/delete-favorite/:favoriteId',
-		getMyFavorite: '/favorites/find-favorites',
+	ubigeo: {
+		getAll: '/ubigeos'
 	},
 	request: {
-		createRequest: '/request-services/custom-create',
-		getMyRequest: '/request-services/get-request-services',
-		getRequestServicesResponseProvider: '/request-services/get-request-service-by-provider',
-	},
-	payment:{
-		createPayment: '/service-payments',
-		getAllPayment: '/service-payments?populate=*',
-		getPaymentById: '/service-payments/:id',
-	},
-	images:{
-		uploadImage: '/upload',
+		getAll: '/requests',
+		getById: '/requests/:id',
+		payCotization: '/requests/:id/pay-cotization',
+		cotization: '/requests/cotization'
 	}
-}
+};

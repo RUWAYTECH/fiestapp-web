@@ -1,66 +1,71 @@
-import globals from 'globals'
-import pluginJs from '@eslint/js'
-import tseslint from 'typescript-eslint'
-import pluginReact from 'eslint-plugin-react'
-import { FlatCompat } from '@eslint/eslintrc'
-import { dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { defineConfig, globalIgnores } from 'eslint/config';
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import react from 'eslint-plugin-react';
+import prettier from 'eslint-plugin-prettier/recommended';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
+import globals from 'globals';
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-})
-
-/** @type {import('eslint').Linter.Config[]} */
-const eslintConfig = [
-	{ ignores: ['.next/**', 'public/**', 'next.config.js', 'postcss.config.js'] },
-	{ files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'] },
-	{ languageOptions: { globals: { ...globals.browser, ...globals.node } } },
-	pluginJs.configs.recommended,
+export default defineConfig([
+	globalIgnores(['.next/**', 'public/**', 'out/**', 'build/**', 'next.config.js', 'postcss.config.js']),
+	{
+		files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+		languageOptions: {
+			globals: { ...globals.browser, ...globals.node }
+		}
+	},
+	js.configs.recommended,
 	...tseslint.configs.recommended,
-	pluginReact.configs.flat.recommended,
-	...compat.config({
-		extends: ['next', 'next/core-web-vitals', 'next/typescript'],
-		settings: {
-			next: {
-				rootDir: '.',
-			},
-		},
-	}),
+	react.configs.flat.recommended,
+	...nextVitals,
+	...nextTs,
+	prettier,
 	{
 		rules: {
-			'react/react-in-jsx-scope': 'off',
-			'eol-last': [
+			'@next/next/no-img-element': 'off',
+			'react-hooks/exhaustive-deps': 'off',
+			'prettier/prettier': [
 				'error',
-				'never'
-			],
-			'semi': ['error', 'never'],
-			'react/prop-types': 'off',
-			'@/quotes': [
-				'error',
-				'single'
-			],
-			'no-trailing-spaces': 'error',
-			'no-tabs': 'off',
-			'@/indent': [
-				'error',
-				'tab',
 				{
-					'SwitchCase': 1
+					endOfLine: 'auto',
+					bracketSpacing: true,
+					printWidth: 120,
+					singleQuote: true,
+					semi: true,
+					useTabs: true,
+					tabWidth: 2,
+					trailingComma: 'none',
+					arrowParens: 'avoid'
+				},
+				{
+					usePrettierrc: false
 				}
 			],
+			'react/react-in-jsx-scope': 'off',
+			'eol-last': ['error', 'always'],
+			semi: ['error', 'always'],
+			'react/prop-types': 'off',
+			quotes: ['error', 'single'],
+			'no-trailing-spaces': 'error',
+			'no-tabs': 'off',
 			'@typescript-eslint/explicit-function-return-type': 'off',
-			'@typescript-eslint/no-floating-promises': 'off'
-		},
+			'@typescript-eslint/no-floating-promises': 'off',
+			'@typescript-eslint/no-unused-vars': [
+				'warn',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_'
+				}
+			],
+			'@typescript-eslint/no-explicit-any': ['warn']
+		}
 	},
 	{
 		files: ['**/*.{jsx,tsx}'],
 		rules: {
-			'no-console': 'warn',
-		},
-	},
-]
-
-export default eslintConfig
+			'no-console': 'warn'
+		}
+	}
+]);

@@ -1,14 +1,13 @@
-import { Card, CardContent } from '@components/ui/card'
-import RegisterForm from './registerForm'
+import SignUpForm from '@/features/auth/components/signup-form';
 
-const RegisterPage = () => {
+export default function RegisterPage() {
 	return (
-		<Card className="mx-auto my-auto max-w-xl w-full">
-			<CardContent>
-				<RegisterForm />
-			</CardContent>
-		</Card>
-	)
+		<>
+			<h1 className="text-2xl font-bold text-center">Crea una cuenta nueva</h1>
+			<p className="text-muted-foreground text-sm text-balance text-center mb-6">
+				Introduce tu correo electrónico a continuación para crear una cuenta nueva
+			</p>
+			<SignUpForm />
+		</>
+	);
 }
-
-export default RegisterPage
