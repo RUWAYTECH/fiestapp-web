@@ -1,47 +1,33 @@
-'use client'
-import AppLayout from '@components/containers/layout/layout'
-import CategoryCard from '@components/containers/category-card/category-card'
-import { useLastcategoryQuery } from '@stateManagement/apiSlices/categoryApi'
-import { useGetAllServicesQuery, useLastServiceQuery } from '@stateManagement/apiSlices/serviceApi'
-import HomeSearch from '@components/containers/home-search/home-search'
-import { Skeleton } from '@/components/ui/skeleton'
-import ServiceCard from '@components/containers/service-card/service-card'
+import { Container } from '@/components/custom/container';
+import { CategoryList } from '@/features/home/components/category-list';
+import { ServiceList } from '@/features/home/components/service-list';
+import { ServiceSearchCommand } from '@/features/service/components/service-search-command';
+import { Suspense } from 'react';
 
 export default function Home() {
-	const {data:dataLastCategory, isLoading: isLoadingLastCategory} = useLastcategoryQuery({})
-
-	const { data: dataServices } = useGetAllServicesQuery({})
-
-	const {data: dataLastService, isLoading: isLoadingLastService} = useLastServiceQuery({})
-
 	return (
-		<AppLayout>
-			<HomeSearch services={dataServices ?? []} />
-
-			<div className='container mx-auto p-4 border border-radius-lg bg-base-100 shadow-md rounded-lg mb-6'>
-				<h1 className="text-lg font-bold text-center mb-4">Categorías</h1>
-				{isLoadingLastCategory ? (
-					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mt-4">
-						{Array(6).fill(null).map((_, index) => (
-							<div key={index} className="flex flex-col h-full transition shadow-md rounded-lg overflow-hidden">
-								<div className="relative w-full h-40 overflow-hidden">
-									<Skeleton className="h-full w-full" />
-								</div>
-								<div className="flex-grow flex flex-col justify-between p-3">
-									<Skeleton className="h-4 w-[90%]" />
-									<Skeleton className="h-4 w-[80%] mt-2" />
-								</div>
-							</div>
-						))}
-					</div>
-				) : (
-					<CategoryCard categories={dataLastCategory ?? []} />
-				)}
-			</div>
-			<div className='container mx-auto p-4 border border-radius-lg bg-base-100 shadow-md rounded-lg mb-6'>
-				<h1 className="text-lg font-bold text-center mb-4">Nuevos servicios</h1>
-				<ServiceCard data={dataLastService ?? []} isLoading={isLoadingLastService} gridCols={6}/>
-			</div>
-		</AppLayout>
-	)
+		<>
+			<Container as="section" className="my-10">
+				<h1 className="text-3xl font-extrabold tracking-tight text-center sm:text-4xl">
+					Encuentra todo para tu fiesta en un solo lugar
+				</h1>
+				<h2 className="my-2 text-2xl text-center text-muted-foreground sm:text-3xl">
+					Locales, decoración, tortas, animación y más para eventos inolvidables
+				</h2>
+			</Container>
+			<ServiceSearchCommand />
+			<Container as="section" className="mt-8">
+				<h3 className="mb-4 text-2xl font-bold sm:text-3xl">Categorías populares</h3>
+				<Suspense fallback={<div>Cargando categorías...</div>}>
+					<CategoryList />
+				</Suspense>
+			</Container>
+			<Container as="section" className="mt-8">
+				<h3 className="mb-4 text-2xl font-bold sm:text-3xl">Servicios populares</h3>
+				<Suspense fallback={<div>Cargando servicios...</div>}>
+					<ServiceList />
+				</Suspense>
+			</Container>
+		</>
+	);
 }
