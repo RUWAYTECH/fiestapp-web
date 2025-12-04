@@ -17,7 +17,11 @@ export function RequestPaymentButton({ data }: RequestPaymentButtonProps) {
 		<>
 			<Button onClick={() => setOpenModal(true)}>Continuar con el pago</Button>
 			<Dialog open={openModal} onOpenChange={setOpenModal}>
-				<DialogContent>
+				<DialogContent
+					onPointerDownOutside={e => e.preventDefault()}
+					onInteractOutside={e => e.preventDefault()}
+					onEscapeKeyDown={e => e.preventDefault()}
+				>
 					<DialogHeader>
 						<DialogTitle className="mb-4 text-center">Elija el método de pago</DialogTitle>
 						<RequestPaymentForm onClose={() => setOpenModal(false)} requestId={data.id} />

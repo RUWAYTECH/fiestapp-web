@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import { statusColor } from '../constants/request-status';
+import { statusColor, statusLabel } from '../constants/request-status';
 import { RequestResDto } from '../dto/responses/request-res.dto';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -12,7 +12,9 @@ export function RequestCard({ request }: { request: RequestResDto }) {
 				<p className="font-medium mb-2">{request.comment}</p>
 				<h3 className="font-semibold flex items-center gap-3 mb-2">
 					{/* <span>#{request.orderNumber}</span> */}
-					<Badge className={statusColor[request.status] || 'bg-gray-600 text-white'}>{request.status}</Badge>
+					<Badge className={statusColor[request.status] || 'bg-gray-600 text-white'}>
+						{statusLabel[request.status]}
+					</Badge>
 				</h3>
 				<p className="text-sm text-muted-foreground">Solicitado el {formatShowDate(request.createdAt)}</p>
 				<p className="text-sm font-semibold">Total: S/ {request.finalPrice}</p>

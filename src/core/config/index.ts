@@ -9,5 +9,6 @@ export const configEnv = {
 	},
 	paymentNumber: process.env.NEXT_PUBLIC_PAYMENT_NUMBER ?? '',
 	paymentBank: process.env.NEXT_PUBLIC_PAYMENT_BANK ?? '',
-	gaId: process.env.NEXT_PUBLIC_GA_ID ?? ''
+	gaId: process.env.NEXT_PUBLIC_GA_ID ?? '',
+	providerWebsite: process.env.NEXT_PUBLIC_PROVIDER_WEBSITE ?? ''
 };

@@ -13,6 +13,11 @@ export const metadata: Metadata = {
 		default: 'FiestApp - Encuentra Servicios para tu Fiesta | Locales, Decoración y Más',
 		template: '%s | FiestApp'
 	},
+	icons: {
+		icon: '/favicon.ico',
+		shortcut: '/logo.png',
+		apple: '/logo.png'
+	},
 	description:
 		'Descubre y contrata los mejores servicios para fiestas: locales, decoración, tortas, animación, catering y más. Organiza eventos inolvidables en un solo lugar.',
 	keywords: [

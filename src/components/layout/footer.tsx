@@ -1,3 +1,4 @@
+import { configEnv } from '@/core/config';
 import Link from 'next/link';
 
 export function Footer() {
@@ -22,9 +23,9 @@ export function Footer() {
 							<Link href="/terms-and-conditions" className="hover:underline">
 								Términos y Condiciones
 							</Link>
-							<Link href="/registro-proveedor" className="hover:underline">
+							<a href={configEnv.providerWebsite} target="_blank" rel="noopener noreferrer" className="hover:underline">
 								Regístrate como proveedor
-							</Link>
+							</a>
 						</nav>
 					</div>
 				</div>
