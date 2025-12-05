@@ -41,8 +41,8 @@ export default function TermsAndConditionsPage() {
 			<h2 className="text-2xl font-semibold mt-6 mb-2">6. Contacto legal</h2>
 			<p className="mb-4">
 				Para dudas o consultas legales, puedes escribirnos a:{' '}
-				<a href="mailto:legal@fiestapp.com" className="text-blue-600 underline">
-					legal@fiestapp.com
+				<a href="mailto:legal@fiestapp.pe" className="text-blue-600 underline">
+					legal@fiestapp.pe
 				</a>
 			</p>
 

@@ -43,8 +43,8 @@ export default function PrivacyPage() {
 			<h2 className="text-2xl font-semibold mt-6 mb-2">7. Contacto</h2>
 			<p className="mb-4">
 				Si tienes preguntas, puedes contactarnos a:{' '}
-				<a href="mailto:privacidad@fiestapp.com" className="text-blue-600 underline">
-					privacidad@fiestapp.com
+				<a href="mailto:privacidad@fiestapp.pe" className="text-blue-600 underline">
+					privacidad@fiestapp.pe
 				</a>
 			</p>
 
