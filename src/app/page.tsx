@@ -1,6 +1,8 @@
 import { Container } from '@/components/custom/container';
 import { CategoryList } from '@/features/home/components/category-list';
+import { CategoryListSkeleton } from '@/features/home/components/category-list-skeleton';
 import { ServiceList } from '@/features/home/components/service-list';
+import { ServiceListSkeleton } from '@/features/home/components/service-list-skeleton';
 import { ServiceSearchCommand } from '@/features/service/components/service-search-command';
 import { Suspense } from 'react';
 
@@ -17,14 +19,14 @@ export default function Home() {
 			</Container>
 			<ServiceSearchCommand />
 			<Container as="section" className="mt-8">
-				<h3 className="mb-4 text-2xl font-bold sm:text-3xl">Categorías populares</h3>
-				<Suspense fallback={<div>Cargando categorías...</div>}>
+				<h4 className="mb-4 text-xl font-bold sm:text-2xl">Categorías populares</h4>
+				<Suspense fallback={<CategoryListSkeleton />}>
 					<CategoryList />
 				</Suspense>
 			</Container>
 			<Container as="section" className="mt-8">
-				<h3 className="mb-4 text-2xl font-bold sm:text-3xl">Servicios populares</h3>
-				<Suspense fallback={<div>Cargando servicios...</div>}>
+				<h4 className="mb-4 text-xl font-bold sm:text-2xl">Servicios populares</h4>
+				<Suspense fallback={<ServiceListSkeleton />}>
 					<ServiceList />
 				</Suspense>
 			</Container>

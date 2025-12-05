@@ -6,7 +6,7 @@ export const metadata: Metadata = {
 	description:
 		'Somos FiestApp, la plataforma líder para encontrar y contratar servicios de fiestas en Latinoamérica. Conoce nuestra misión y visión.',
 	alternates: {
-		canonical: 'https://fiestapp.com/about-us'
+		canonical: 'https://fiestapp.pe/about-us'
 	}
 };
 
@@ -35,8 +35,8 @@ export default function AboutUsPage() {
 			<h2 className="text-2xl font-semibold mt-6 mb-2">Contacto</h2>
 			<p className="mb-4">
 				¿Tienes alguna idea, sugerencia o simplemente quieres saludarnos? Escríbenos a:{' '}
-				<a href="mailto:hola@fiestapp.com" className="text-blue-600 underline">
-					hola@fiestapp.com
+				<a href="mailto:hola@fiestapp.pe" className="text-blue-600 underline">
+					hola@fiestapp.pe
 				</a>
 			</p>
 		</Container>

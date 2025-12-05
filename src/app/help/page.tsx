@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 	description:
 		'Resuelve tus dudas sobre cómo usar FiestApp. Encuentra respuestas sobre reservas, pagos, cancelaciones y más.',
 	alternates: {
-		canonical: 'https://fiestapp.com/help'
+		canonical: 'https://fiestapp.pe/help'
 	}
 };
 

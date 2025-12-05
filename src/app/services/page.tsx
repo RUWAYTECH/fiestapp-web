@@ -1,4 +1,5 @@
 import { Container } from '@/components/custom/container';
+import { ServiceListSkeleton } from '@/features/home/components/service-list-skeleton';
 import { ServiceFilter } from '@/features/service/components/service-filter';
 import { ServiceList } from '@/features/service/components/service-list';
 import {
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
 	description:
 		'Explora nuestra amplia variedad de servicios para fiestas. Filtra por categoría, ubicación y precio. Locales, decoración, animación, tortas y más.',
 	alternates: {
-		canonical: 'https://fiestapp.com/services'
+		canonical: 'https://fiestapp.pe/services'
 	}
 };
 
@@ -34,8 +35,14 @@ export default async function ServicesPage({ searchParams }: ServicesPageProps) 
 		<Container>
 			<ServiceFilter />
 			<div className="mt-6">
-				<Suspense fallback={<div>Loading services...</div>}>
+				<Suspense fallback={<ServiceListSkeleton />}>
 					<ServiceList
+						key={JSON.stringify({
+							q: resolvedParams[SEARCH_PARAM_KEY],
+							category: resolvedParams[CATEGORY_PARAM_KEY],
+							sort: resolvedParams[SORT_PARAM_KEY],
+							ubigeo: resolvedParams[UBIGEO_PARAM_KEY]
+						})}
 						q={resolvedParams[SEARCH_PARAM_KEY]}
 						category={resolvedParams[CATEGORY_PARAM_KEY]}
 						sort={resolvedParams[SORT_PARAM_KEY]}
