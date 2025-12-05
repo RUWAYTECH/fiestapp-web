@@ -74,9 +74,9 @@ export const metadata: Metadata = {
 		description: 'Encuentra locales, decoración, tortas y más para tu próximo evento.',
 		images: ['/og-image.png']
 	},
-	/* verification: {
-		google: 'tu-codigo-google-search-console'
-	}, */
+	verification: {
+		google: configEnv.googleSearchConsole || ''
+	},
 	alternates: {
 		canonical: 'https://fiestapp.pe'
 	}
