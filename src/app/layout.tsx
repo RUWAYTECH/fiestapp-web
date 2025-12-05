@@ -14,7 +14,10 @@ export const metadata: Metadata = {
 		template: '%s | FiestApp'
 	},
 	icons: {
-		icon: '/favicon.ico',
+		icon: [
+			{ url: '/favicon.ico', type: 'image/x-icon' },
+			{ url: '/logo.png', type: 'image/png' }
+		],
 		shortcut: '/logo.png',
 		apple: '/logo.png'
 	},
@@ -35,8 +38,8 @@ export const metadata: Metadata = {
 		'fiestas Perú'
 	],
 	authors: [{ name: 'FiestApp' }],
-	creator: 'FiestApp',
-	publisher: 'FiestApp',
+	creator: 'RuwayTech',
+	publisher: 'RuwayTech',
 	robots: {
 		index: true,
 		follow: true,
@@ -51,7 +54,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		type: 'website',
 		locale: 'es_PE',
-		url: 'https://fiestapp.com',
+		url: 'https://fiestapp.pe',
 		siteName: 'FiestApp',
 		title: 'FiestApp - Encuentra Todo para tu Fiesta en un Solo Lugar',
 		description:
@@ -71,11 +74,11 @@ export const metadata: Metadata = {
 		description: 'Encuentra locales, decoración, tortas y más para tu próximo evento.',
 		images: ['/og-image.png']
 	},
-	verification: {
+	/* verification: {
 		google: 'tu-codigo-google-search-console'
-	},
+	}, */
 	alternates: {
-		canonical: 'https://fiestapp.com'
+		canonical: 'https://fiestapp.pe'
 	}
 };
 
