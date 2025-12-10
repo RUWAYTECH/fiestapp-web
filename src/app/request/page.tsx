@@ -180,7 +180,7 @@ export default function RequestPage() {
 			<Form {...form}>
 				<form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
 					<h1 className="text-xl md:text-2xl font-semibold text-center flex-1 pr-6">Solicitar Cotización</h1>
-					<FormDateField control={form.control} name="date" label="Fecha del evento" />
+					<FormDateField control={form.control} min={new Date()} name="date" label="Fecha del evento" />
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 						<FormInputField control={form.control} name="guestQuantity" label="Cantidad de invitados" type="number" />
 						<FormInputField control={form.control} name="budget" label="Presupuesto estimado (S/)" type="number" />

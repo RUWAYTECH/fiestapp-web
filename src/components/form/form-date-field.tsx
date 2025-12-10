@@ -8,6 +8,8 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { cn } from '@/core/lib/utils';
 import type { ControllerProps, FieldPath, FieldValues } from 'react-hook-form';
 import { useState } from 'react';
+import { formatDDMMYYYY } from '@/core/lib/date';
+import { Matcher } from 'react-day-picker';
 
 interface FormDateFieldProps<
 	TFieldValues extends FieldValues = FieldValues,
@@ -16,6 +18,8 @@ interface FormDateFieldProps<
 	label?: React.ReactNode;
 	placeholder?: string;
 	className?: string;
+	min?: Date;
+	max?: Date;
 }
 
 const FormDateField = <
@@ -28,6 +32,10 @@ const FormDateField = <
 	...props
 }: FormDateFieldProps<TFieldValues, TName>) => {
 	const [open, setOpen] = useState(false);
+
+	const disabledDates: Matcher[] = [];
+	if (props.min) disabledDates.push({ before: props.min });
+	if (props.max) disabledDates.push({ after: props.max });
 
 	return (
 		<FormField
@@ -44,7 +52,7 @@ const FormDateField = <
 									className="justify-between font-normal"
 									disabled={field.disabled || props.disabled}
 								>
-									{field.value ? (field.value as Date).toLocaleDateString() : placeholder || 'Selecciona una fecha'}
+									{field.value ? formatDDMMYYYY(field.value) : placeholder || 'Selecciona una fecha'}
 									<CalendarIcon />
 								</Button>
 							</PopoverTrigger>
@@ -53,10 +61,15 @@ const FormDateField = <
 									mode="single"
 									selected={(field.value || undefined) as Date | undefined}
 									captionLayout="dropdown"
+									startMonth={props.min || new Date(new Date().getFullYear() - 10, 0)}
+									endMonth={props.max || new Date(new Date().getFullYear() + 5, 11)}
 									onSelect={date => {
-										field.onChange(date);
+										if (date) {
+											field.onChange(date);
+										}
 										setOpen(false);
 									}}
+									disabled={disabledDates}
 								/>
 							</PopoverContent>
 						</Popover>
