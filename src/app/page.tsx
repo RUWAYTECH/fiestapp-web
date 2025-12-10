@@ -1,6 +1,7 @@
 import { Container } from '@/components/custom/container';
 import { CategoryList } from '@/features/home/components/category-list';
 import { CategoryListSkeleton } from '@/features/home/components/category-list-skeleton';
+import { ConfettiEffect } from '@/features/home/components/confetti-effect';
 import { ServiceList } from '@/features/home/components/service-list';
 import { ServiceListSkeleton } from '@/features/home/components/service-list-skeleton';
 import { ServiceSearchCommand } from '@/features/service/components/service-search-command';
@@ -9,6 +10,7 @@ import { Suspense } from 'react';
 export default function Home() {
 	return (
 		<>
+			<ConfettiEffect />
 			<Container as="section" className="my-10">
 				<h1 className="text-3xl font-extrabold tracking-tight text-center sm:text-4xl">
 					Encuentra todo para tu fiesta en un solo lugar
