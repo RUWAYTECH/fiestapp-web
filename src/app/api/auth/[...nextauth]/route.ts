@@ -51,6 +51,9 @@ export const authOptions: AuthOptions = {
 			}
 		})
 	],
+	jwt: {
+		maxAge: 24 * 60 * 60 - 60
+	},
 	callbacks: {
 		async signIn({ user, account }) {
 			if (account?.provider === 'credentials') {
