@@ -33,6 +33,7 @@ export function ServiceCard({ data: item }: ServiceCardProps) {
 					</div>
 				</div>
 				{/* <CardDescription className="truncate text-sm">{item.address}</CardDescription> */}
+				<CardDescription className="truncate text-sm text-primary">{item.provider.name}</CardDescription>
 				<p className="text-muted-foreground line-clamp-2 text-xs">{item.description}</p>
 				<div className="flex justify-between items-center w-full mb-4 text-sm">
 					<CardDescription className="font-bold">

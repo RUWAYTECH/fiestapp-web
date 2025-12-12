@@ -130,13 +130,13 @@ export default async function RequestDetailPage({ params }: RequestDetailPagePro
 							<div className="flex justify-between mb-1">
 								<p className="text-sm font-light">Subtotal ({request.items.length} servicios)</p>
 								<p className="text-sm font-light text-foreground">
-									S/ {request.items.reduce((acc, item) => acc + item.total, 0)}
+									S/ {request.items.reduce((acc, item) => acc + item.total, 0).toFixed(2)}
 								</p>
 							</div>
 							<Separator className="my-2" />
 							<div className="flex justify-between text-foreground font-semibold">
 								<p>Total</p>
-								<p>S/ {request.finalPrice}</p>
+								<p>S/ {request.finalPrice?.toFixed(2)}</p>
 							</div>
 						</CardContent>
 					</Card>

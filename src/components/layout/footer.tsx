@@ -29,8 +29,11 @@ export function Footer() {
 						</nav>
 					</div>
 				</div>
-				<div className="mt-8 pt-6 border-t border-pink-500">
+				<div className="mt-8 pt-6 border-t border-pink-500 grid grid-cols-2 gap-8">
 					<p className="text-sm">FiestApp © {new Date().getFullYear()}</p>
+					<a href="http://ruway.tech" target="_blank" rel="noopener noreferrer" className="text-sm hover:underline">
+						www.ruway.tech
+					</a>
 				</div>
 			</div>
 		</footer>
