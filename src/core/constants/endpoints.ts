@@ -1,7 +1,7 @@
 export const ep = {
 	auth: {
-		login: '/auth/login',
-		register: '/auth/register',
+		login: '/auth/signin',
+		register: '/auth/signup',
 		oauthSignIn: '/auth/oauth-signin'
 	},
 	category: {
