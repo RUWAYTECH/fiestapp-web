@@ -7,7 +7,7 @@ import { formatShowDate } from '@/core/lib/date';
 import { RequestPaymentButton } from '@/features/request/components/request-payment-button';
 import { RequestStatus, statusLabel } from '@/features/request/constants/request-status';
 import { RequestService } from '@/features/request/services/request.service';
-import { Separator } from '@radix-ui/react-dropdown-menu';
+import { Separator } from '@/components/ui/separator';
 import { Calendar, CreditCard, MapPin } from 'lucide-react';
 import { getServerSession } from 'next-auth';
 import Link from 'next/link';

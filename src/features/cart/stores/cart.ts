@@ -46,13 +46,7 @@ export const useCart = create<CartStore>()(
 				}
 			},
 			removeItem: id => {
-				const items = get().items;
-				const removeIndex = items.findIndex(i => i.id === id);
-
-				if (removeIndex !== -1) {
-					items.splice(removeIndex, 1);
-					set({ items: [...items] });
-				}
+				set({ items: get().items.filter(i => i.id !== id) });
 			},
 			updateQuantity: (id, quantity) => {
 				if (quantity <= 0) {

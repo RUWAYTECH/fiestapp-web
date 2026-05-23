@@ -10,7 +10,6 @@ import { dispatchToast } from '@/core/lib/toast';
 import { ApiResponse, ApiResponseMessage, ResponseMessageEnum } from '@/types/api-response.dto';
 import { useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
-import { setToken } from '@/core/config/axios-config';
 import { useConfirmStore } from '@/core/stores/confirm-store';
 
 interface ServiceCardActionsProps {
@@ -27,7 +26,7 @@ export function ServiceCardActions({ service }: ServiceCardActionsProps) {
 	const favoriteMutation = useMutation<ApiResponse<null>, ApiResponse<null>, string>({
 		mutationFn: async (id: string) => {
 			try {
-				const res = await ServiceService.toogleFavorite(id);
+				const res = await ServiceService.toogleFavorite(id, data?.accessToken || '');
 				return res;
 			} catch (err) {
 				const error = err as Error | ApiResponse<null>;
@@ -80,8 +79,6 @@ export function ServiceCardActions({ service }: ServiceCardActionsProps) {
 			router.push(`/auth/login?callbackUrl=${encodeURIComponent(pathname)}`);
 			return;
 		}
-
-		setToken(data.accessToken);
 
 		favoriteMutation.mutate(service.id, {
 			onError: res => {

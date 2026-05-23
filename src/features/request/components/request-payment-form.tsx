@@ -102,7 +102,7 @@ export function RequestPaymentForm({ onClose, requestId }: RequestPaymentFormPro
 		if (selectedFile) {
 			const formData = new FormData();
 			formData.append('file', selectedFile);
-			formData.append('upload_preset', configEnv.cloudinary.prset);
+			formData.append('upload_preset', configEnv.cloudinary.preset);
 			setUploading(true);
 			axios({
 				url: configEnv.cloudinary.url,

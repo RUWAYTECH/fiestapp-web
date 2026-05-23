@@ -23,8 +23,10 @@ export class ServiceService {
 		}
 	}
 
-	static async toogleFavorite(id: string) {
-		const res = await HttpClient.post<ApiResponse<null>>(ep.service.toggleFavorite.replace(':id', id), {});
+	static async toogleFavorite(id: string, token: string) {
+		const res = await HttpClient.post<ApiResponse<null>>(ep.service.toggleFavorite.replace(':id', id), {}, {
+			headers: { Authorization: `Bearer ${token}` }
+		});
 		return res;
 	}
 
